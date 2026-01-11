@@ -59,6 +59,7 @@
                 fzf
                 lazygit
                 delta
+                just
               ];
 
               nix.settings.experimental-features = "nix-command flakes";
@@ -189,6 +190,24 @@
                   settings = {
                     add_newline = false;
                     line_break.disabled = true;
+                  };
+                };
+
+                programs.helix = {
+                  enable = true;
+                  settings = {
+                    editor = {
+                      true-color = true;
+                      bufferline = "multiple";
+                      cursorline = true;
+                      color-modes = true;
+                      whitespace.render = "all";
+                      indent-guides.render = true;
+                      file-picker.hidden = false;
+                    };
+                    keys.normal = {
+                      q = ":quit";
+                    };
                   };
                 };
 
