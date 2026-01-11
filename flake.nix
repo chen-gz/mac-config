@@ -70,7 +70,6 @@
                 finder.AppleShowAllExtensions = true;
 
                 # iTerm2 配置重定向
-                # 直接指向你的 Nix 配置目录下的 iterm2 文件夹
                 CustomUserPreferences = {
                   "com.googlecode.iterm2" = {
                     PrefsCustomFolder = "~/.config/nix-darwin/iterm2";
@@ -138,10 +137,37 @@
 
                 home.packages = with pkgs; [
                   ripgrep
+                  delta # 安装 delta 差异查看器
                 ];
 
-                # 注意：由于 iTerm2 已经直接指向了 nix-darwin 文件夹，
-                # 我们不再需要通过 home.file 创建多余的软链接。
+                # Git 配置，集成 delta
+                programs.git = {
+                  enable = true;
+                  delta = {
+                    enable = true;
+                    options = {
+                      line-numbers = true;
+                      side-by-side = true;
+                      navigate = true;
+                      theme = "TwoDark";
+                    };
+                  };
+                };
+
+                # --- Lazygit 配置 ---
+                programs.lazygit = {
+                  enable = true;
+                  settings = {
+                    gui = {
+                      showIcons = true; # 开启图标（需配合 Nerd Font）
+                      skipDiscardChangeWarning = true; # 跳过放弃更改的警告提示
+                    };
+                    git.paging = {
+                      colorArg = "always";
+                      pager = "delta --dark --paging=never";
+                    };
+                  };
+                };
 
                 programs.fzf = {
                   enable = true;
@@ -170,6 +196,7 @@
                     cat = "bat";
                     g = "git";
                     vi = "nvim";
+                    lg = "lazygit"; # 添加快捷命令
                     cdd = "cd ~/Documents";
                     nixconf = "cd ~/.config/nix-darwin && nvim flake.nix";
                   };
