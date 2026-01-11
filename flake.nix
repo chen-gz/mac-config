@@ -37,7 +37,7 @@
       system = "aarch64-darwin";
     in
     {
-      # 配置格式化工具，修复 nixfmt-rfc-style 迁移警告
+      # 配置格式化工具
       formatter.${system} = nixpkgs.legacyPackages.${system}.nixfmt;
 
       darwinConfigurations."${hostname}" = nix-darwin.lib.darwinSystem {
@@ -59,17 +59,24 @@
 
               system.primaryUser = username;
 
-              # 禁用系统级 Shell 管理，保留自定义的 /etc/bashrc 等
               programs.bash.enable = false;
               programs.zsh.enable = false;
               programs.fish.enable = true;
 
               users.users."${username}".home = "/Users/${username}";
 
-              # 提示：这里的设置会导致执行 switch 时 Dock/Finder 重启（闪烁原因）
               system.defaults = {
                 dock.autohide = true;
                 finder.AppleShowAllExtensions = true;
+
+                # iTerm2 配置重定向
+                # 直接指向你的 Nix 配置目录下的 iterm2 文件夹
+                CustomUserPreferences = {
+                  "com.googlecode.iterm2" = {
+                    PrefsCustomFolder = "~/.config/nix-darwin/iterm2";
+                    LoadPrefsFromCustomFolder = true;
+                  };
+                };
               };
 
               system.stateVersion = 5;
@@ -112,6 +119,7 @@
                   "raycast"
                   "discord"
                   "iina"
+                  "iterm2"
                 ];
               };
             }
@@ -122,7 +130,6 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            # 添加此行：如果文件冲突，自动备份旧文件（例如 .config.fish -> .config.fish.backup）
             home-manager.backupFileExtension = "backup";
             home-manager.users."${username}" =
               { pkgs, ... }:
@@ -133,7 +140,9 @@
                   ripgrep
                 ];
 
-                # 使用原生的 fzf 模块，加载速度更快
+                # 注意：由于 iTerm2 已经直接指向了 nix-darwin 文件夹，
+                # 我们不再需要通过 home.file 创建多余的软链接。
+
                 programs.fzf = {
                   enable = true;
                   enableFishIntegration = true;
@@ -166,24 +175,17 @@
                   };
 
                   interactiveShellInit = ''
-                    # 设置 Fish 欢迎语为空
                     set -g fish_greeting ""
-
-                    # 额外的 PATH 设置
                     fish_add_path ~/.local/bin
                     fish_add_path ~/.cargo/bin
 
-                    # GPG and SSH agent setup
                     set -x GPG_TTY (tty)
                     if test (uname) = "Darwin"
                         set -x SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)
                         gpg-connect-agent updatestartuptty /bye >/dev/null
                     end
 
-                    # LM Studio CLI
                     set -gx PATH $PATH /Users/guangzong/.lmstudio/bin
-
-                    # OrbStack integration
                     source ~/.orbstack/shell/init2.fish 2>/dev/null || :
                   '';
                 };
