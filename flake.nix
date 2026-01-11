@@ -51,7 +51,6 @@
 
               # 将核心 CLI 工具放入系统包中，确保 PATH 始终能找到它们
               environment.systemPackages = with pkgs; [
-                neovim
                 git
                 curl
                 bat
@@ -233,10 +232,11 @@
                   shellAliases = {
                     cat = "bat";
                     g = "git";
-                    vi = "nvim";
+                    vi = "hx";
+                    vim = "hx";
                     lg = "lazygit";
                     cdd = "cd ~/Documents";
-                    nixconf = "cd ~/.config/nix-darwin && nvim flake.nix";
+                    nixconf = "cd ~/.config/nix-darwin && hx flake.nix";
                     nsw = "sudo -H nix run nix-darwin -- switch --flake ~/.config/nix-darwin#guangzong-mac-mini";
                   };
 
