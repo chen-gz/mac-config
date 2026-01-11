@@ -60,6 +60,7 @@
                 lazygit
                 delta
                 just
+                devbox
               ];
 
               nix.settings.experimental-features = "nix-command flakes";
@@ -173,6 +174,11 @@
                       }
                     ];
                   };
+                };
+
+                programs.direnv = {
+                  enable = true;
+                  nix-direnv.enable = true;
                 };
 
                 programs.fzf = {
