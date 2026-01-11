@@ -37,8 +37,8 @@
       system = "aarch64-darwin";
     in
     {
-      # 配置格式化工具
-      formatter.${system} = nixpkgs.legacyPackages.${system}.nixfmt-rfc-style;
+      # 配置格式化工具，修复 nixfmt-rfc-style 迁移警告
+      formatter.${system} = nixpkgs.legacyPackages.${system}.nixfmt;
 
       darwinConfigurations."${hostname}" = nix-darwin.lib.darwinSystem {
         inherit system;
@@ -172,7 +172,7 @@
                     # 额外的 PATH 设置
                     fish_add_path ~/.local/bin
                     fish_add_path ~/.cargo/bin
-                    
+
                     # GPG and SSH agent setup
                     set -x GPG_TTY (tty)
                     if test (uname) = "Darwin"
