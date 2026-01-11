@@ -69,7 +69,11 @@
               programs.zsh.enable = false;
               programs.fish.enable = true;
 
-              users.users."${username}".home = "/Users/${username}";
+              users.users."${username}" = {
+                home = "/Users/${username}";
+                shell = pkgs.fish;
+              };
+              # users.users."${username}".home = "/Users/${username}";
 
               system.defaults = {
                 dock.autohide = true;
@@ -206,9 +210,9 @@
                     fish_add_path ~/.local/bin
                     fish_add_path ~/.cargo/bin
                     # 确保 Nix 系统路径在 PATH 中 (防止 Unknown command 报错)
-                    if not contains /run/current-system/sw/bin $PATH
-                        fish_add_path --prepend --global /run/current-system/sw/bin
-                    end
+                    # if not contains /run/current-system/sw/bin $PATH
+                    #     fish_add_path --prepend --global /run/current-system/sw/bin
+                    # end
 
                     set -x GPG_TTY (tty)
                     if test (uname) = "Darwin"
