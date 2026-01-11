@@ -37,7 +37,7 @@
       system = "aarch64-darwin";
     in
     {
-      # 配置格式化工具，修复 nix fmt 报错
+      # 配置格式化工具
       formatter.${system} = nixpkgs.legacyPackages.${system}.nixfmt-rfc-style;
 
       darwinConfigurations."${hostname}" = nix-darwin.lib.darwinSystem {
@@ -59,13 +59,14 @@
 
               system.primaryUser = username;
 
-              # 禁用系统级 Shell 管理以避免修改 /etc/bashrc 和 /etc/zshrc
+              # 禁用系统级 Shell 管理，保留自定义的 /etc/bashrc 等
               programs.bash.enable = false;
               programs.zsh.enable = false;
               programs.fish.enable = true;
 
               users.users."${username}".home = "/Users/${username}";
 
+              # 提示：这里的设置会导致执行 switch 时 Dock/Finder 重启（闪烁原因）
               system.defaults = {
                 dock.autohide = true;
                 finder.AppleShowAllExtensions = true;
@@ -121,15 +122,22 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
+            # 添加此行：如果文件冲突，自动备份旧文件（例如 .config.fish -> .config.fish.backup）
+            home-manager.backupFileExtension = "backup";
             home-manager.users."${username}" =
               { pkgs, ... }:
               {
                 home.stateVersion = "25.11";
 
                 home.packages = with pkgs; [
-                  fzf
                   ripgrep
                 ];
+
+                # 使用原生的 fzf 模块，加载速度更快
+                programs.fzf = {
+                  enable = true;
+                  enableFishIntegration = true;
+                };
 
                 programs.bat = {
                   enable = true;
@@ -146,11 +154,9 @@
                   };
                 };
 
-                # --- 重点：Fish 用户配置 ---
                 programs.fish = {
                   enable = true;
 
-                  # 别名设置：将原有的 alias 迁移至此
                   shellAliases = {
                     cat = "bat";
                     g = "git";
@@ -159,18 +165,14 @@
                     nixconf = "cd ~/.config/nix-darwin && nvim flake.nix";
                   };
 
-                  # 交互式 Shell 初始化：保留必要的运行时配置
                   interactiveShellInit = ''
                     # 设置 Fish 欢迎语为空
                     set -g fish_greeting ""
 
-                    # 额外的 PATH 设置 (Nix 未覆盖的部分)
+                    # 额外的 PATH 设置
                     fish_add_path ~/.local/bin
                     fish_add_path ~/.cargo/bin
                     
-                    # FZF 初始化
-                    fzf --fish | source
-
                     # GPG and SSH agent setup
                     set -x GPG_TTY (tty)
                     if test (uname) = "Darwin"
