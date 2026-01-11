@@ -59,11 +59,9 @@
 
               system.primaryUser = username;
 
-              # --- 核心修改：禁用系统级 Shell 管理以避免修改 /etc/bashrc 和 /etc/zshrc ---
+              # 禁用系统级 Shell 管理以避免修改 /etc/bashrc 和 /etc/zshrc
               programs.bash.enable = false;
               programs.zsh.enable = false;
-              # 由于你主要使用 Fish，我们依然保持 Fish 的系统级启用，
-              # 但如果它也提示 /etc/fish/config.fish 冲突，可以同样将其设为 false。
               programs.fish.enable = true;
 
               users.users."${username}".home = "/Users/${username}";
@@ -148,11 +146,44 @@
                   };
                 };
 
+                # --- 重点：Fish 用户配置 ---
                 programs.fish = {
                   enable = true;
+
+                  # 别名设置：将原有的 alias 迁移至此
                   shellAliases = {
                     cat = "bat";
+                    g = "git";
+                    vi = "nvim";
+                    cdd = "cd ~/Documents";
+                    nixconf = "cd ~/.config/nix-darwin && nvim flake.nix";
                   };
+
+                  # 交互式 Shell 初始化：保留必要的运行时配置
+                  interactiveShellInit = ''
+                    # 设置 Fish 欢迎语为空
+                    set -g fish_greeting ""
+
+                    # 额外的 PATH 设置 (Nix 未覆盖的部分)
+                    fish_add_path ~/.local/bin
+                    fish_add_path ~/.cargo/bin
+                    
+                    # FZF 初始化
+                    fzf --fish | source
+
+                    # GPG and SSH agent setup
+                    set -x GPG_TTY (tty)
+                    if test (uname) = "Darwin"
+                        set -x SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)
+                        gpg-connect-agent updatestartuptty /bye >/dev/null
+                    end
+
+                    # LM Studio CLI
+                    set -gx PATH $PATH /Users/guangzong/.lmstudio/bin
+
+                    # OrbStack integration
+                    source ~/.orbstack/shell/init2.fish 2>/dev/null || :
+                  '';
                 };
               };
           }
