@@ -55,6 +55,7 @@
                 git
                 curl
                 bat
+                helix
                 ripgrep
                 fzf
                 lazygit
@@ -196,14 +197,29 @@
                 programs.helix = {
                   enable = true;
                   settings = {
+                    theme = "catppuccin_frappe";
                     editor = {
                       true-color = true;
+                      line-number = "relative";
                       bufferline = "multiple";
                       cursorline = true;
                       color-modes = true;
-                      whitespace.render = "all";
+                      whitespace = {
+                        render = "all";
+                        characters = {
+                          space = " ";
+                          tab = "→";
+                          newline = " ";
+                        };
+                      };
                       indent-guides.render = true;
                       file-picker.hidden = false;
+                      cursor-shape = {
+                        insert = "bar";
+                        normal = "block";
+                        select = "underline";
+                      };
+                      lsp.display-messages = true;
                     };
                     keys.normal = {
                       q = ":quit";
@@ -229,9 +245,9 @@
                     fish_add_path ~/.local/bin
                     fish_add_path ~/.cargo/bin
                     # 确保 Nix 系统路径在 PATH 中 (防止 Unknown command 报错)
-                    # if not contains /run/current-system/sw/bin $PATH
-                    #     fish_add_path --prepend --global /run/current-system/sw/bin
-                    # end
+                    if not contains /run/current-system/sw/bin $PATH
+                        fish_add_path --prepend --global /run/current-system/sw/bin
+                    end
 
                     set -x GPG_TTY (tty)
                     if test (uname) = "Darwin"
