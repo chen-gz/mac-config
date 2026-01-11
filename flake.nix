@@ -43,6 +43,9 @@
 
           nix.settings.experimental-features = "nix-command flakes";
 
+          # 修复错误：设置主要用户
+          system.primaryUser = username;
+
           # 系统级启用 fish
           programs.fish.enable = true;
           users.users."${username}".home = "/Users/${username}";
