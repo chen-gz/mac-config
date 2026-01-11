@@ -49,10 +49,16 @@
             {
               nixpkgs.config.allowUnfree = true;
 
+              # 将核心 CLI 工具放入系统包中，确保 PATH 始终能找到它们
               environment.systemPackages = with pkgs; [
                 neovim
                 git
                 curl
+                bat
+                ripgrep
+                fzf
+                lazygit
+                delta
               ];
 
               nix.settings.experimental-features = "nix-command flakes";
@@ -134,16 +140,11 @@
               {
                 home.stateVersion = "25.11";
 
-                home.packages = with pkgs; [
-                  ripgrep
-                  bat
-                ];
-
                 # 修正警告：将 delta 配置移动到独立模块
                 programs.git.enable = true;
                 programs.delta = {
                   enable = true;
-                  enableGitIntegration = true; # 显式启用 Git 集成
+                  enableGitIntegration = true;
                   options = {
                     line-numbers = true;
                     side-by-side = true;
@@ -196,9 +197,7 @@
                     vi = "nvim";
                     lg = "lazygit";
                     cdd = "cd ~/Documents";
-                    # 快捷打开配置文件
                     nixconf = "cd ~/.config/nix-darwin && nvim flake.nix";
-                    # 核心快捷命令：一键更新系统配置
                     nsw = "sudo -H nix run nix-darwin -- switch --flake ~/.config/nix-darwin#guangzong-mac-mini";
                   };
 
