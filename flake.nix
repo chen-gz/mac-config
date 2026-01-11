@@ -96,7 +96,6 @@
               autoMigrate = true;
               taps = {
                 "homebrew/homebrew-core" = inputs.homebrew-core;
-                "homebrew/homebrew-cask" = inputs.homebrew-cask;
               };
               mutableTaps = false;
             };
@@ -137,21 +136,19 @@
 
                 home.packages = with pkgs; [
                   ripgrep
-                  delta # 安装 delta 差异查看器
-                  bat # 显式安装 bat 以确保命令可用
+                  bat
                 ];
 
-                # Git 配置，集成 delta
-                programs.git = {
+                # 修正警告：将 delta 配置移动到独立模块
+                programs.git.enable = true;
+                programs.delta = {
                   enable = true;
-                  delta = {
-                    enable = true;
-                    options = {
-                      line-numbers = true;
-                      side-by-side = true;
-                      navigate = true;
-                      theme = "TwoDark";
-                    };
+                  enableGitIntegration = true; # 显式启用 Git 集成
+                  options = {
+                    line-numbers = true;
+                    side-by-side = true;
+                    navigate = true;
+                    theme = "TwoDark";
                   };
                 };
 
@@ -160,8 +157,8 @@
                   enable = true;
                   settings = {
                     gui = {
-                      showIcons = true; # 开启图标（需配合 Nerd Font）
-                      skipDiscardChangeWarning = true; # 跳过放弃更改的警告提示
+                      showIcons = true;
+                      skipDiscardChangeWarning = true;
                     };
                     git.paging = {
                       colorArg = "always";
@@ -197,9 +194,12 @@
                     cat = "bat";
                     g = "git";
                     vi = "nvim";
-                    lg = "lazygit"; # 添加快捷命令
+                    lg = "lazygit";
                     cdd = "cd ~/Documents";
+                    # 快捷打开配置文件
                     nixconf = "cd ~/.config/nix-darwin && nvim flake.nix";
+                    # 核心快捷命令：一键更新系统配置
+                    nsw = "sudo -H nix run nix-darwin -- switch --flake ~/.config/nix-darwin#guangzong-mac-mini";
                   };
 
                   interactiveShellInit = ''
