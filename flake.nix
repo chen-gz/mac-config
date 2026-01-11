@@ -138,6 +138,7 @@
                 home.packages = with pkgs; [
                   ripgrep
                   delta # 安装 delta 差异查看器
+                  bat # 显式安装 bat 以确保命令可用
                 ];
 
                 # Git 配置，集成 delta
