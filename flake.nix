@@ -326,6 +326,7 @@
 
                   interactiveShellInit = ''
                     set -g fish_greeting ""
+                    set -gx DIRENV_LOG_FORMAT ""
                     fish_add_path ~/.local/bin
                     fish_add_path ~/.cargo/bin
                     # 确保 Nix 系统路径在 PATH 中 (防止 Unknown command 报错)
