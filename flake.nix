@@ -166,6 +166,9 @@
                   "iterm2"
                   "google-drive"
                 ];
+                masApps = {
+                  "Telegram Lite" = 946399090;
+                };
               };
             }
           )
