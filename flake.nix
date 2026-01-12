@@ -63,7 +63,12 @@
                 devbox
               ];
 
-              nix.settings.experimental-features = "nix-command flakes";
+              nix.settings = {
+                experimental-features = "nix-command flakes";
+                # Optimize for nix-direnv
+                keep-outputs = true;
+                keep-derivations = true;
+              };
 
               system.primaryUser = username;
 
@@ -179,6 +184,7 @@
                 programs.direnv = {
                   enable = true;
                   nix-direnv.enable = true;
+                  enableFishIntegration = true;
                 };
 
                 programs.fzf = {
@@ -274,6 +280,7 @@
 
                   interactiveShellInit = ''
                     set -g fish_greeting ""
+                    set -gx DIRENV_LOG_FORMAT ""
                     fish_add_path ~/.local/bin
                     fish_add_path ~/.cargo/bin
                     # 确保 Nix 系统路径在 PATH 中 (防止 Unknown command 报错)
