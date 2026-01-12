@@ -64,6 +64,7 @@
                 devbox
                 just-lsp
                 gemini-cli
+                pay-respects
               ];
 
               nix.settings = {
@@ -343,6 +344,8 @@
                         set -x SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)
                         gpg-connect-agent updatestartuptty /bye >/dev/null
                     end
+
+                    pay-respects setup --shell fish | source
 
                     set -gx PATH $PATH /Users/guangzong/.lmstudio/bin
                     source ~/.orbstack/shell/init2.fish 2>/dev/null || :
