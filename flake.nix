@@ -61,6 +61,7 @@
                 delta
                 just
                 devbox
+                just-lsp
                 gemini-cli
               ];
 
@@ -244,6 +245,18 @@
                       q = ":quit";
                     };
                   };
+                  languages = {
+                    language = [{
+                      name = "just";
+                      auto-format = true;
+                      language-servers = [ "just-lsp" ];
+                    }];
+                    language-server = {
+                      just-lsp = {
+                        command = "just-lsp";
+                      };
+                    };
+                  };
                 };
 
                 programs.tmux = {
@@ -279,7 +292,7 @@
                     vi = "hx";
                     vim = "hx";
                     lg = "lazygit";
-                    cdd = "cd ~/Documents";
+                    blog = "cd ~/Documents/chen-gz.github.io";
                     nixconf = "cd ~/.config/nix-darwin && hx flake.nix";
                     nsw = "sudo -H nix run nix-darwin -- switch --flake ~/.config/nix-darwin#guangzong-mac-mini";
                   };
