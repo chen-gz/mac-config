@@ -2,7 +2,7 @@
 flake_name := "guangzong-mac-mini"
 
 # Default target to deploy the configuration
-deploy: update
+deploy: 
     nix run nix-darwin -- switch --flake .#{{flake_name}}
 
 # Update flake inputs
