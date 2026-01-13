@@ -32,14 +32,25 @@
       };
     };
     languages = {
-      language = [{
-        name = "just";
-        auto-format = true;
-        language-servers = [ "just-lsp" ];
-      }];
+      language = [
+        {
+          name = "just";
+          auto-format = true;
+          language-servers = [ "just-lsp" ];
+        }
+        {
+          name = "nix";
+          auto-format = true;
+          formatter.command = "${pkgs.nixfmt-rfc-style}/bin/nixfmt";
+          language-servers = [ "nixd" ];
+        }
+      ];
       language-server = {
         just-lsp = {
           command = "just-lsp";
+        };
+        nixd = {
+          command = "${pkgs.nixd}/bin/nixd";
         };
       };
     };
