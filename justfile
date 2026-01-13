@@ -12,10 +12,10 @@ default:
 # Deploy the configuration based on the OS (macOS -> nix-darwin, Linux -> home-manager)
 deploy:
     @if [ "{{os}}" = "Darwin" ]; then \
-        echo "🍎 Detected macOS. Deploying nix-darwin configuration ({{darwin_flake}})\"; \
+        echo "🍎 Detected macOS. Deploying nix-darwin configuration ({{darwin_flake}})..."; \
         sudo -H nix run nix-darwin -- switch --flake .#{{darwin_flake}}; \
     else \
-        echo "🐧 Detected Linux. Deploying Home Manager configuration ({{linux_flake}})\"; \
+        echo "🐧 Detected Linux. Deploying Home Manager configuration ({{linux_flake}})..."; \
         nix run github:nix-community/home-manager -- switch --flake .#{{linux_flake}}; \
     fi
 
