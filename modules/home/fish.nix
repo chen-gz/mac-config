@@ -11,7 +11,7 @@
       lg = "lazygit";
       blog = "cd ~/Documents/chen-gz.github.io";
       nixconf = "cd ~/.config/nix-darwin && hx flake.nix";
-      nsw = "sudo -H nix run nix-darwin -- switch --flake ~/.config/nix-darwin#guangzong-mac-mini";
+      nsw = "just --justfile ~/.config/nix-darwin/justfile deploy";
     };
 
     interactiveShellInit = ''
