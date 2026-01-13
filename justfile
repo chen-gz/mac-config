@@ -1,9 +1,21 @@
-# The name of the configuration in flake.nix
-flake_name := "guangzong-mac-mini"
+# Detect Operating System
+
+os := `uname -s`
+
+# Configuration names
+
+darwin_flake := "guangzong-mac-mini"
+linux_flake := "guangzong"
 
 # Default target to deploy the configuration
-deploy: 
-    nix run nix-darwin -- switch --flake .#{{flake_name}}
+deploy:
+    @if [ "{{ os }}" = "Darwin" ]; then \
+        echo "🍎 Detected macOS. Deploying nix-darwin configuration ({{ darwin_flake }})..."; \
+        sudo -H nix run nix-darwin -- switch --flake .#{{ darwin_flake }}; \
+    else \
+        echo "🐧 Detected Linux. Deploying Home Manager configuration ({{ linux_flake }})..."; \
+        nix run github:nix-community/home-manager -- switch --flake .#{{ linux_flake }}; \
+    fi
 
 # Update flake inputs
 update:
