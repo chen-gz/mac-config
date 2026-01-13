@@ -1,34 +1,37 @@
 # Detect Operating System
-
 os := `uname -s`
 
 # Configuration names
-
 darwin_flake := "guangzong-mac-mini"
 linux_flake := "guangzong"
 
-# Default target to deploy the configuration
+# List all available commands
+default:
+    @just --list
+
+# Deploy the configuration based on the OS (macOS -> nix-darwin, Linux -> home-manager)
 deploy:
-    @if [ "{{ os }}" = "Darwin" ]; then \
-        echo "🍎 Detected macOS. Deploying nix-darwin configuration ({{ darwin_flake }})..."; \
-        sudo -H nix run nix-darwin -- switch --flake .#{{ darwin_flake }}; \
+    @if [ "{{os}}" = "Darwin" ]; then \
+        echo "🍎 Detected macOS. Deploying nix-darwin configuration ({{darwin_flake}})..."; \
+        nix run nix-darwin -- switch --flake .#{{darwin_flake}}; \
     else \
-        echo "🐧 Detected Linux. Deploying Home Manager configuration ({{ linux_flake }})..."; \
-        nix run github:nix-community/home-manager -- switch --flake .#{{ linux_flake }}; \
+        echo "🐧 Detected Linux. Deploying Home Manager configuration ({{linux_flake}})..."; \
+        nix run github:nix-community/home-manager -- switch --flake .#{{linux_flake}}; \
     fi
 
-# Update flake inputs
+# Update flake.lock inputs to the latest versions
 update:
     nix flake update
 
-# Check flake
+# Verify the flake for errors
 check:
     nix flake check
 
-# Format nix files
+# Format all Nix files using nixfmt
 format:
     nix fmt
 
-# Clean up garbage
+# Clean up old Nix generations and garbage collect
 clean:
     nix-collect-garbage -d
+
