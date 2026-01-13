@@ -6,7 +6,6 @@ set -e
 # Configuration
 REPO_URL="https://github.com/chen-gz/mac-config"
 TARGET_DIR="$HOME/.config/nix-darwin"
-FLAKE_NAME="guangzong-mac-mini"
 
 # Colors
 GREEN='\033[0;32m'
@@ -20,6 +19,16 @@ log() {
 success() {
     echo -e "${GREEN}[SUCCESS]${NC} $1"
 }
+
+# 0. Detect OS
+OS="$(uname -s)"
+if [ "$OS" = "Darwin" ]; then
+    FLAKE_NAME="guangzong-mac-mini"
+    log "Detected macOS. Using flake: $FLAKE_NAME"
+else
+    FLAKE_NAME="guangzong"
+    log "Detected Linux. Using flake: $FLAKE_NAME"
+fi
 
 # 1. Install Nix if needed
 if ! command -v nix &> /dev/null; then
@@ -50,7 +59,14 @@ fi
 
 # 4. Build and Switch
 log "Building and switching configuration for ${FLAKE_NAME}..."
-# Use --extra-experimental-features to be safe even if NIX_CONFIG isn't enough for some reason
-nix run nix-darwin --extra-experimental-features "nix-command flakes" -- switch --flake "${TARGET_DIR}#${FLAKE_NAME}"
+
+if [ "$OS" = "Darwin" ]; then
+    # MacOS: Run nix-darwin
+    sudo -H nix run nix-darwin --extra-experimental-features "nix-command flakes" -- switch --flake "${TARGET_DIR}#${FLAKE_NAME}"
+else
+    # Linux: Run home-manager
+    # We use 'nix run' to execute home-manager without installing it permanently in the user profile first
+    nix run github:nix-community/home-manager --extra-experimental-features "nix-command flakes" -- switch --flake "${TARGET_DIR}#${FLAKE_NAME}"
+fi
 
 success "Setup complete! Please restart your shell."

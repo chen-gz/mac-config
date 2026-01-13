@@ -13,7 +13,11 @@ default:
 deploy:
     @if [ "{{os}}" = "Darwin" ]; then \
         echo "🍎 Detected macOS. Deploying nix-darwin configuration ({{darwin_flake}})..."; \
+<<<<<<< HEAD
         nix run nix-darwin -- switch --flake .#{{darwin_flake}}; \
+=======
+        sudo -H nix run nix-darwin -- switch --flake .#{{darwin_flake}}; \
+>>>>>>> 88325c0 (update just file)
     else \
         echo "🐧 Detected Linux. Deploying Home Manager configuration ({{linux_flake}})..."; \
         nix run github:nix-community/home-manager -- switch --flake .#{{linux_flake}}; \
