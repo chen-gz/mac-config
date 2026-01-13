@@ -61,7 +61,8 @@
     # iTerm2 配置重定向
     CustomUserPreferences = {
       "com.googlecode.iterm2" = {
-        PrefsCustomFolder = "~/.config/nix-darwin/iterm2";
+        # 让 iTerm2 读取 Home Manager 生成的目录，而不是 Git 仓库目录
+        PrefsCustomFolder = "~/.config/iterm2";
         LoadPrefsFromCustomFolder = true;
       };
     };
