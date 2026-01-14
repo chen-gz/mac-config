@@ -20,8 +20,13 @@
       fish_add_path ~/.local/bin
       fish_add_path ~/.cargo/bin
       # 确保 Nix 系统路径在 PATH 中 (防止 Unknown command 报错)
-      if not contains /run/current-system/sw/bin $PATH
+      if test -d /run/current-system/sw/bin
           fish_add_path --prepend --global /run/current-system/sw/bin
+      end
+
+      # On non-NixOS Linux, Home Manager installs packages to ~/.nix-profile/bin
+      if test -d ~/.nix-profile/bin
+          fish_add_path --prepend --global ~/.nix-profile/bin
       end
 
       set -x GPG_TTY (tty)

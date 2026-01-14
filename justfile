@@ -13,10 +13,10 @@ default:
 deploy:
     @if [ "{{os}}" = "Darwin" ]; then \
         echo "🍎 Detected macOS. Deploying nix-darwin configuration ({{darwin_flake}})..."; \
-        sudo -H nix run nix-darwin -- switch --flake .#{{darwin_flake}}; \
+        sudo -H nix run --extra-experimental-features "nix-command flakes" nix-darwin -- switch --flake .#{{darwin_flake}}; \
     else \
         echo "🐧 Detected Linux. Deploying Home Manager configuration ({{linux_flake}})..."; \
-        nix run github:nix-community/home-manager -- switch --flake .#{{linux_flake}}; \
+        nix run --extra-experimental-features "nix-command flakes" github:nix-community/home-manager -- switch --flake .#{{linux_flake}}; \
     fi
 
 # Update flake.lock inputs to the latest versions
