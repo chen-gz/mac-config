@@ -66,7 +66,7 @@ if [ "$OS" = "Darwin" ]; then
 else
     # Linux: Run home-manager
     # We use 'nix run' to execute home-manager without installing it permanently in the user profile first
-    nix run github:nix-community/home-manager --extra-experimental-features "nix-command flakes" -- switch --flake "${TARGET_DIR}#${FLAKE_NAME}"
+    nix run github:nix-community/home-manager --extra-experimental-features "nix-command flakes" -- switch -b backup --impure --flake "${TARGET_DIR}#${FLAKE_NAME}"
 fi
 
 success "Setup complete! Please restart your shell."

@@ -84,7 +84,7 @@
             {
               home = {
                 inherit username;
-                homeDirectory = "/${if pkgs.stdenv.isDarwin then "Users" else "home"}/${username}"; # 自动根据系统确定路径
+                homeDirectory = let envHome = builtins.getEnv "HOME"; in if envHome != "" then envHome else "/home/${username}";
               };
             }
           ];
