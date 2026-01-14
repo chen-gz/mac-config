@@ -23,10 +23,10 @@ success() {
 # 0. Detect OS
 OS="$(uname -s)"
 if [ "$OS" = "Darwin" ]; then
-    FLAKE_NAME="guangzong-mac-mini"
+    FLAKE_NAME="mac-mini"
     log "Detected macOS. Using flake: $FLAKE_NAME"
 else
-    FLAKE_NAME="guangzong"
+    FLAKE_NAME="linux-server"
     log "Detected Linux. Using flake: $FLAKE_NAME"
 fi
 

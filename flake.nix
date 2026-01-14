@@ -29,7 +29,7 @@
     }:
     let
       username = "guangzong";
-      hostname = "guangzong-mac-mini";
+      hostname = "mac-mini";
       system = "aarch64-darwin";
     in
     {
@@ -72,18 +72,22 @@
 
       # --- 5. Ubuntu / Linux (x86_64) 独立 Home Manager 配置 ---
       # 这一块专门用于在 Ubuntu (x86_64) 上通过 Home Manager 独立管理用户配置
-      # 使用命令: home-manager switch --flake .#guangzong
-      homeConfigurations."guangzong" = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.x86_64-linux; # 这里的架构改为 x86_64-linux 以适配 Ubuntu
-        modules = [
-          ./modules/home/default.nix
-          {
-            home = {
-              username = "guangzong";
-              homeDirectory = "/home/guangzong"; # 请确保 Ubuntu 上的主目录路径正确
-            };
-          }
-        ];
-      };
+      # 使用命令: home-manager switch --flake .#linux-server
+      homeConfigurations."linux-server" =
+        let
+          pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        in
+        home-manager.lib.homeManagerConfiguration {
+          inherit pkgs; # 这里的架构改为 x86_64-linux 以适配 Ubuntu
+          modules = [
+            ./modules/home/default.nix
+            {
+              home = {
+                inherit username;
+                homeDirectory = "/${if pkgs.stdenv.isDarwin then "Users" else "home"}/${username}"; # 自动根据系统确定路径
+              };
+            }
+          ];
+        };
     };
 }

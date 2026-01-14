@@ -2,8 +2,8 @@
 os := `uname -s`
 
 # Configuration names
-darwin_flake := "guangzong-mac-mini"
-linux_flake := "guangzong"
+darwin_flake := "mac-mini"
+linux_flake := "linux-server"
 
 # List all available commands
 default:
