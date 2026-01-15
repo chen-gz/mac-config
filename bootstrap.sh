@@ -13,11 +13,11 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 log() {
-    echo -e "${BLUE}[BOOTSTRAP]${NC} $1"
+    printf "${BLUE}[BOOTSTRAP]${NC} %s\n" "$1"
 }
 
 success() {
-    echo -e "${GREEN}[SUCCESS]${NC} $1"
+    printf "${GREEN}[SUCCESS]${NC} %s\n" "$1"
 }
 
 # 0. Detect OS
@@ -31,9 +31,9 @@ else
 fi
 
 # 1. Install Nix if needed
-if ! command -v nix &> /dev/null; then
+if ! command -v nix >/dev/null 2>&1; then
     log "Nix not found. Installing..."
-    sh <(curl --proto '=https' --tlsv1.2 -sSf -L https://nixos.org/nix/install)
+    curl --proto '=https' --tlsv1.2 -sSf -L https://nixos.org/nix/install | sh
     
     if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
         . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
