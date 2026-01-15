@@ -3,6 +3,7 @@
   imports = [
     ./fish.nix
     ./git.nix
+    ./gpg.nix
     ./helix.nix
     ./tmux.nix
     ./tools.nix
