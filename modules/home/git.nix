@@ -1,7 +1,15 @@
 { pkgs, ... }:
 {
   # 修正警告：将 delta 配置移动到独立模块
-  programs.git.enable = true;
+  programs.git = {
+    enable = true;
+    settings = {
+      user = {
+        name = "GG Chen";
+        email = if pkgs.stdenv.isDarwin then "ggzongchen@gmail.com" else "guangzong@google.com";
+      };
+    };
+  };
   programs.delta = {
     enable = true;
     enableGitIntegration = true;
