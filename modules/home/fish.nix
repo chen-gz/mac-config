@@ -1,9 +1,17 @@
 { pkgs, ... }:
 {
+  programs.eza = {
+    enable = true;
+    icons = "auto";
+    git = true;
+  };
+
   programs.fish = {
     enable = true;
 
     shellAliases = {
+      ls = "eza --icons --git";
+      # lst = "eza --icons --git --tree";
       cat = "bat";
       g = "git";
       vi = "hx";
@@ -12,6 +20,8 @@
       blog = "cd ~/Documents/chen-gz.github.io";
       nixconf = "cd ~/.config/nix-darwin && hx flake.nix";
       nsw = "just --justfile ~/.config/nix-darwin/justfile deploy";
+      dr = "devbox run";
+      ds = "devbox shell";
     };
 
     interactiveShellInit = ''
