@@ -57,6 +57,17 @@ else
     # Optional: git -C "$TARGET_DIR" pull
 fi
 
+# macOS pre-flight: ensure /etc/synthetic.conf exists (some activations assume it exists)
+if [ "$OS" = "Darwin" ]; then
+    if [ ! -e /etc/synthetic.conf ]; then
+        log "/etc/synthetic.conf not found — creating empty file with correct ownership/permissions"
+        # Use sudo since /etc is root-owned; tolerate failures to avoid breaking unattended runs
+        sudo touch /etc/synthetic.conf
+        sudo chown root:wheel /etc/synthetic.conf || true
+        sudo chmod 644 /etc/synthetic.conf || true
+    fi
+fi
+
 # 4. Build and Switch
 log "Building and switching configuration for ${FLAKE_NAME}..."
 
