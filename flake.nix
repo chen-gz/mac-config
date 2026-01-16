@@ -48,7 +48,7 @@
           {
             nix-homebrew = {
               enable = true;
-              enableRosetta = true;
+              enableRosetta = false;
               user = "${username}";
               autoMigrate = true;
               taps = {
