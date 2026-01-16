@@ -56,6 +56,7 @@
 
   system.defaults = {
     dock.autohide = true;
+    dock.orientation = "left";
     finder.AppleShowAllExtensions = true;
 
     # iTerm2 配置重定向
