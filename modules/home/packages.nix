@@ -8,6 +8,10 @@
       just-lsp
       pay-respects
       ripgrep
+      fd
+      btop
+      yazi
+      tealdeer
     ]
     ++ (if stdenv.isDarwin then [ gemini-cli ] else [ ]);
 }

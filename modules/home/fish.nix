@@ -22,6 +22,9 @@
       nsw = "just --justfile ~/.config/nix-darwin/justfile deploy";
       dr = "devbox run";
       ds = "devbox shell";
+      top = "btop";
+      tldr = "tealdeer";
+      man = "tldr";
     };
 
     interactiveShellInit = ''

@@ -31,6 +31,17 @@
     };
   };
 
+  programs.zoxide = {
+    enable = true;
+    enableFishIntegration = true;
+    options = [ "--cmd cd" ];
+  };
+
+  programs.atuin = {
+    enable = true;
+    enableFishIntegration = true;
+  };
+
   # iTerm2 配置文件管理 (仅 macOS)
   # 这将把仓库里的 plist 文件链接到 ~/.config/iterm2/，即使删除了仓库目录，配置依然在 Nix Store 中
   home.file =
