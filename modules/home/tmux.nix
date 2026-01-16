@@ -24,10 +24,10 @@
 
       # 开启真彩色支持
       set -g default-terminal "screen-256color"
-      set-ga terminal-overrides ",xterm-256color:Tc"
+      # set -ga terminal-overrides ",xterm-256color:Tc"
 
       # 如果你使用的是最新版 tmux，也可以尝试：
-      # set -as terminal-features ",xterm-256color:RGB"
+      set -as terminal-features ",xterm-256color:RGB"
     '';
   };
 }

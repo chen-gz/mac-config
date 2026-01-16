@@ -13,5 +13,9 @@
 
   home.stateVersion = "25.11";
 
+  home.sessionVariables = {
+    TERM = "xterm-256color";
+  };
+
   fonts.fontconfig.enable = true;
 }
