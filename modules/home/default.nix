@@ -11,4 +11,6 @@
   ];
 
   home.stateVersion = "25.11";
+
+  fonts.fontconfig.enable = true;
 }
