@@ -25,7 +25,7 @@
       top = "btop";
       tldr = "tealdeer";
       man = "tldr";
-      gpgrestart = "gpg-connect-agent reloadagent /bye";
+      gpgrestart = "gpg-connect-agent reloadagent /bye && ssh-add -D";
     };
 
     interactiveShellInit = ''
