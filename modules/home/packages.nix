@@ -16,5 +16,8 @@
       tealdeer
       nerd-fonts.jetbrains-mono
     ]
-    ++ (if stdenv.isDarwin then [ gemini-cli ] else [ ]);
+    ++ (if stdenv.isDarwin then [
+      gemini-cli
+      zellij
+    ] else [ ]);
 }

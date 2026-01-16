@@ -60,6 +60,15 @@
   system.defaults = {
     dock.autohide = true;
     dock.orientation = "left";
+    dock.show-recents = false;
+    dock.persistent-apps = [
+      "/System/Applications/Launchpad.app"
+      "/System/Applications/Mail.app"
+      "/Applications/Google Chrome.app"
+      "/System/Applications/Calendar.app"
+      "/Applications/iTerm.app"
+      "/System/Applications/Photos.app"
+    ];
     finder.AppleShowAllExtensions = true;
 
     # iTerm2 配置重定向
