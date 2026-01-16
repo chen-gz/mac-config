@@ -25,6 +25,7 @@
       top = "btop";
       tldr = "tealdeer";
       man = "tldr";
+      gpgrestart = "gpg-connect-agent reloadagent /bye";
     };
 
     interactiveShellInit = ''
