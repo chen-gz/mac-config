@@ -54,6 +54,9 @@
   };
   # users.users."${username}".home = "/Users/${username}";
 
+  system.keyboard.enableKeyMapping = true;
+  system.keyboard.swapLeftCtrlAndFn = true;
+
   system.defaults = {
     dock.autohide = true;
     dock.orientation = "left";

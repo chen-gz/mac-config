@@ -8,6 +8,7 @@
     ./tmux.nix
     ./tools.nix
     ./packages.nix
+    ./ssh.nix
   ];
 
   home.stateVersion = "25.11";
