@@ -6,7 +6,7 @@
     settings = {
       user = {
         name = "GG Chen";
-        email = if pkgs.stdenv.isDarwin then "ggzongchen@gmail.com" else "guangzong@google.com";
+        email = "guangzong@google.com";
       };
       core = {
         sshCommand = "/usr/bin/ssh";
