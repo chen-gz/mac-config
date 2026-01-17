@@ -15,14 +15,9 @@
       yazi
       tealdeer
       nerd-fonts.jetbrains-mono
+      zellij
     ]
-    ++ (
-      if stdenv.isDarwin then
-        [
-          gemini-cli
-          zellij
-        ]
-      else
-        [ ]
-    );
+    ++ (if stdenv.isDarwin then [
+      gemini-cli
+    ] else [ ]);
 }
