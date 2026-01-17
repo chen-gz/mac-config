@@ -9,6 +9,7 @@
     
     matchBlocks."*" = {
       addKeysToAgent = "yes";
+      identityFile = [ "~/.ssh/id_ed25519_sk" ];
       extraOptions = {
         ControlMaster = "auto";
         ControlPersist = "24h";
