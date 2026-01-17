@@ -15,6 +15,7 @@
       "iina"
       "iterm2"
       "google-drive"
+      "wechat"
     ];
     masApps = {
       "Telegram Lite" = 946399090;
