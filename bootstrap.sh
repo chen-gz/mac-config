@@ -46,7 +46,7 @@ fi
 # 1. Install Nix if needed
 if ! command -v nix >/dev/null 2>&1; then
     log "Nix not found. Installing..."
-    curl --proto '=https' --tlsv1.2 -sSf -L https://nixos.org/nix/install | sh
+    curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
     
     # Source nix profile to make it available in current shell
     if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then

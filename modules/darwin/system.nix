@@ -8,13 +8,7 @@
     fish
     git
   ];
-
-  nix.settings = {
-    experimental-features = "nix-command flakes";
-    # Optimize for nix-direnv
-    keep-outputs = true;
-    keep-derivations = true;
-  };
+  nix.enable = false;
 
   system.primaryUser = username;
 
@@ -53,9 +47,6 @@
     shell = pkgs.fish;
   };
   # users.users."${username}".home = "/Users/${username}";
-
-  system.keyboard.enableKeyMapping = true;
-  system.keyboard.swapLeftCtrlAndFn = true;
 
   system.defaults = {
     dock.autohide = true;
