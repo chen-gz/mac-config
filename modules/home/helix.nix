@@ -5,6 +5,12 @@
     settings = {
       theme = "catppuccin_frappe";
       editor = {
+        text-width = 120;
+        soft-wrap = {
+          enable = true;
+          wrap-at-text-width = true;
+        };
+        rulers = [ 120 ];
         true-color = true;
         line-number = "relative";
         bufferline = "multiple";
@@ -29,6 +35,12 @@
       };
       keys.normal = {
         q = ":quit";
+      };
+      keys.insert = {
+        j = {
+          j = "normal_mode";
+          k = "normal_mode";
+        };
       };
     };
     languages = {

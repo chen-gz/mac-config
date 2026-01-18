@@ -19,7 +19,7 @@
       lg = "lazygit";
       blog = "cd ~/Documents/chen-gz.github.io";
       cf = "cd ~/Documents/cf_template && hx main.cpp";
-      nixconf = "cd ~/.config/nix-darwin && hx flake.nix";
+      nixconf = "cd ~/.config/nix-darwin";
       nsw = "just --justfile ~/.config/nix-darwin/justfile deploy";
       dr = "devbox run";
       ds = "devbox shell";

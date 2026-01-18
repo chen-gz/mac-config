@@ -15,6 +15,8 @@
 
   home.sessionVariables = {
     TERM = "xterm-256color";
+    EDITOR = "hx";
+    VISUAL = "hx";
   };
 
   fonts.fontconfig.enable = true;
