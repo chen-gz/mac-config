@@ -11,6 +11,9 @@
       core = {
         sshCommand = "/usr/bin/ssh";
       };
+      commit = {
+        signoff = true;
+      };
     };
   };
   programs.delta = {
@@ -32,12 +35,17 @@
         showIcons = true;
         skipDiscardChangeWarning = true;
       };
-      git.pagers = [
-        {
-          colorArg = "always";
-          pager = "delta --dark --paging=never";
-        }
-      ];
+      git = {
+        commit = {
+          signOff = true;
+        };
+        pagers = [
+          {
+            colorArg = "always";
+            pager = "delta --dark --paging=never";
+          }
+        ];
+      };
     };
   };
 }
