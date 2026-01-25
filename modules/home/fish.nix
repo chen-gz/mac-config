@@ -26,6 +26,7 @@
       top = "btop";
       tldr = "tealdeer";
       man = "tldr";
+      hexdump = "hexyl";
       gpgrestart = "gpg-connect-agent reloadagent /bye && ssh-add -D";
     };
 

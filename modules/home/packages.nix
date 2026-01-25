@@ -14,6 +14,7 @@
       btop
       yazi
       tealdeer
+      hexyl
       nerd-fonts.jetbrains-mono
       zellij
     ]
