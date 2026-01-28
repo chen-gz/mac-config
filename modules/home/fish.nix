@@ -25,6 +25,7 @@
       ds = "devbox shell";
       top = "btop";
       tldr = "tealdeer";
+      jq = "jql";
       man = "tldr";
       hexdump = "hexyl";
       gpgrestart = "gpg-connect-agent reloadagent /bye && ssh-add -D";

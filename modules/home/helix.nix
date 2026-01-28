@@ -19,9 +19,14 @@
         whitespace = {
           render = "all";
           characters = {
+            # space = "·";
             space = " ";
+            nbsp = "⍽";
+            nnbsp = "␣";
             tab = "→";
+            # newline = "⏎";
             newline = " ";
+            tabpad = "·";
           };
         };
         indent-guides.render = true;

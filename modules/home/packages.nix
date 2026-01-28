@@ -15,6 +15,7 @@
       yazi
       tealdeer
       hexyl
+      jql
       nerd-fonts.jetbrains-mono
       zellij
     ]
