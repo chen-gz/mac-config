@@ -17,6 +17,7 @@
       "google-drive"
       "wechat"
       "lm-studio"
+      "marta"
     ];
     masApps = {
       "Telegram Lite" = 946399090;
