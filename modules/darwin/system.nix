@@ -49,7 +49,7 @@
   # users.users."${username}".home = "/Users/${username}";
 
   system.defaults = {
-    dock.autohide = true;
+    dock.autohide = false;
     dock.orientation = "left";
     dock.show-recents = false;
     dock.persistent-apps = [

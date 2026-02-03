@@ -16,9 +16,11 @@
       "iterm2"
       "google-drive"
       "wechat"
+      "lm-studio"
     ];
     masApps = {
       "Telegram Lite" = 946399090;
+      "Tailscale" = 1475387142;
     };
   };
 }
