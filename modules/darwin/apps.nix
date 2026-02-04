@@ -18,6 +18,8 @@
       "wechat"
       "lm-studio"
       "marta"
+      "alacritty"
+      "ghostty"
     ];
     masApps = {
       "Telegram Lite" = 946399090;

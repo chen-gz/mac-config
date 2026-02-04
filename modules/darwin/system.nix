@@ -58,6 +58,8 @@
       "/Applications/Google Chrome.app"
       "/System/Applications/Calendar.app"
       "/Applications/iTerm.app"
+      "/Applications/Marta.app"
+      "/Applications/Ghostty.app"
       "/System/Applications/Photos.app"
     ];
     finder.AppleShowAllExtensions = true;
