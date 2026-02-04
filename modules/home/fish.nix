@@ -30,6 +30,7 @@
       man = "tldr";
       hexdump = "hexyl";
       gpgrestart = "gpg-connect-agent reloadagent /bye && ssh-add -D";
+      clean = "atuin search --exclude-exit=0 --delete";
     };
 
     interactiveShellInit = ''
