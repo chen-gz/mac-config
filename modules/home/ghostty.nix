@@ -1,11 +1,7 @@
 {
-  xdg.configFile."ghostty/config.toml".text = ''
-    [font]
-    face = "JetBrainsMono Nerd Font"
-    size = 16
-
-    [padding]
-    x = 10
-    y = 10
+  xdg.configFile."ghostty/config".text = ''
+    background-opacity = 0.9
+    window-padding-x = 10
+    window-padding-y = 10
   '';
 }
