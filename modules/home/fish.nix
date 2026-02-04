@@ -14,6 +14,7 @@
       # lst = "eza --icons --git --tree";
       cat = "bat";
       gc = "gemini --yolo";
+      G = "gemini";
       vi = "hx";
       vim = "hx";
       lg = "lazygit";
