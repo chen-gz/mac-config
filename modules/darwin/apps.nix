@@ -21,6 +21,7 @@
       "alacritty"
       "ghostty"
       "db-browser-for-sqlite"
+      "stats"
     ];
     masApps = {
       "Telegram Lite" = 946399090;
