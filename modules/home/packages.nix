@@ -18,6 +18,7 @@
       jql
       nerd-fonts.jetbrains-mono
       zellij
+      zig
     ]
     ++ (if stdenv.isDarwin then [
       gemini-cli
