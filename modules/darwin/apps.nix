@@ -22,6 +22,9 @@
       "ghostty"
       "db-browser-for-sqlite"
       "stats"
+      "monitorcontrol"
+      "fluor"
+      "jordanbaird-ice"
     ];
     masApps = {
       "Telegram Lite" = 946399090;
