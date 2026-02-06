@@ -16,6 +16,8 @@
       tealdeer
       hexyl
       jql
+      duf
+      dust
       nerd-fonts.jetbrains-mono
       zellij
       zig
