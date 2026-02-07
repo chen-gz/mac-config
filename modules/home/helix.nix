@@ -3,7 +3,7 @@
   programs.helix = {
     enable = true;
     settings = {
-      theme = "catppuccin_frappe";
+      theme = "catppuccin_frappe_transparent";
       editor = {
         text-width = 120;
         soft-wrap = {
@@ -69,6 +69,12 @@
         nixd = {
           command = "${pkgs.nixd}/bin/nixd";
         };
+      };
+    };
+    themes = {
+      catppuccin_frappe_transparent = {
+        "inherits" = "catppuccin_frappe";
+        "ui.background" = { };
       };
     };
   };
