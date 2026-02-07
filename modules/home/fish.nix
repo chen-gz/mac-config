@@ -21,7 +21,12 @@
       blog = "cd ~/Documents/chen-gz.github.io";
       cf = "cd ~/Documents/cf_template && hx main.cpp";
       nixconf = "cd ~/.config/nix-darwin";
-      nsw = "just --justfile ~/.config/nix-darwin/justfile deploy";
+      nsw = "~/.config/nix-darwin/bootstrap.sh deploy";
+
+      # Bootstrap script commands
+      deploy = "~/.config/nix-darwin/bootstrap.sh deploy";
+      update = "~/.config/nix-darwin/bootstrap.sh update";
+
       dr = "devbox run";
       ds = "devbox shell";
       top = "btop";
