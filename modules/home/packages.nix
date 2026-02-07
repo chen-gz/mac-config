@@ -13,7 +13,6 @@
       fd
       btop
       yazi
-      tealdeer
       hexyl
       jql
       duf
