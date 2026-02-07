@@ -25,7 +25,6 @@
       dr = "devbox run";
       ds = "devbox shell";
       top = "btop";
-      tldr = "tealdeer";
       jq = "jql";
       df = "duf";
       du = "dust";
