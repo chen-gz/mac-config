@@ -11,7 +11,6 @@
       addKeysToAgent = "yes";
       identityFile = [
         "~/.ssh/id_ed25519_sk"
-        "~/.ssh/id_ed25519_sk_rk_ggzongchen@gmail.com"
       ];
       extraOptions = {
         ControlMaster = "auto";
