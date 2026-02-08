@@ -105,7 +105,7 @@ deploy() {
         
         echo "🍎 Detected macOS. Deploying nix-darwin configuration (${FLAKE_NAME})..."
         # Re-using the exact command from justfile/bootstrap but ensuring we point to TARGET_DIR
-        sudo -H nix run nix-darwin --extra-experimental-features "nix-command flakes" -- switch --flake "${TARGET_DIR}#${FLAKE_NAME}"
+        sudo darwin-rebuild switch --flake "${TARGET_DIR}#${FLAKE_NAME}"
     else
         echo "🐧 Detected Linux. Deploying Home Manager configuration (${FLAKE_NAME})..."
         nix run github:nix-community/home-manager --extra-experimental-features "nix-command flakes" -- switch -b backup --impure --flake "${TARGET_DIR}#${FLAKE_NAME}"
