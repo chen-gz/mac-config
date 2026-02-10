@@ -20,6 +20,7 @@
       "marta"
       "alacritty"
       "ghostty"
+      "zed"
       "db-browser-for-sqlite"
       "stats"
       "monitorcontrol"

@@ -39,6 +39,17 @@
       clean = "atuin search --exclude-exit=0 \"\" --delete";
     };
 
+    functions = {
+      y = ''
+        set tmp (mktemp -t "yazi-cwd.XXXXXX")
+        yazi $argv --cwd-file="$tmp"
+        if set cwd (command cat -- "$tmp"); and [ -n "$cwd" ]; and [ "$cwd" != "$PWD" ]
+          builtin cd -- "$cwd"
+        end
+        rm -f -- "$tmp"
+      '';
+    };
+
     interactiveShellInit = ''
       set -g fish_greeting ""
       set -g fish_key_bindings fish_default_key_bindings
