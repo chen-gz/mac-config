@@ -68,29 +68,10 @@
 
       set -x GPG_TTY (tty)
       if test (uname) = "Darwin"
-          if test (count ~/.ssh/id_ed25519_sk*) -eq 0
-              # Try to get resident keys from security key if missing
-              if type -q ssh-keygen
-                  mkdir -p ~/.ssh
-                  pushd ~/.ssh >/dev/null
-                  # ssh-keygen -K downloads resident keys (FIDO2)
-                  ssh-keygen -K >/dev/null 2>&1
-                  popd >/dev/null
-              end
-          end
 
-          if test (count ~/.ssh/id_ed25519_sk*) -gt 0
-              # Found SSH Security Key.
-              # Ensure we aren't using GPG agent if it was inherited/set previously.
-              if string match -q "*gpg*" "$SSH_AUTH_SOCK"
-                  set -e SSH_AUTH_SOCK
-              end
-              # echo "🔑 SSH: Using Physical Security Key (System Agent)"
-          else 
-              set -x SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)
-              gpg-connect-agent updatestartuptty /bye >/dev/null
-              # echo "🔒 SSH: Fallback to GPG Agent"
-          end
+          set -x SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)
+          gpg-connect-agent updatestartuptty /bye >/dev/null
+          # echo "🔒 SSH: Fallback to GPG Agent"
       end
 
       pay-respects setup --shell fish | source
