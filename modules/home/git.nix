@@ -5,7 +5,7 @@
     enable = true;
     settings = {
       user = {
-        name = "GG Chen";
+        name = "Guangzong Chen";
         email = "guangzong@google.com";
       };
       core = {
