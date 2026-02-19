@@ -14,6 +14,9 @@
       commit = {
         signoff = true;
       };
+      color = {
+        ui = "auto";
+      };
     };
   };
   programs.delta = {
