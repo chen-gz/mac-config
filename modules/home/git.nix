@@ -7,12 +7,17 @@
       user = {
         name = "Guangzong Chen";
         email = "guangzong@google.com";
+        signingkey = "20AE4BA8FF696FB5E21AE9D0636538D58AF1006D";
       };
       core = {
         sshCommand = "/usr/bin/ssh";
       };
       commit = {
         signoff = true;
+        gpgsign = true;
+      };
+      pull = {
+        rebase = true;
       };
       color = {
         ui = "auto";
