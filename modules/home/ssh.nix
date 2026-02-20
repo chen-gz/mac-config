@@ -5,5 +5,12 @@
 
   programs.ssh = {
     enable = true;
+    matchBlocks."*" = {
+      addKeysToAgent = "yes";
+      extraOptions = {
+        ControlMaster = "auto";
+        ControlPersist = "24h";
+      };
+    };
   };
 }
