@@ -13,7 +13,6 @@
       "raycast"
       "discord"
       "iina"
-      "iterm2"
       "google-drive"
       "wechat"
       "lm-studio"
