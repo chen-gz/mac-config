@@ -10,6 +10,10 @@
     brews = [
       "mas"
     ]; # Mac App Store CLI
+    taps = [
+      "homebrew/cask"
+      # "homebrew/cask-fonts" # 如果你还装了字体
+    ];
     casks = [
       "google-chrome"
       "raycast"
