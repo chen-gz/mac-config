@@ -22,7 +22,6 @@
       "google-drive"
       "wechat"
       "lm-studio"
-      "marta"
       "ghostty"
       "zed"
       "db-browser-for-sqlite"

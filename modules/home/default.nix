@@ -7,7 +7,6 @@
     ./git.nix
     ./gpg.nix
     ./helix.nix
-    ./marta.nix
     ./tmux.nix
     ./tools.nix
     ./packages.nix

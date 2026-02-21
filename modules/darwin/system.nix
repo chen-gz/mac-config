@@ -57,7 +57,6 @@
       "/System/Applications/Mail.app"
       "/Applications/Google Chrome.app"
       "/System/Applications/Calendar.app"
-      "/Applications/Marta.app"
       "/Applications/Ghostty.app"
       "/System/Applications/Photos.app"
     ];
