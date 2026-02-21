@@ -12,8 +12,10 @@
     home.file.".gnupg/gpg-agent.conf".text = ''
       enable-ssh-support
       pinentry-program ${pkgs.pinentry_mac}/bin/pinentry-mac
-      default-cache-ttl 86400
-      max-cache-ttl 86400
+      default-cache-ttl 34560000
+      max-cache-ttl 34560000
+      default-cache-ttl-ssh 34560000
+      max-cache-ttl-ssh 34560000
     '';
 
     home.activation = {
