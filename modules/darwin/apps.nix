@@ -23,7 +23,6 @@
       "wechat"
       "lm-studio"
       "marta"
-      "alacritty"
       "ghostty"
       "zed"
       "db-browser-for-sqlite"
