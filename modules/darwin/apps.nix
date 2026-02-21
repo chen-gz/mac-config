@@ -9,7 +9,6 @@
 
     brews = [
       "mas"
-      "neverest"
     ]; # Mac App Store CLI
     casks = [
       "google-chrome"

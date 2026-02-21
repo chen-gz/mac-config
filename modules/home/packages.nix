@@ -19,13 +19,12 @@
       dust
       nerd-fonts.jetbrains-mono
       zellij
+      zig
     ]
     ++ (
       if stdenv.isDarwin then
         [
           gemini-cli
-          himalaya
-          zig
         ]
       else
         [ ]
