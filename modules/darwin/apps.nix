@@ -7,7 +7,10 @@
     onActivation.autoUpdate = true;
     onActivation.upgrade = true;
 
-    brews = [ "mas" ]; # Mac App Store CLI
+    brews = [
+      "mas"
+      "neverest"
+    ]; # Mac App Store CLI
     casks = [
       "google-chrome"
       "raycast"
