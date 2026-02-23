@@ -14,7 +14,7 @@
       };
       commit = {
         signoff = true;
-        gpgsign = true;
+        gpgsign = false;
       };
       pull = {
         rebase = true;
