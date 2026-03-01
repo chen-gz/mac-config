@@ -15,7 +15,9 @@
       # "homebrew/cask-fonts" # 如果你还装了字体
     ];
     casks = [
+      "antigravity"
       "google-chrome"
+      "sublime-merge"
       "raycast"
       "discord"
       "iina"
