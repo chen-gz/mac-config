@@ -15,6 +15,7 @@
       # "homebrew/cask-fonts" # 如果你还装了字体
     ];
     casks = [
+      "steam"
       "antigravity"
       "google-chrome"
       "sublime-merge"

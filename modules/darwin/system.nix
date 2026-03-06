@@ -61,6 +61,7 @@
       "/System/Applications/Photos.app"
     ];
     finder.AppleShowAllExtensions = true;
+    NSGlobalDomain.ApplePressAndHoldEnabled = false;
   };
 
   system.stateVersion = 5;
