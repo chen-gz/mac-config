@@ -50,7 +50,7 @@
 
   system.defaults = {
     dock.autohide = false;
-    dock.orientation = "left";
+    dock.orientation = "bottom";
     dock.show-recents = false;
     dock.persistent-apps = [
       "/System/Applications/Launchpad.app"
