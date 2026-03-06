@@ -68,10 +68,19 @@
 
       set -x GPG_TTY (tty)
       if test (uname) = "Darwin"
-
-          set -x SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)
-          gpg-connect-agent updatestartuptty /bye >/dev/null
-          # echo "🔒 SSH: Fallback to GPG Agent"
+          if test -n "$SSH_CONNECTION" -a "$USER" = "connie"
+              # We are on the remote host (connie@10.0.0.107) via SSH
+              set -x SSH_AUTH_SOCK ~/.gnupg/S.gpg-agent.ssh.forward
+              # Ensure the parent directory exists (though it should)
+              # and kill local agent if it exists to allow forward to work
+              if status is-interactive
+                  gpgconf --kill gpg-agent >/dev/null 2>&1
+              end
+          else
+              # Local Mac or other Darwin
+              set -x SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)
+              gpg-connect-agent updatestartuptty /bye >/dev/null
+          end
       end
 
       pay-respects setup --shell fish | source

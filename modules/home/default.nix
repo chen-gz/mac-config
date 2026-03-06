@@ -6,6 +6,7 @@
     ./ghostty.nix
     ./git.nix
     ./gpg.nix
+    ./ssh.nix
     ./helix.nix
     ./tmux.nix
     ./tools.nix
