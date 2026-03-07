@@ -16,7 +16,6 @@
     ];
     casks = [
       "steam"
-      "antigravity"
       "google-chrome"
       "sublime-merge"
       "raycast"
