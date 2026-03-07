@@ -1,4 +1,4 @@
-{ pkgs, username, ... }:
+{ pkgs, lib, username, ... }:
 
 {
   nixpkgs.config.allowUnfree = true;
@@ -50,7 +50,7 @@
 
   system.defaults = {
     dock.autohide = false;
-    dock.orientation = "bottom";
+    dock.orientation = lib.mkDefault "bottom";
     dock.show-recents = false;
     dock.persistent-apps = [
       "/System/Applications/Launchpad.app"

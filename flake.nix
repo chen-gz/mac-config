@@ -40,12 +40,13 @@
           specialArgs = {
             inherit inputs;
             username = "guangzong";
+            lib = nixpkgs.lib.extend (l: _: {
+              hm = home-manager.lib.hm;
+            });
           };
           modules = [
             ./modules/darwin/common.nix
-            {
-              home-manager.users.guangzong = import ./guangzong.nix;
-            }
+            ./guangzong.nix
           ];
         };
 
@@ -68,11 +69,12 @@
       homeConfigurations."gg-linux" =
         let
           pkgs = nixpkgs.legacyPackages.x86_64-linux;
+          guangzongConfig = import ./guangzong.nix;
         in
         home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           modules = [
-            ./guangzong.nix
+            (args: (guangzongConfig args).home-manager.users.guangzong)
             {
               home = {
                 username = "guangzong";

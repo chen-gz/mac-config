@@ -1,37 +1,42 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, config, ... }:
 {
-  imports = [
-    ./modules/home/common.nix
-  ];
+  # --- 系统层配置 (仅对 macOS 生效) ---
+  # 只有在 nix-darwin 环境下才定义 system.defaults
+  system.defaults.dock.orientation = "left";
 
-  programs.git.settings.user = {
-    name = "Guangzong Chen";
-    email = "guangzong@google.com";
-    signingkey = "20AE4BA8FF696FB5E21AE9D0636538D58AF1006D";
-  };
+  # --- 用户层配置 (Home Manager) ---
+  home-manager.users.guangzong = {
+    imports = [
+      ./modules/home/common.nix
+    ];
 
-  programs.fish.shellAliases = {
-    blog = "cd ~/Documents/chen-gz.github.io";
-    cf = "cd ~/Documents/cf_template && hx main.cpp";
-  };
+    programs.git.settings.user = {
+      name = "Guangzong Chen";
+      email = "guangzong@google.com";
+      signingkey = "20AE4BA8FF696FB5E21AE9D0636538D58AF1006D";
+    };
 
-  # SSH specific to guangzong
-  programs.ssh.matchBlocks = lib.mkIf pkgs.stdenv.isDarwin {
-    "10.0.0.107" = {
-      hostname = "10.0.0.107";
-      user = "connie";
-      forwardAgent = true;
-      extraOptions = {
-        RemoteForward = "/Users/connie/.gnupg/S.gpg-agent /Users/guangzong/.gnupg/S.gpg-agent.extra
-        RemoteForward /Users/connie/.gnupg/S.gpg-agent.ssh.forward /Users/guangzong/.gnupg/S.gpg-agent.ssh";
-        StreamLocalBindUnlink = "yes";
+    programs.fish.shellAliases = {
+      blog = "cd ~/Documents/chen-gz.github.io";
+      cf = "cd ~/Documents/cf_template && hx main.cpp";
+    };
+
+    # SSH specific to guangzong
+    programs.ssh.matchBlocks = lib.mkIf pkgs.stdenv.isDarwin {
+      "10.0.0.107" = {
+        hostname = "10.0.0.107";
+        user = "connie";
+        forwardAgent = true;
+        extraOptions = {
+          RemoteForward = "/Users/connie/.gnupg/S.gpg-agent /Users/guangzong/.gnupg/S.gpg-agent.extra
+          RemoteForward /Users/connie/.gnupg/S.gpg-agent.ssh.forward /Users/guangzong/.gnupg/S.gpg-agent.ssh";
+          StreamLocalBindUnlink = "yes";
+        };
       };
     };
-  };
 
-  # GPG activation specific to guangzong
-  config = lib.mkIf pkgs.stdenv.isDarwin {
-    home.activation = {
+    # GPG activation specific to guangzong
+    home.activation = lib.mkIf pkgs.stdenv.isDarwin {
       importGpgKeys = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         GPG_KEY_ID="20AE4BA8FF696FB5E21AE9D0636538D58AF1006D"
         $DRY_RUN_CMD ${pkgs.gnupg}/bin/gpg --list-keys $GPG_KEY_ID >/dev/null 2>&1 || 
