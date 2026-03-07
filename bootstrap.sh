@@ -23,11 +23,6 @@ success() {
 # 0. Detect OS and set variables
 detect_os() {
     OS="$(uname -s)"
-    if [ "$OS" = "Darwin" ]; then
-        FLAKE_NAME="mac-mini"
-    else
-        FLAKE_NAME="linux-server"
-    fi
 }
 
 # 1. Install Nix
@@ -92,6 +87,16 @@ ensure_config() {
 # 3. Operations
 deploy() {
     detect_os
+    FLAKE_NAME="$1"
+    shift # Remove FLAKE_NAME from arguments
+
+    if [ -z "$FLAKE_NAME" ]; then
+        echo "Error: Configuration name is required."
+        echo "Usage: $0 deploy <config-name>"
+        list_configs
+        exit 1
+    fi
+
     log "Building and switching configuration for ${FLAKE_NAME}..."
     
     # macOS pre-flight: ensure /etc/synthetic.conf exists
@@ -105,10 +110,15 @@ deploy() {
         
         echo "🍎 Detected macOS. Deploying nix-darwin configuration (${FLAKE_NAME})..."
         # Re-using the exact command from justfile/bootstrap but ensuring we point to TARGET_DIR
-        sudo nix run nix-darwin -- switch --flake "${TARGET_DIR}#${FLAKE_NAME}"
+        # Use sudo only if not using target-host (remote deployment handles its own auth)
+        if [[ "$*" == *"--target-host"* ]]; then
+            nix run nix-darwin -- switch --flake "${TARGET_DIR}#${FLAKE_NAME}" "$@"
+        else
+            sudo nix run nix-darwin -- switch --flake "${TARGET_DIR}#${FLAKE_NAME}" "$@"
+        fi
     else
         echo "🐧 Detected Linux. Deploying Home Manager configuration (${FLAKE_NAME})..."
-        nix run github:nix-community/home-manager --extra-experimental-features "nix-command flakes" -- switch -b backup --impure --flake "${TARGET_DIR}#${FLAKE_NAME}"
+        nix run github:nix-community/home-manager --extra-experimental-features "nix-command flakes" -- switch -b backup --impure --flake "${TARGET_DIR}#${FLAKE_NAME}" "$@"
     fi
 }
 
@@ -132,33 +142,44 @@ clean() {
     nix-collect-garbage -d
 }
 
+list_configs() {
+    log "Available configurations in flake.nix:"
+    grep -E '"[^"]+" =' "${TARGET_DIR}/flake.nix" | grep -v 'formatter' | sed -E 's/.*"([^"]+)".*/\1/' | sed 's/^/  - /'
+}
+
 help() {
     echo "Usage: $0 [command]"
     echo ""
     echo "Commands:"
-    echo "  (no args)  Full bootstrap: Install Nix, Clone Config, Deploy"
-    echo "  deploy     Deploy the configuration (Switch)"
-    echo "  update     Update flake.lock inputs"
-    echo "  check      Verify the flake"
-    echo "  format     Format Nix files"
-    echo "  clean      Garbage collect old generations"
+    echo "  (no args)          Show this help"
+    echo "  deploy <config>    Deploy the configuration (Switch)"
+    echo "  update             Update flake.lock inputs"
+    echo "  check              Verify the flake"
+    echo "  format             Format Nix files"
+    echo "  clean              Garbage collect old generations"
+    echo ""
+    list_configs
 }
 
 # Main Dispatch
 if [ $# -eq 0 ]; then
-    # Default behavior: Bootstrap
-    install_nix
-    ensure_config
-    deploy
-    success "Setup complete! Please restart your shell."
+    help
 else
     case "$1" in
-        deploy) deploy ;; 
+        deploy) shift; deploy "$@" ;; 
         update) update ;; 
         check) check ;; 
         format) format ;; 
         clean) clean ;; 
         help|--help|-h) help ;; 
-        *) echo "Unknown command: $1"; help; exit 1 ;; 
+        *)
+            # If the first argument is not a command, assume it is a config name for full bootstrap
+            FLAKE_NAME="$1"
+            shift # Remaining arguments if any
+            install_nix
+            ensure_config
+            deploy "$FLAKE_NAME" "$@"
+            success "Setup complete! Please restart your shell."
+            ;;
     esac
 fi

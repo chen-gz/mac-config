@@ -18,8 +18,6 @@
       vi = "hx";
       vim = "hx";
       lg = "lazygit";
-      blog = "cd ~/Documents/chen-gz.github.io";
-      cf = "cd ~/Documents/cf_template && hx main.cpp";
       nixconf = "cd ~/.config/nix-darwin";
       nsw = "~/.config/nix-darwin/bootstrap.sh deploy";
 

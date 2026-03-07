@@ -1,7 +1,6 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 {
   imports = [
-    ./alacritty.nix
     ./fish.nix
     ./ghostty.nix
     ./git.nix
@@ -21,5 +20,5 @@
     VISUAL = "hx";
   };
 
-  fonts.fontconfig.enable = true;
+  fonts.fontconfig.enable = pkgs.stdenv.isDarwin;
 }
