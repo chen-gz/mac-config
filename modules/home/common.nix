@@ -1,7 +1,6 @@
 { pkgs, lib, ... }:
 {
   imports = [
-    ./alacritty.nix
     ./fish.nix
     ./ghostty.nix
     ./git.nix
