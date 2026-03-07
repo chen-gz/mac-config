@@ -9,6 +9,10 @@
       ./modules/home/common.nix
     ];
 
+    programs.fish.shellAliases = {
+      connie_update = "~/.config/nix-darwin/bootstrap.sh update && ~/.config/nix-darwin/bootstrap.sh deploy connie-mac";
+    };
+
     programs.git.settings = {
       user = {
         name = "Connie";
