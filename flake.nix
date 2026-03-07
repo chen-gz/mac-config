@@ -28,64 +28,55 @@
       ...
     }:
     let
-      username = "guangzong";
-      hostname = "mac-mini";
       system = "aarch64-darwin";
     in
     {
       # 配置格式化工具
       formatter.${system} = nixpkgs.legacyPackages.${system}.nixfmt;
 
-      darwinConfigurations."${hostname}" = nix-darwin.lib.darwinSystem {
-        inherit system;
-        specialArgs = { inherit inputs username; };
-        modules = [
-          # --- 1. 系统级别配置 ---
-          ./modules/darwin/system.nix
+      darwinConfigurations = {
+        "gg-mac" = nix-darwin.lib.darwinSystem {
+          inherit system;
+          specialArgs = {
+            inherit inputs;
+            username = "guangzong";
+          };
+          modules = [
+            ./modules/darwin/common.nix
+            {
+              home-manager.users.guangzong = import ./guangzong.nix;
+            }
+          ];
+        };
 
-          # --- 2. Nix-Homebrew 配置 ---
-          nix-homebrew.darwinModules.nix-homebrew
-          {
-            nix-homebrew = {
-              enable = true;
-              enableRosetta = false;
-              user = "${username}";
-              autoMigrate = true;
-              taps = {
-                "homebrew/homebrew-core" = inputs.homebrew-core;
-                "homebrew/homebrew-cask" = inputs.homebrew-cask;
-              };
-              mutableTaps = false;
-            };
-          }
-
-          ./modules/darwin/apps.nix                  # --- 3. Homebrew 软件包管理--
-
-          home-manager.darwinModules.home-manager    # --- 4. Home Manager 配置 ---
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.backupFileExtension = "backup";
-            home-manager.users."${username}" = import ./modules/home/default.nix;
-          }
-        ];
+        "connie-mac" = nix-darwin.lib.darwinSystem {
+          inherit system;
+          specialArgs = {
+            inherit inputs;
+            username = "connie";
+          };
+          modules = [
+            ./modules/darwin/common.nix
+            {
+              home-manager.users.connie = import ./connie.nix;
+            }
+          ];
+        };
       };
 
-      # --- 5. Ubuntu / Linux (x86_64) 独立 Home Manager 配置 ---
-      # 这一块专门用于在 Ubuntu (x86_64) 上通过 Home Manager 独立管理用户配置
-      # 使用命令: home-manager switch --flake .#linux-server
-      homeConfigurations."linux-server" =
+      # --- Linux Home Manager 配置 ---
+      homeConfigurations."gg-linux" =
         let
           pkgs = nixpkgs.legacyPackages.x86_64-linux;
         in
         home-manager.lib.homeManagerConfiguration {
-          inherit pkgs; # 这里的架构改为 x86_64-linux 以适配 Ubuntu
+          inherit pkgs;
           modules = [
-            ./modules/home/default.nix
+            ./guangzong.nix
             {
               home = {
-                inherit username;
-                homeDirectory = let envHome = builtins.getEnv "HOME"; in if envHome != "" then envHome else "/home/${username}";
+                username = "guangzong";
+                homeDirectory = let envHome = builtins.getEnv "HOME"; in if envHome != "" then envHome else "/home/guangzong";
               };
             }
           ];

@@ -1,9 +1,7 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 {
   imports = [
-    ./alacritty.nix
     ./fish.nix
-    ./ghostty.nix
     ./git.nix
     ./gpg.nix
     ./ssh.nix
@@ -11,7 +9,10 @@
     ./tmux.nix
     ./tools.nix
     ./packages.nix
-  ];
+  ] ++ (lib.optionals pkgs.stdenv.isDarwin [
+    ./alacritty.nix
+    ./ghostty.nix
+  ]);
 
   home.stateVersion = "25.11";
 
@@ -21,5 +22,5 @@
     VISUAL = "hx";
   };
 
-  fonts.fontconfig.enable = true;
+  fonts.fontconfig.enable = pkgs.stdenv.isDarwin;
 }

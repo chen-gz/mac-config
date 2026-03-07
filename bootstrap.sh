@@ -23,11 +23,6 @@ success() {
 # 0. Detect OS and set variables
 detect_os() {
     OS="$(uname -s)"
-    if [ "$OS" = "Darwin" ]; then
-        FLAKE_NAME="mac-mini"
-    else
-        FLAKE_NAME="linux-server"
-    fi
 }
 
 # 1. Install Nix
@@ -92,6 +87,15 @@ ensure_config() {
 # 3. Operations
 deploy() {
     detect_os
+    FLAKE_NAME="$1"
+    
+    if [ -z "$FLAKE_NAME" ]; then
+        echo "Error: Configuration name is required."
+        echo "Usage: $0 deploy <config-name>"
+        list_configs
+        exit 1
+    fi
+
     log "Building and switching configuration for ${FLAKE_NAME}..."
     
     # macOS pre-flight: ensure /etc/synthetic.conf exists
@@ -132,33 +136,43 @@ clean() {
     nix-collect-garbage -d
 }
 
+list_configs() {
+    log "Available configurations in flake.nix:"
+    grep -E '"[^"]+" =' "${TARGET_DIR}/flake.nix" | grep -v 'formatter' | sed -E 's/.*"([^"]+)".*/\1/' | sed 's/^/  - /'
+}
+
 help() {
     echo "Usage: $0 [command]"
     echo ""
     echo "Commands:"
-    echo "  (no args)  Full bootstrap: Install Nix, Clone Config, Deploy"
-    echo "  deploy     Deploy the configuration (Switch)"
-    echo "  update     Update flake.lock inputs"
-    echo "  check      Verify the flake"
-    echo "  format     Format Nix files"
-    echo "  clean      Garbage collect old generations"
+    echo "  (no args)          Show this help"
+    echo "  deploy <config>    Deploy the configuration (Switch)"
+    echo "  update             Update flake.lock inputs"
+    echo "  check              Verify the flake"
+    echo "  format             Format Nix files"
+    echo "  clean              Garbage collect old generations"
+    echo ""
+    list_configs
 }
 
 # Main Dispatch
 if [ $# -eq 0 ]; then
-    # Default behavior: Bootstrap
-    install_nix
-    ensure_config
-    deploy
-    success "Setup complete! Please restart your shell."
+    help
 else
     case "$1" in
-        deploy) deploy ;; 
+        deploy) deploy "$2" ;; 
         update) update ;; 
         check) check ;; 
         format) format ;; 
         clean) clean ;; 
         help|--help|-h) help ;; 
-        *) echo "Unknown command: $1"; help; exit 1 ;; 
+        *)
+            # If the first argument is not a command, assume it is a config name for full bootstrap
+            FLAKE_NAME="$1"
+            install_nix
+            ensure_config
+            deploy "$FLAKE_NAME"
+            success "Setup complete! Please restart your shell."
+            ;;
     esac
 fi
