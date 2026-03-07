@@ -21,20 +21,26 @@
       cf = "cd ~/Documents/cf_template && hx main.cpp";
     };
 
-    # SSH specific to guangzong
-    programs.ssh.matchBlocks = lib.mkIf pkgs.stdenv.isDarwin {
-      "10.0.0.107" = {
-        hostname = "10.0.0.107";
-        user = "connie";
-        forwardAgent = true;
-        extraOptions = {
-          RemoteForward = "/Users/connie/.gnupg/S.gpg-agent /Users/guangzong/.gnupg/S.gpg-agent.extra
-          RemoteForward /Users/connie/.gnupg/S.gpg-agent.ssh.forward /Users/guangzong/.gnupg/S.gpg-agent.ssh";
-          StreamLocalBindUnlink = "yes";
+      # SSH specific to guangzong
+      programs.ssh.matchBlocks = lib.mkIf pkgs.stdenv.isDarwin {
+        "10.0.0.107" = {
+          hostname = "10.0.0.107";
+          user = "connie";
+          forwardAgent = true;
+                remoteForwards = [
+                  {
+                    bind.address = "/Users/connie/.gnupg/S.gpg-agent";
+                    host.address = "/Users/guangzong/.gnupg/S.gpg-agent.extra";
+                  }
+                  {
+                    bind.address = "/Users/connie/.gnupg/S.gpg-agent.ssh.forward";
+                    host.address = "/Users/guangzong/.gnupg/S.gpg-agent.ssh";
+                  }
+                ];          extraOptions = {
+            StreamLocalBindUnlink = "yes";
+          };
         };
       };
-    };
-
     # GPG activation specific to guangzong
     home.activation = lib.mkIf pkgs.stdenv.isDarwin {
       importGpgKeys = lib.hm.dag.entryAfter [ "writeBoundary" ] ''

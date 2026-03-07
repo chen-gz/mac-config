@@ -88,7 +88,8 @@ ensure_config() {
 deploy() {
     detect_os
     FLAKE_NAME="$1"
-    
+    shift # Remove FLAKE_NAME from arguments
+
     if [ -z "$FLAKE_NAME" ]; then
         echo "Error: Configuration name is required."
         echo "Usage: $0 deploy <config-name>"
@@ -109,10 +110,15 @@ deploy() {
         
         echo "🍎 Detected macOS. Deploying nix-darwin configuration (${FLAKE_NAME})..."
         # Re-using the exact command from justfile/bootstrap but ensuring we point to TARGET_DIR
-        sudo nix run nix-darwin -- switch --flake "${TARGET_DIR}#${FLAKE_NAME}"
+        # Use sudo only if not using target-host (remote deployment handles its own auth)
+        if [[ "$*" == *"--target-host"* ]]; then
+            nix run nix-darwin -- switch --flake "${TARGET_DIR}#${FLAKE_NAME}" "$@"
+        else
+            sudo nix run nix-darwin -- switch --flake "${TARGET_DIR}#${FLAKE_NAME}" "$@"
+        fi
     else
         echo "🐧 Detected Linux. Deploying Home Manager configuration (${FLAKE_NAME})..."
-        nix run github:nix-community/home-manager --extra-experimental-features "nix-command flakes" -- switch -b backup --impure --flake "${TARGET_DIR}#${FLAKE_NAME}"
+        nix run github:nix-community/home-manager --extra-experimental-features "nix-command flakes" -- switch -b backup --impure --flake "${TARGET_DIR}#${FLAKE_NAME}" "$@"
     fi
 }
 
@@ -160,7 +166,7 @@ if [ $# -eq 0 ]; then
     help
 else
     case "$1" in
-        deploy) deploy "$2" ;; 
+        deploy) shift; deploy "$@" ;; 
         update) update ;; 
         check) check ;; 
         format) format ;; 
@@ -169,9 +175,10 @@ else
         *)
             # If the first argument is not a command, assume it is a config name for full bootstrap
             FLAKE_NAME="$1"
+            shift # Remaining arguments if any
             install_nix
             ensure_config
-            deploy "$FLAKE_NAME"
+            deploy "$FLAKE_NAME" "$@"
             success "Setup complete! Please restart your shell."
             ;;
     esac

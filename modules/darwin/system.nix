@@ -64,6 +64,11 @@
     NSGlobalDomain.ApplePressAndHoldEnabled = false;
   };
 
+  # SSH Server configuration
+  services.openssh.extraConfig = ''
+    StreamLocalBindUnlink yes
+  '';
+
   system.stateVersion = 5;
 
   fonts.packages = [
