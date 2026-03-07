@@ -23,6 +23,23 @@
 
       # SSH specific to guangzong
       programs.ssh.matchBlocks = lib.mkIf pkgs.stdenv.isDarwin {
+        "connie" = {
+          hostname = "connies-mac-mini";
+          user = "connie";
+          forwardAgent = true;
+                remoteForwards = [
+                  {
+                    bind.address = "/Users/connie/.gnupg/S.gpg-agent";
+                    host.address = "/Users/guangzong/.gnupg/S.gpg-agent.extra";
+                  }
+                  {
+                    bind.address = "/Users/connie/.gnupg/S.gpg-agent.ssh.forward";
+                    host.address = "/Users/guangzong/.gnupg/S.gpg-agent.ssh";
+                  }
+                ];          extraOptions = {
+            StreamLocalBindUnlink = "yes";
+          };
+        };
         "10.0.0.107" = {
           hostname = "10.0.0.107";
           user = "connie";
