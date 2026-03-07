@@ -55,6 +55,9 @@
           specialArgs = {
             inherit inputs;
             username = "connie";
+            lib = nixpkgs.lib.extend (l: _: {
+              hm = home-manager.lib.hm;
+            });
           };
           modules = [
             ./modules/darwin/common.nix
