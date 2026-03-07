@@ -1,10 +1,15 @@
 { pkgs, lib, ... }:
 {
-  imports = [
-    ./modules/home/common.nix
-  ];
+  # --- 系统层配置 (仅对 macOS 生效) ---
+  system.defaults.dock.autohide = true;
 
-  programs.git.settings.user = {
+  # --- 用户层配置 (Home Manager) ---
+  home-manager.users.connie = {
+    imports = [
+      ./modules/home/common.nix
+    ];
+
+    programs.git.settings.user = {
     name = "Connie";
     email = "connie@example.com";
     # signingkey = "...";

@@ -58,9 +58,7 @@
           };
           modules = [
             ./modules/darwin/common.nix
-            {
-              home-manager.users.connie = import ./connie.nix;
-            }
+            ./connie.nix
           ];
         };
       };
