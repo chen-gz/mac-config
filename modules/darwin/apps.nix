@@ -24,6 +24,7 @@
       "google-drive"
       "wechat"
       "lm-studio"
+      "ollama"
       "ghostty"
       "zed"
       "db-browser-for-sqlite"
