@@ -5,6 +5,9 @@
 
   programs.ssh = {
     enable = true;
+    # Disable default values that will be removed in the future
+    # and manually set the defaults we need in matchBlocks
+    enableDefaultConfig = false;
     matchBlocks = {
       "*" = {
         addKeysToAgent = "yes";

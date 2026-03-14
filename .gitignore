@@ -1,0 +1,8 @@
+# Nix
+result
+result-*
+.direnv/
+.venv/
+node_modules/
+.DS_Store
+*.swp
