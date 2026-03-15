@@ -9,6 +9,7 @@
 
     brews = [
       "mas"
+      "zeroclaw"
     ]; # Mac App Store CLI
     taps = [
       "homebrew/cask"
