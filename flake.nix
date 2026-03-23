@@ -70,16 +70,26 @@
       homeConfigurations."gg-linux" =
         let
           pkgs = nixpkgs.legacyPackages.x86_64-linux;
+          lib = nixpkgs.lib.extend (l: _: {
+            hm = home-manager.lib.hm;
+          });
           guangzongConfig = import ./guangzong.nix;
         in
         home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
+          extraSpecialArgs = {
+            inherit inputs pkgs lib;
+          };
           modules = [
             (args: (guangzongConfig args).home-manager.users.guangzong)
             {
               home = {
                 username = "guangzong";
-                homeDirectory = let envHome = builtins.getEnv "HOME"; in if envHome != "" then envHome else "/home/guangzong";
+                homeDirectory =
+                  let
+                    envHome = builtins.getEnv "HOME";
+                  in
+                  if envHome != "" then envHome else "/home/guangzong";
               };
             }
           ];
