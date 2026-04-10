@@ -4,7 +4,6 @@
     with pkgs;
     [
       libfido2 # 提供 FIDO2 支持的库
-      openssh # 确保使用的是最新的 openssh
       just
       devbox
       just-lsp
@@ -24,6 +23,7 @@
     ++ (
       if stdenv.isDarwin then
         [
+          openssh # 确保使用的是最新的 openssh
           gemini-cli
         ]
       else

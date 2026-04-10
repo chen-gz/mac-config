@@ -69,7 +69,11 @@
       # --- Linux Home Manager 配置 ---
       homeConfigurations."gg-linux" =
         let
-          pkgs = nixpkgs.legacyPackages.x86_64-linux;
+          # Detect system architecture, default to x86_64-linux if cannot detect
+          system = if builtins.hasAttr builtins.currentSystem nixpkgs.legacyPackages
+                   then builtins.currentSystem
+                   else "x86_64-linux";
+          pkgs = nixpkgs.legacyPackages.${system};
           lib = nixpkgs.lib.extend (l: _: {
             hm = home-manager.lib.hm;
           });

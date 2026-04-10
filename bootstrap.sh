@@ -5,7 +5,18 @@ set -e
 
 # Configuration
 REPO_URL="https://github.com/chen-gz/mac-config"
-TARGET_DIR="$HOME/.config/nix-darwin"
+DEFAULT_TARGET_DIR="$HOME/.config/nix-darwin"
+
+# Detect if the script is being run from a local checkout
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
+if [ -f "$SCRIPT_DIR/flake.nix" ]; then
+    TARGET_DIR="$SCRIPT_DIR"
+else
+    TARGET_DIR="$DEFAULT_TARGET_DIR"
+fi
+
+# Enable experimental features for all Nix commands
+export NIX_CONFIG="experimental-features = nix-command flakes"
 
 # Colors
 GREEN='\033[0;32m'
@@ -60,8 +71,6 @@ install_nix() {
         log "Nix is already installed."
     fi
 
-    # Enable experimental features
-    export NIX_CONFIG="experimental-features = nix-command flakes"
     if nix show-config 2>/dev/null | grep -q "experimental-features = .*flakes"; then
         log "Experimental features (flakes) are enabled."
     else
@@ -114,11 +123,11 @@ deploy() {
         if [[ "$*" == *"--target-host"* ]]; then
             nix run nix-darwin -- switch --flake "${TARGET_DIR}#${FLAKE_NAME}" "$@"
         else
-            sudo nix run nix-darwin -- switch --flake "${TARGET_DIR}#${FLAKE_NAME}" "$@"
+            sudo NIX_CONFIG="$NIX_CONFIG" nix run nix-darwin -- switch --flake "${TARGET_DIR}#${FLAKE_NAME}" "$@"
         fi
     else
         echo "🐧 Detected Linux. Deploying Home Manager configuration (${FLAKE_NAME})..."
-        nix run github:nix-community/home-manager --extra-experimental-features "nix-command flakes" -- switch -b backup --impure --flake "${TARGET_DIR}#${FLAKE_NAME}" "$@"
+        nix run github:nix-community/home-manager -- switch -b backup --impure --flake "${TARGET_DIR}#${FLAKE_NAME}" "$@"
     fi
 }
 

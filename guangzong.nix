@@ -7,7 +7,9 @@
 {
   # --- 系统层配置 (仅对 macOS 生效) ---
   # 只有在 nix-darwin 环境下才定义 system.defaults
-  system.defaults.dock.orientation = "left";
+  system.defaults = lib.mkIf pkgs.stdenv.isDarwin {
+    dock.orientation = "left";
+  };
 
   # --- 用户层配置 (Home Manager) ---
   home-manager.users.guangzong = {
@@ -24,8 +26,9 @@
     programs.fish.shellAliases = {
       blog = "cd ~/Documents/chen-gz.github.io";
       cf = "cd ~/Documents/cf_template && hx main.cpp";
-      gg_update = "~/.config/nix-darwin/bootstrap.sh update && ~/.config/nix-darwin/bootstrap.sh deploy gg-mac";
-
+      gg_update = let
+        config = if pkgs.stdenv.isDarwin then "gg-mac" else "gg-linux";
+      in "~/.config/nix-darwin/bootstrap.sh update && ~/.config/nix-darwin/bootstrap.sh deploy ${config}";
     };
 
     # SSH specific to guangzong
