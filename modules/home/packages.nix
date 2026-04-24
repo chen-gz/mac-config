@@ -28,6 +28,8 @@
           gemini-cli
         ]
       else
-        [ ]
+        [
+          waybar
+        ]
     );
 }
