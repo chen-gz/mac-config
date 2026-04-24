@@ -74,6 +74,10 @@
               set -x SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)
               gpg-connect-agent updatestartuptty /bye >/dev/null
           end
+      else
+          # For Linux
+          set -x SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)
+          gpg-connect-agent updatestartuptty /bye >/dev/null
       end
 
       pay-respects setup --shell fish | source

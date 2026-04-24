@@ -5,11 +5,10 @@
     enable = true;
     settings = {
       core = {
-        sshCommand = "/usr/bin/ssh";
       };
       commit = {
         signoff = true;
-        gpgsign = false;
+        gpgsign = true;
       };
       pull = {
         rebase = true;
