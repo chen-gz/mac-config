@@ -17,39 +17,32 @@
         window-padding-y = 10
         # Change shortcuts to be the same as macos in linux enviroment
         font-size=14
-        tweak-graphemes-like-iterm=true
 
-        key-quit=none
-        key-copy="Command|c"
-        key-paste="Command|v"
-        key-clear-history="Command|k"
-        key-zoom-in="Command|plus"
-        key-zoom-out="Command|minus"
-        iec-style-word-movement=true
-        key-reset-zoom="Command|0"
-        key-page-up="Command|PageUp"
-        key-page-down="Command|PageDown"
-        key-open-link="Command|l"
-        key-increase-font-size="Command|="
-        key-decrease-font-size="Command|-"
-        key-reset-font-size="Command|0"
-        key-new-window="Command|n"
-        key-new-tab="Command|t"
-        key-close-tab="Command|w"
-        key-next-tab="Control|Tab"
-        key-previous-tab="Control|Shift|Tab"
-        key-set-tab-1="Command|1"
-        key-set-tab-2="Command|2"
-        key-set-tab-3="Command|3"
-        key-set-tab-4="Command|4"
-        key-set-tab-5="Command|5"
-        key-set-tab-6="Command|6"
-        key-set-tab-7="Command|7"
-        key-set-tab-8="Command|8"
-        key-set-tab-9="Command|9"
+        keybind = super+c=copy_to_clipboard
+        keybind = super+v=paste_from_clipboard
+        keybind = super+k=clear_screen
+        keybind = super+plus=increase_font_size:1
+        keybind = super+minus=decrease_font_size:1
+        keybind = super+0=reset_font_size
+        keybind = super+page_up=scroll_page_up
+        keybind = super+page_down=scroll_page_down
+        keybind = super+n=new_window
+        keybind = super+t=new_tab
+        keybind = super+w=close_surface
+        keybind = ctrl+tab=next_tab
+        keybind = ctrl+shift+tab=previous_tab
+        keybind = super+1=goto_tab:1
+        keybind = super+2=goto_tab:2
+        keybind = super+3=goto_tab:3
+        keybind = super+4=goto_tab:4
+        keybind = super+5=goto_tab:5
+        keybind = super+6=goto_tab:6
+        keybind = super+7=goto_tab:7
+        keybind = super+8=goto_tab:8
+        keybind = super+9=goto_tab:9
 
-        key-move-tab-prev="Command|{"
-        key-move-tab-next="Command|}"
+        keybind = super+shift+[=move_tab:-1
+        keybind = super+shift+]=move_tab:1
       '';
     })
   ];
