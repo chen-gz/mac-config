@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Install command: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/chen-gz/mac-config/main/bootstrap.sh)"
 
 set -e
@@ -97,7 +97,6 @@ ensure_config() {
 deploy() {
     detect_os
     FLAKE_NAME="$1"
-    shift # Remove FLAKE_NAME from arguments
 
     if [ -z "$FLAKE_NAME" ]; then
         echo "Error: Configuration name is required."
@@ -105,6 +104,8 @@ deploy() {
         list_configs
         exit 1
     fi
+
+    shift # Remove FLAKE_NAME from arguments
 
     log "Building and switching configuration for ${FLAKE_NAME}..."
     
