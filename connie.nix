@@ -24,8 +24,8 @@
       };
     };
 
-    # GPG activation specific to connie
-    home.activation = lib.mkIf pkgs.stdenv.isDarwin {
+    # GPG activation
+    home.activation = {
       importGpgKeys = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         GPG_KEY_ID="F44759AD8A47152383AB4CA5F8FEDE944102385C"
         $DRY_RUN_CMD ${pkgs.gnupg}/bin/gpg --list-keys $GPG_KEY_ID >/dev/null 2>&1 || 

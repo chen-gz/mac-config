@@ -26,9 +26,11 @@
     programs.fish.shellAliases = {
       blog = "cd ~/Documents/chen-gz.github.io";
       cf = "cd ~/Documents/cf_template && hx main.cpp";
-      gg_update = let
-        config = if pkgs.stdenv.isDarwin then "gg-mac" else "gg-linux";
-      in "~/.config/nix-darwin/bootstrap.sh update && ~/.config/nix-darwin/bootstrap.sh deploy ${config}";
+      gg_update =
+        let
+          config = if pkgs.stdenv.isDarwin then "gg-mac" else "gg-linux";
+        in
+        "~/.config/nix-darwin/bootstrap.sh update && ~/.config/nix-darwin/bootstrap.sh deploy ${config}";
     };
 
     # SSH specific to guangzong
@@ -70,8 +72,8 @@
         };
       };
     };
-    # GPG activation specific to guangzong
-    home.activation = lib.mkIf pkgs.stdenv.isDarwin {
+    # GPG activation
+    home.activation = {
       importGpgKeys = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         GPG_KEY_ID="20AE4BA8FF696FB5E21AE9D0636538D58AF1006D"
         $DRY_RUN_CMD ${pkgs.gnupg}/bin/gpg --list-keys $GPG_KEY_ID >/dev/null 2>&1 || 

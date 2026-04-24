@@ -19,6 +19,7 @@
       nerd-fonts.jetbrains-mono
       zellij
       zig
+      lmstudio
     ]
     ++ (
       if stdenv.isDarwin then

@@ -17,6 +17,7 @@ fi
 
 # Enable experimental features for all Nix commands
 export NIX_CONFIG="experimental-features = nix-command flakes"
+export NIXPKGS_ALLOW_UNFREE=1
 
 # Colors
 GREEN='\033[0;32m'
