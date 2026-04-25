@@ -28,15 +28,17 @@
       ...
     }:
     let
-      system = "aarch64-darwin";
+      # Systems to support
+      supportedSystems = [ "aarch64-darwin" "x86_64-linux" "aarch64-linux" ];
+      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
     in
     {
       # 配置格式化工具
-      formatter.${system} = nixpkgs.legacyPackages.${system}.nixfmt;
+      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
 
       darwinConfigurations = {
         "gg-mac" = nix-darwin.lib.darwinSystem {
-          inherit system;
+          system = "aarch64-darwin";
           specialArgs = {
             inherit inputs;
             username = "guangzong";
@@ -51,7 +53,7 @@
         };
 
         "connie-mac" = nix-darwin.lib.darwinSystem {
-          inherit system;
+          system = "aarch64-darwin";
           specialArgs = {
             inherit inputs;
             username = "connie";
