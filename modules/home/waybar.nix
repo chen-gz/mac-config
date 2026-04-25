@@ -14,7 +14,6 @@
           "sway/workspaces"
           "sway/mode"
           "sway/scratchpad"
-          "custom/media"
         ];
         modules-center = [ "sway/window" ];
         modules-right = [
@@ -82,7 +81,7 @@
           critical-threshold = 80;
           format = "{temperatureC}°C {icon}";
           format-icons = [
-            ""
+            ""
             ""
             ""
           ];
