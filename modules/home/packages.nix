@@ -20,6 +20,7 @@
       zellij
       zig
       lmstudio
+      telegram-desktop
     ]
     ++ (
       if stdenv.isDarwin then
