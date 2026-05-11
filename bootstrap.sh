@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Install command: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/chen-gz/mac-config/main/bootstrap.sh)"
+# Install command: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/chen-gz/mac-config/main/bootstrap.sh)" -- <config-name>
 
 set -e
 
@@ -168,6 +168,9 @@ list_configs() {
 
 help() {
     echo "Usage: $0 [command]"
+    echo ""
+    echo "To run the initial bootstrap from GitHub, use the following command:"
+    echo "  /bin/bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/chen-gz/mac-config/main/bootstrap.sh)\" -- <config>"
     echo ""
     echo "Commands:"
     echo "  (no args)          Show this help"
