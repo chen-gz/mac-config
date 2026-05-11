@@ -31,10 +31,10 @@
       "monitorcontrol"
       "fluor"
       "jordanbaird-ice"
+      # "tailscale"
+      "telegram"
     ];
     masApps = {
-      "Telegram Lite" = 946399090; # Removed due to mas CLI download issues during automated deployment
-      "Tailscale" = 1475387142; # Removed due to mas CLI download issues during automated deployment
     };
   };
 }
