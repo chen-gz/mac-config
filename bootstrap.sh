@@ -3,6 +3,9 @@
 
 set -e
 
+# Increase file descriptor limit for handling large flake inputs (e.g., homebrew-core)
+ulimit -n 4096 2>/dev/null || true
+
 # Configuration
 REPO_URL="https://github.com/chen-gz/mac-config"
 DEFAULT_TARGET_DIR="$HOME/.config/nix-darwin"
