@@ -11,7 +11,9 @@
       "mas"
     ]; # Mac App Store CLI
     taps = [
-      # Taps are managed by nix-homebrew in common.nix
+      "homebrew/cask"
+      "homebrew/core"
+      "homebrew/bundle"
     ];
     casks = [
       # "steam"
@@ -23,7 +25,7 @@
       "google-drive"
       "wechat"
       # "lm-studio"
-      "ollama"
+      "ollama-app"
       "ghostty"
       "zed"
       "db-browser-for-sqlite"
