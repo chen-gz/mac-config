@@ -155,7 +155,15 @@ clean() {
 
 list_configs() {
     log "Available configurations in flake.nix:"
-    grep -E '"[^"]+" =' "${TARGET_DIR}/flake.nix" | grep -v 'formatter' | sed -E 's/.*"([^"]+)".*/\1/' | sed 's/^/  - /'
+    if [ -f "${TARGET_DIR}/flake.nix" ]; then
+        grep -E '"[^"]+" =' "${TARGET_DIR}/flake.nix" | grep -v 'formatter' | sed -E 's/.*"([^"]+)".*/\1/' | sed 's/^/  - /'
+    else
+        if command -v curl >/dev/null 2>&1; then
+            curl -fsSL "https://raw.githubusercontent.com/chen-gz/mac-config/main/flake.nix" 2>/dev/null | grep -E '"[^"]+" =' | grep -v 'formatter' | sed -E 's/.*"([^"]+)".*/\1/' | sed 's/^/  - /' || echo "  (Could not fetch configurations remotely)"
+        else
+            echo "  (Configuration not cloned yet. Run with a configuration name to bootstrap)"
+        fi
+    fi
 }
 
 help() {
