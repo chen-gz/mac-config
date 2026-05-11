@@ -1,4 +1,5 @@
 const std = @import("std");
+const args = @import("args");
 const process = std.process;
 const fs = std.fs;
 const posix = std.posix;
@@ -26,12 +27,12 @@ fn err(msg: []const u8) void {
     std.debug.print("{s}[ERROR]{s} {s}\n", .{ Color.red, Color.reset, msg });
 }
 
-fn run(io: Io, args: []const []const u8, cwd: ?[]const u8, environ_map: *process.Environ.Map) !void {
+fn run(io: Io, cmd_args: []const []const u8, cwd: ?[]const u8, environ_map: *process.Environ.Map) !void {
     try environ_map.put("NIX_CONFIG", "experimental-features = nix-command flakes");
     try environ_map.put("NIXPKGS_ALLOW_UNFREE", "1");
 
     var child = try process.spawn(io, .{
-        .argv = args,
+        .argv = cmd_args,
         .cwd = if (cwd) |c| .{ .path = c } else .inherit,
         .environ_map = environ_map,
     });
@@ -136,69 +137,92 @@ fn deploy(io: Io, allocator: std.mem.Allocator, target_dir: []const u8, flake_na
     try run(io, args_list.toOwnedSlice(allocator) catch unreachable, null, environ_map);
 }
 
+const GlobalOptions = struct {
+    help: bool = false,
+
+    pub const shorthands = .{
+        .h = "help",
+    };
+};
+
+const Verb = union(enum) {
+    update: struct {},
+    check: struct {},
+    format: struct {},
+    clean: struct {},
+    deploy: struct {},
+    help: struct {},
+    // Allow bootstrap directly via config names as subcommands
+    @"gg-mac": struct {},
+    @"connie-mac": struct {},
+};
+
+fn printHelp() void {
+    std.debug.print(
+        \\Usage: bootstrap [command|config]
+        \\
+        \\Commands:
+        \\  update          Update flake inputs
+        \\  check           Verify the flake configuration
+        \\  format          Format all Nix files
+        \\  clean           Garbage collect old generations
+        \\  deploy <config> Deploy a specific configuration
+        \\  help            Show this help
+        \\
+        \\Configs (as subcommands):
+        \\  gg-mac          Full bootstrap for guangzong-mac
+        \\  connie-mac      Full bootstrap for connie-mac
+        \\
+    , .{});
+}
+
 pub fn main(init: std.process.Init) !void {
     const arena = init.arena.allocator();
     const environ_map = init.environ_map;
     const io = init.io;
 
     // Increase file descriptor limit
-    // Note: setrlimit might also have changed, but let's try.
-    // If it fails, we'll just ignore it.
+    if (posix.setrlimit(.NOFILE, .{ .cur = 4096, .max = 4096 })) |_| {} else |_| {}
 
-    var args_it = try std.process.Args.Iterator.initAllocator(init.minimal.args, arena);
-    var args_list = std.ArrayListUnmanaged([]const u8){ .items = &.{}, .capacity = 0 };
-    while (args_it.next()) |arg| {
-        try args_list.append(arena, arg);
-    }
-    const args = args_list.toOwnedSlice(arena) catch unreachable;
+    const result = args.parseWithVerbForCurrentProcess(GlobalOptions, Verb, init, .print) catch return;
+    defer result.deinit();
 
-    if (args.len < 2) {
-        std.debug.print("Usage: {s} [command|config]\n", .{args[0]});
-        return;
-    }
-
-    const cmd = args[1];
-    if (std.mem.eql(u8, cmd, "help") or std.mem.eql(u8, cmd, "--help")) {
-        std.debug.print(
-            \\Usage: bootstrap [command|config]
-            \\
-            \\Commands:
-            \\  update          Update flake inputs
-            \\  check           Verify the flake configuration
-            \\  format          Format all Nix files
-            \\  clean           Garbage collect old generations
-            \\  deploy <config> Deploy a specific configuration
-            \\  help            Show this help
-            \\
-            \\Config:
-            \\  gg-mac          Full bootstrap for guangzong-mac
-            \\  connie-mac      Full bootstrap for connie-mac
-            \\
-        , .{});
+    if (result.options.help) {
+        printHelp();
         return;
     }
 
     const target_dir = try getTargetDir(arena, environ_map);
 
-    if (std.mem.eql(u8, cmd, "update")) {
-        try run(io, &.{ "nix", "flake", "update" }, target_dir, environ_map);
-    } else if (std.mem.eql(u8, cmd, "check")) {
-        try run(io, &.{ "nix", "flake", "check" }, target_dir, environ_map);
-    } else if (std.mem.eql(u8, cmd, "format")) {
-        try run(io, &.{ "nix", "fmt" }, target_dir, environ_map);
-    } else if (std.mem.eql(u8, cmd, "clean")) {
-        try run(io, &.{ "nix-collect-garbage", "-d" }, null, environ_map);
-    } else if (std.mem.eql(u8, cmd, "deploy")) {
-        if (args.len < 3) {
-            err("Config name required for deploy");
-            return;
-        }
-        try deploy(io, arena, target_dir, args[2], args[3..], environ_map);
-    } else {
-        // Assume cmd is a config name for full bootstrap
-        try installNix(io, environ_map);
-        try ensureConfig(io, target_dir, environ_map);
-        try deploy(io, arena, target_dir, cmd, args[2..], environ_map);
-        success("Setup complete! Please restart your shell.");
+    const verb = result.verb orelse {
+        printHelp();
+        return;
+    };
+
+    switch (verb) {
+        .update => try run(io, &.{ "nix", "flake", "update" }, target_dir, environ_map),
+        .check => try run(io, &.{ "nix", "flake", "check" }, target_dir, environ_map),
+        .format => try run(io, &.{ "nix", "fmt" }, target_dir, environ_map),
+        .clean => try run(io, &.{ "nix-collect-garbage", "-d" }, null, environ_map),
+        .help => printHelp(),
+        .deploy => {
+            if (result.positionals.len < 1) {
+                err("Config name required for deploy");
+                return;
+            }
+            try deploy(io, arena, target_dir, result.positionals[0], result.positionals[1..], environ_map);
+        },
+        .@"gg-mac" => {
+            try installNix(io, environ_map);
+            try ensureConfig(io, target_dir, environ_map);
+            try deploy(io, arena, target_dir, "gg-mac", result.positionals, environ_map);
+            success("Setup complete! Please restart your shell.");
+        },
+        .@"connie-mac" => {
+            try installNix(io, environ_map);
+            try ensureConfig(io, target_dir, environ_map);
+            try deploy(io, arena, target_dir, "connie-mac", result.positionals, environ_map);
+            success("Setup complete! Please restart your shell.");
+        },
     }
 }
