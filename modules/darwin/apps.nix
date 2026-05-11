@@ -3,7 +3,7 @@
 {
   homebrew = {
     enable = true;
-    onActivation.cleanup = "zap";
+    onActivation.cleanup = "uninstall";
     onActivation.autoUpdate = true;
     onActivation.upgrade = true;
 
@@ -15,7 +15,7 @@
     ];
     casks = [
       # "steam"
-      # "google-chrome"
+      "google-chrome"
       # "sublime-merge"
       "raycast"
       # "discord"
@@ -33,7 +33,7 @@
       "jordanbaird-ice"
     ];
     masApps = {
-      # "Telegram Lite" = 946399090; # Removed due to mas CLI download issues during automated deployment
+      "Telegram Lite" = 946399090; # Removed due to mas CLI download issues during automated deployment
       "Tailscale" = 1475387142; # Removed due to mas CLI download issues during automated deployment
     };
   };

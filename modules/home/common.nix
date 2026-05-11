@@ -14,8 +14,6 @@
 
   home.stateVersion = "25.11";
 
-  nixpkgs.config.allowUnfree = true;
-
   home.sessionVariables = {
     TERM = "xterm-256color";
     EDITOR = "hx";

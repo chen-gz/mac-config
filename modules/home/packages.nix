@@ -19,7 +19,7 @@
       nerd-fonts.jetbrains-mono
       zellij
       zig
-      telegram-desktop
+      # telegram-desktop
     ]
     ++ (
       if stdenv.isDarwin then

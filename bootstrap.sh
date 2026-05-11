@@ -72,7 +72,7 @@ install_nix() {
         log "Nix is already installed."
     fi
 
-    if nix show-config 2>/dev/null | grep -q "experimental-features = .*flakes"; then
+    if nix show-config 2>/dev/null | grep -E "(experimental-features|extra-experimental-features) = .*flakes" >/dev/null; then
         log "Experimental features (flakes) are enabled."
     else
         log "Warning: Could not confirm experimental features are enabled."
