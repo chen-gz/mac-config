@@ -61,7 +61,7 @@
             });
           };
           modules = [
-            ./modules/darwin/common.nix
+            ./modules/darwin.nix
             ./guangzong.nix
           ];
         };
@@ -76,7 +76,7 @@
             });
           };
           modules = [
-            ./modules/darwin/common.nix
+            ./modules/darwin.nix
             ./connie.nix
           ];
         };

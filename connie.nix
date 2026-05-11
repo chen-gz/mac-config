@@ -6,7 +6,7 @@
   # --- 用户层配置 (Home Manager) ---
   home-manager.users.connie = {
     imports = [
-      ./modules/home/common.nix
+      ./modules/home.nix
     ];
 
     programs.fish.shellAliases = {

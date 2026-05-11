@@ -13,7 +13,7 @@
   # --- 用户层配置 (Home Manager) ---
   home-manager.users.guangzong = {
     imports = [
-      ./modules/home/common.nix
+      ./modules/home.nix
     ];
 
     programs.git.settings.user = {
