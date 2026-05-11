@@ -24,7 +24,7 @@
       "iina"
       "google-drive"
       "wechat"
-      "lm-studio"
+      # "lm-studio"
       "ollama"
       "ghostty"
       "zed"
