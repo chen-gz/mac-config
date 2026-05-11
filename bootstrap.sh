@@ -32,27 +32,19 @@ success() {
     printf "${GREEN}[SUCCESS]${NC} %s\n" "$1"
 }
 
-# 0. Detect OS and set variables
-detect_os() {
-    OS="$(uname -s)"
-}
-
 # 1. Install Nix
 install_nix() {
-    detect_os
-    if [ "$OS" = "Darwin" ]; then
-        # Ensure Xcode Command Line Tools are installed (macOS specific)
-        if ! xcode-select -p >/dev/null 2>&1; then
-            log "Xcode Command Line Tools not found. Installing..."
-            xcode-select --install
-            echo "---------------------------------------------------------"
-            echo "Action Required: Please complete the installation in the pop-up window."
-            echo "Press [Enter] key here when the installation is finished..."
-            echo "---------------------------------------------------------"
-            read -r
-        else
-            log "Xcode Command Line Tools already installed."
-        fi
+    # Ensure Xcode Command Line Tools are installed (macOS specific)
+    if ! xcode-select -p >/dev/null 2>&1; then
+        log "Xcode Command Line Tools not found. Installing..."
+        xcode-select --install
+        echo "---------------------------------------------------------"
+        echo "Action Required: Please complete the installation in the pop-up window."
+        echo "Press [Enter] key here when the installation is finished..."
+        echo "---------------------------------------------------------"
+        read -r
+    else
+        log "Xcode Command Line Tools already installed."
     fi
 
     if ! command -v nix >/dev/null 2>&1; then
@@ -96,7 +88,6 @@ ensure_config() {
 
 # 3. Operations
 deploy() {
-    detect_os
     FLAKE_NAME="$1"
 
     if [ -z "$FLAKE_NAME" ]; then
@@ -111,25 +102,20 @@ deploy() {
     log "Building and switching configuration for ${FLAKE_NAME}..."
     
     # macOS pre-flight: ensure /etc/synthetic.conf exists
-    if [ "$OS" = "Darwin" ]; then
-        if [ ! -e /etc/synthetic.conf ]; then
-            log "/etc/synthetic.conf not found — creating empty file with correct ownership/permissions"
-            sudo touch /etc/synthetic.conf
-            sudo chown root:wheel /etc/synthetic.conf || true
-            sudo chmod 644 /etc/synthetic.conf || true
-        fi
-        
-        echo "🍎 Detected macOS. Deploying nix-darwin configuration (${FLAKE_NAME})..."
-        # Re-using the exact command from justfile/bootstrap but ensuring we point to TARGET_DIR
-        # Use sudo only if not using target-host (remote deployment handles its own auth)
-        if [[ "$*" == *"--target-host"* ]]; then
-            nix run nix-darwin -- switch --flake "${TARGET_DIR}#${FLAKE_NAME}" "$@"
-        else
-            sudo NIX_CONFIG="$NIX_CONFIG" nix run nix-darwin -- switch --flake "${TARGET_DIR}#${FLAKE_NAME}" "$@"
-        fi
+    if [ ! -e /etc/synthetic.conf ]; then
+        log "/etc/synthetic.conf not found — creating empty file with correct ownership/permissions"
+        sudo touch /etc/synthetic.conf
+        sudo chown root:wheel /etc/synthetic.conf || true
+        sudo chmod 644 /etc/synthetic.conf || true
+    fi
+    
+    echo "🍎 Detected macOS. Deploying nix-darwin configuration (${FLAKE_NAME})..."
+    # Re-using the exact command from justfile/bootstrap but ensuring we point to TARGET_DIR
+    # Use sudo only if not using target-host (remote deployment handles its own auth)
+    if [[ "$*" == *"--target-host"* ]]; then
+        nix run nix-darwin -- switch --flake "${TARGET_DIR}#${FLAKE_NAME}" "$@"
     else
-        echo "🐧 Detected Linux. Deploying Home Manager configuration (${FLAKE_NAME})..."
-        nix run github:nix-community/home-manager -- switch -b backup --impure --flake "${TARGET_DIR}#${FLAKE_NAME}" "$@"
+        sudo NIX_CONFIG="$NIX_CONFIG" nix run nix-darwin -- switch --flake "${TARGET_DIR}#${FLAKE_NAME}" "$@"
     fi
 }
 

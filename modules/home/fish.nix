@@ -55,36 +55,23 @@
       end
 
       # Homebrew setup
-      if test (uname) = "Darwin"
-          if test -d /opt/homebrew/bin
-              eval (/opt/homebrew/bin/brew shellenv)
-          else if test -d /usr/local/bin
-              eval (/usr/local/bin/brew shellenv)
-          end
-      end
-
-      # On non-NixOS Linux, Home Manager installs packages to ~/.nix-profile/bin
-      if test -d ~/.nix-profile/bin
-          fish_add_path --prepend --global ~/.nix-profile/bin
+      if test -d /opt/homebrew/bin
+          eval (/opt/homebrew/bin/brew shellenv)
+      else if test -d /usr/local/bin
+          eval (/usr/local/bin/brew shellenv)
       end
 
       set -x GPG_TTY (tty)
-      if test (uname) = "Darwin"
-          if test -n "$SSH_CONNECTION" -a "$USER" = "connie"
-              # We are on the remote host (connie@10.0.0.107) via SSH
-              set -x SSH_AUTH_SOCK ~/.gnupg/S.gpg-agent.ssh.forward
-              # Ensure the parent directory exists (though it should)
-              # and kill local agent if it exists to allow forward to work
-              if status is-interactive
-                  gpgconf --kill gpg-agent >/dev/null 2>&1
-              end
-          else
-              # Local Mac or other Darwin
-              set -x SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)
-              gpg-connect-agent updatestartuptty /bye >/dev/null
+      if test -n "$SSH_CONNECTION" -a "$USER" = "connie"
+          # We are on the remote host (connie@10.0.0.107) via SSH
+          set -x SSH_AUTH_SOCK ~/.gnupg/S.gpg-agent.ssh.forward
+          # Ensure the parent directory exists (though it should)
+          # and kill local agent if it exists to allow forward to work
+          if status is-interactive
+              gpgconf --kill gpg-agent >/dev/null 2>&1
           end
       else
-          # For Linux
+          # Local Mac
           set -x SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)
           gpg-connect-agent updatestartuptty /bye >/dev/null
       end

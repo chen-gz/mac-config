@@ -43,7 +43,7 @@
     }:
     let
       # Systems to support
-      supportedSystems = [ "aarch64-darwin" "x86_64-linux" "aarch64-linux" ];
+      supportedSystems = [ "aarch64-darwin" ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
     in
     {
@@ -81,38 +81,5 @@
           ];
         };
       };
-
-      # --- Linux Home Manager 配置 ---
-      homeConfigurations."gg-linux" =
-        let
-          # Detect system architecture, default to x86_64-linux if cannot detect
-          system = if builtins.hasAttr builtins.currentSystem nixpkgs.legacyPackages
-                   then builtins.currentSystem
-                   else "x86_64-linux";
-          pkgs = nixpkgs.legacyPackages.${system};
-          lib = nixpkgs.lib.extend (l: _: {
-            hm = home-manager.lib.hm;
-          });
-          guangzongConfig = import ./guangzong.nix;
-        in
-        home-manager.lib.homeManagerConfiguration {
-          inherit pkgs;
-          extraSpecialArgs = {
-            inherit inputs pkgs lib;
-          };
-          modules = [
-            (args: (guangzongConfig args).home-manager.users.guangzong)
-            {
-              home = {
-                username = "guangzong";
-                homeDirectory =
-                  let
-                    envHome = builtins.getEnv "HOME";
-                  in
-                  if envHome != "" then envHome else "/home/guangzong";
-              };
-            }
-          ];
-        };
     };
 }

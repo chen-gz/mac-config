@@ -9,7 +9,6 @@
     ./tmux.nix
     ./tools.nix
     ./packages.nix
-    ./waybar.nix
   ];
 
   home.stateVersion = "25.11";
@@ -20,5 +19,5 @@
     VISUAL = "hx";
   };
 
-  fonts.fontconfig.enable = pkgs.stdenv.isDarwin;
+  fonts.fontconfig.enable = true;
 }

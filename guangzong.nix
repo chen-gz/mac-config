@@ -6,8 +6,7 @@
 }:
 {
   # --- 系统层配置 (仅对 macOS 生效) ---
-  # 只有在 nix-darwin 环境下才定义 system.defaults
-  system.defaults = lib.mkIf pkgs.stdenv.isDarwin {
+  system.defaults = {
     dock.orientation = "left";
   };
 
@@ -26,15 +25,11 @@
     programs.fish.shellAliases = {
       blog = "cd ~/Documents/chen-gz.github.io";
       cf = "cd ~/Documents/cf_template && hx main.cpp";
-      gg_update =
-        let
-          config = if pkgs.stdenv.isDarwin then "gg-mac" else "gg-linux";
-        in
-        "~/.config/nix-darwin/bootstrap.sh update && ~/.config/nix-darwin/bootstrap.sh deploy ${config}";
+      gg_update = "~/.config/nix-darwin/bootstrap.sh update && ~/.config/nix-darwin/bootstrap.sh deploy gg-mac";
     };
 
     # SSH specific to guangzong
-    programs.ssh.matchBlocks = lib.mkIf pkgs.stdenv.isDarwin {
+    programs.ssh.matchBlocks = {
       "connie" = {
         hostname = "connies-mac-mini";
         user = "connie";
