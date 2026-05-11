@@ -19,7 +19,6 @@
       nerd-fonts.jetbrains-mono
       zellij
       zig
-      lmstudio
       telegram-desktop
     ]
     ++ (

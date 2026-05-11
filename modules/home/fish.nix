@@ -54,6 +54,15 @@
           fish_add_path --prepend --global /run/current-system/sw/bin
       end
 
+      # Homebrew setup
+      if test (uname) = "Darwin"
+          if test -d /opt/homebrew/bin
+              eval (/opt/homebrew/bin/brew shellenv)
+          else if test -d /usr/local/bin
+              eval (/usr/local/bin/brew shellenv)
+          end
+      end
+
       # On non-NixOS Linux, Home Manager installs packages to ~/.nix-profile/bin
       if test -d ~/.nix-profile/bin
           fish_add_path --prepend --global ~/.nix-profile/bin

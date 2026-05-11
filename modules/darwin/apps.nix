@@ -9,18 +9,16 @@
 
     brews = [
       "mas"
-      "zeroclaw"
     ]; # Mac App Store CLI
     taps = [
-      "homebrew/cask"
-      # "homebrew/cask-fonts" # 如果你还装了字体
+      # Taps are managed by nix-homebrew in common.nix
     ];
     casks = [
-      "steam"
-      "google-chrome"
-      "sublime-merge"
+      # "steam"
+      # "google-chrome"
+      # "sublime-merge"
       "raycast"
-      "discord"
+      # "discord"
       "iina"
       "google-drive"
       "wechat"

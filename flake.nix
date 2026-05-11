@@ -8,6 +8,17 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
+    nix-homebrew.inputs.nixpkgs.follows = "nixpkgs";
+    nix-homebrew.inputs.brew-src.follows = "brew-src";
+
+    brew-src = {
+      url = "github:homebrew/brew";
+      flake = false;
+    };
+    homebrew-bundle = {
+      url = "github:homebrew/homebrew-bundle";
+      flake = false;
+    };
     homebrew-core = {
       url = "github:homebrew/homebrew-core";
       flake = false;
@@ -25,6 +36,10 @@
       nixpkgs,
       home-manager,
       nix-homebrew,
+      brew-src,
+      homebrew-bundle,
+      homebrew-core,
+      homebrew-cask,
       ...
     }:
     let
