@@ -113,12 +113,11 @@ deploy() {
     fi
     
     echo "🍎 Detected macOS. Deploying nix-darwin configuration (${FLAKE_NAME})..."
-    # Re-using the exact command from justfile/bootstrap but ensuring we point to TARGET_DIR
-    # Use sudo only if not using target-host (remote deployment handles its own auth)
+    # Use sudo to ensure we have permissions, but pass through necessary environment variables
     if [[ "$*" == *"--target-host"* ]]; then
         nix run nix-darwin -- switch --flake "${TARGET_DIR}#${FLAKE_NAME}" "$@"
     else
-        sudo NIX_CONFIG="$NIX_CONFIG" nix run nix-darwin -- switch --flake "${TARGET_DIR}#${FLAKE_NAME}" "$@"
+        sudo NIX_CONFIG="$NIX_CONFIG" NIXPKGS_ALLOW_UNFREE="$NIXPKGS_ALLOW_UNFREE" bash -c "ulimit -n 4096 2>/dev/null || true; nix run nix-darwin -- switch --flake '${TARGET_DIR}#${FLAKE_NAME}' $*"
     fi
 }
 
@@ -139,7 +138,10 @@ format() {
 
 clean() {
     log "Cleaning up old generations and garbage collecting..."
+    log "Cleaning user generations..."
     nix-collect-garbage -d
+    log "Cleaning system generations (requires sudo)..."
+    sudo nix-collect-garbage -d
 }
 
 list_configs() {

@@ -130,9 +130,24 @@ fn deploy(io: Io, allocator: std.mem.Allocator, target_dir: []const u8, flake_na
     const flake_path = try std.fmt.allocPrint(allocator, "{s}#{s}", .{ target_dir, flake_name });
     defer allocator.free(flake_path);
 
+    log("Building and switching configuration...");
+    // We use a bash wrapper to ensure ulimit and environment variables are passed through sudo
     var args_list = std.ArrayListUnmanaged([]const u8){ .items = &.{}, .capacity = 0 };
-    try args_list.appendSlice(allocator, &.{ "sudo", "nix", "run", "nix-darwin", "--", "switch", "--flake", flake_path });
-    try args_list.appendSlice(allocator, extra_args);
+    try args_list.appendSlice(allocator, &.{ "sudo", "NIX_CONFIG=experimental-features = nix-command flakes", "NIXPKGS_ALLOW_UNFREE=1", "bash", "-c" });
+    
+    const cmd = try std.fmt.allocPrint(allocator, "ulimit -n 4096 2>/dev/null || true; nix run nix-darwin -- switch --flake '{s}'", .{flake_path});
+    defer allocator.free(cmd);
+    
+    // Append extra args to the command string
+    var full_cmd = std.ArrayListUnmanaged(u8){ .items = &.{}, .capacity = 0 };
+    defer full_cmd.deinit(allocator);
+    try full_cmd.appendSlice(allocator, cmd);
+    for (extra_args) |arg| {
+        try full_cmd.append(allocator, ' ');
+        try full_cmd.appendSlice(allocator, arg);
+    }
+    
+    try args_list.append(allocator, try full_cmd.toOwnedSlice(allocator));
 
     try run(io, args_list.toOwnedSlice(allocator) catch unreachable, null, environ_map);
 }
@@ -203,7 +218,12 @@ pub fn main(init: std.process.Init) !void {
         .update => try run(io, &.{ "nix", "flake", "update" }, target_dir, environ_map),
         .check => try run(io, &.{ "nix", "flake", "check" }, target_dir, environ_map),
         .format => try run(io, &.{ "nix", "fmt" }, target_dir, environ_map),
-        .clean => try run(io, &.{ "nix-collect-garbage", "-d" }, null, environ_map),
+        .clean => {
+            log("Cleaning user generations...");
+            try run(io, &.{ "nix-collect-garbage", "-d" }, null, environ_map);
+            log("Cleaning system generations (requires sudo)...;");
+            try run(io, &.{ "sudo", "nix-collect-garbage", "-d" }, null, environ_map);
+        },
         .help => printHelp(),
         .deploy => {
             if (result.positionals.len < 1) {
