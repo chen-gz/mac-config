@@ -35,6 +35,7 @@
       "jordanbaird-ice"
       # "tailscale"
       "telegram"
+      "bitwarden"
     ];
     masApps = {
     };
