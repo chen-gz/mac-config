@@ -1,4 +1,9 @@
-{ pkgs, lib, username, ... }:
+{
+  pkgs,
+  lib,
+  username,
+  ...
+}:
 
 {
   nixpkgs.config.allowUnfree = true;
@@ -53,7 +58,7 @@
     dock.orientation = lib.mkDefault "bottom";
     dock.show-recents = false;
     dock.persistent-apps = [
-      "/System/Applications/Launchpad.app"
+      # "/System/Applications/Launchpad.app"
       "/System/Applications/Mail.app"
       "/Applications/Google Chrome.app"
       "/System/Applications/Calendar.app"
