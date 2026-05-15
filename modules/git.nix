@@ -16,6 +16,9 @@
       color = {
         ui = "auto";
       };
+      gpg = {
+        program = "${pkgs.sequoia-chameleon-gnupg}/bin/gpg";
+      };
     };
   };
   programs.delta = {

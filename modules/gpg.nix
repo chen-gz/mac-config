@@ -1,7 +1,13 @@
 { pkgs, ... }:
 {
+  # Sequoia-PGP 替代方案说明：
+  # 我们安装了 sequoia-chameleon-gnupg 以提供 gpg 接口的 Rust 实现。
+  # Git 已配置为使用 gpg-sq 进行签名。
+  # 对于 SSH Agent，由于 Sequoia 尚未提供成熟的独立 Agent，我们继续沿用 GnuPG 的 gpg-agent 作为后端。
+  
   programs.gpg = {
     enable = true;
+    package = pkgs.sequoia-chameleon-gnupg;
     settings = {
       keyserver = "hkps://keys.openpgp.org";
     };

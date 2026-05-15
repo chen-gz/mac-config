@@ -19,5 +19,6 @@
     zig
     openssh # 确保使用的是最新的 openssh
     gemini-cli
+    sequoia-sq
   ];
 }
