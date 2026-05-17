@@ -10,7 +10,7 @@
     ];
 
     programs.fish.shellAliases = {
-      connie_update = "~/.config/nix-darwin/bootstrap.sh update && ~/.config/nix-darwin/bootstrap.sh deploy connie-mac";
+      connie_update = "cd ~/.config/nix-darwin && zig build run -- update && zig build run -- deploy connie-mac";
     };
 
     programs.git.settings = {

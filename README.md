@@ -4,8 +4,13 @@ My macOS configuration managed by Nix-Darwin.
 
 ## Installation
 
-Run the following command in your terminal:
+Clone the repository and run the bootstrap tool using Zig:
 
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/chen-gz/mac-config/main/bootstrap.sh)"
+git clone https://github.com/chen-gz/mac-config.git ~/.config/nix-darwin
+cd ~/.config/nix-darwin
+# For guangzong-mac
+zig build run -- gg-mac
+# For connie-mac
+zig build run -- connie-mac
 ```
