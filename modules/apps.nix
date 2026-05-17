@@ -3,7 +3,7 @@
 {
   homebrew = {
     enable = true;
-    onActivation.cleanup = "zap";
+    onActivation.cleanup = "uninstall";
     onActivation.autoUpdate = true;
     onActivation.upgrade = true;
 
@@ -11,9 +11,6 @@
       "mas"
     ]; # Mac App Store CLI
     taps = [
-      "homebrew/cask"
-      "homebrew/core"
-      "homebrew/bundle"
     ];
     casks = [
       # "steam"

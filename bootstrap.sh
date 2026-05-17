@@ -19,7 +19,7 @@ else
 fi
 
 # Enable experimental features for all Nix commands
-export NIX_CONFIG="experimental-features = nix-command flakes"
+export NIX_CONFIG="experimental-features=nix-command flakes"
 export NIXPKGS_ALLOW_UNFREE=1
 
 # Colors
@@ -115,9 +115,9 @@ deploy() {
     echo "🍎 Detected macOS. Deploying nix-darwin configuration (${FLAKE_NAME})..."
     # Use sudo to ensure we have permissions, but pass through necessary environment variables
     if [[ "$*" == *"--target-host"* ]]; then
-        nix run nix-darwin -- switch --flake "${TARGET_DIR}#${FLAKE_NAME}" "$@"
+        nix run github:LnL7/nix-darwin -- switch --flake "${TARGET_DIR}#${FLAKE_NAME}" "$@"
     else
-        sudo NIX_CONFIG="$NIX_CONFIG" NIXPKGS_ALLOW_UNFREE="$NIXPKGS_ALLOW_UNFREE" bash -c "ulimit -n 4096 2>/dev/null || true; nix run nix-darwin -- switch --flake '${TARGET_DIR}#${FLAKE_NAME}' $*"
+        sudo -H NIX_CONFIG="$NIX_CONFIG" NIXPKGS_ALLOW_UNFREE="$NIXPKGS_ALLOW_UNFREE" bash -c "ulimit -n 4096 2>/dev/null || true; nix run github:LnL7/nix-darwin -- switch --flake '${TARGET_DIR}#${FLAKE_NAME}' $*"
     fi
 }
 

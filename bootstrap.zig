@@ -47,7 +47,19 @@ fn run(io: Io, cmd_args: []const []const u8, cwd: ?[]const u8, environ_map: *pro
     }
 }
 
-fn getTargetDir(allocator: std.mem.Allocator, environ_map: *process.Environ.Map) ![]const u8 {
+fn getTargetDir(io: Io, allocator: std.mem.Allocator, environ_map: *process.Environ.Map) ![]const u8 {
+    // 1. Check if we are running from a directory with flake.nix
+    var buf: [posix.PATH_MAX]u8 = undefined;
+    const n = try std.process.currentPath(io, &buf);
+    const cwd = buf[0..n];
+    const flake_path = try std.fs.path.join(allocator, &.{ cwd, "flake.nix" });
+    defer allocator.free(flake_path);
+    
+    if (std.Io.Dir.accessAbsolute(io, flake_path, .{})) |_| {
+        return try allocator.dupe(u8, cwd);
+    } else |_| {}
+
+    // 2. Fallback to default target dir in HOME
     const home = environ_map.get("HOME") orelse return error.HomeNotFound;
     return try std.fs.path.join(allocator, &.{ home, DEFAULT_TARGET_DIR });
 }
@@ -133,9 +145,9 @@ fn deploy(io: Io, allocator: std.mem.Allocator, target_dir: []const u8, flake_na
     log("Building and switching configuration...");
     // We use a bash wrapper to ensure ulimit and environment variables are passed through sudo
     var args_list = std.ArrayListUnmanaged([]const u8){ .items = &.{}, .capacity = 0 };
-    try args_list.appendSlice(allocator, &.{ "sudo", "NIX_CONFIG=experimental-features = nix-command flakes", "NIXPKGS_ALLOW_UNFREE=1", "bash", "-c" });
+    try args_list.appendSlice(allocator, &.{ "sudo", "-H", "NIX_CONFIG=experimental-features = nix-command flakes", "NIXPKGS_ALLOW_UNFREE=1", "bash", "-c" });
     
-    const cmd = try std.fmt.allocPrint(allocator, "ulimit -n 4096 2>/dev/null || true; nix run nix-darwin -- switch --flake '{s}'", .{flake_path});
+    const cmd = try std.fmt.allocPrint(allocator, "ulimit -n 4096 2>/dev/null || true; nix run github:LnL7/nix-darwin -- switch --flake '{s}'", .{flake_path});
     defer allocator.free(cmd);
     
     // Append extra args to the command string
@@ -207,7 +219,7 @@ pub fn main(init: std.process.Init) !void {
         return;
     }
 
-    const target_dir = try getTargetDir(arena, environ_map);
+    const target_dir = try getTargetDir(io, arena, environ_map);
 
     const verb = result.verb orelse {
         printHelp();
@@ -221,7 +233,7 @@ pub fn main(init: std.process.Init) !void {
         .clean => {
             log("Cleaning user generations...");
             try run(io, &.{ "nix-collect-garbage", "-d" }, null, environ_map);
-            log("Cleaning system generations (requires sudo)...;");
+            log("Cleaning system generations (requires sudo)...");
             try run(io, &.{ "sudo", "nix-collect-garbage", "-d" }, null, environ_map);
         },
         .help => printHelp(),

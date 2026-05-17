@@ -13,7 +13,18 @@
     fish
     git
   ];
-  nix.enable = false;
+
+  nix = {
+    enable = false;
+    # package = pkgs.nix;
+    # settings = {
+    #   experimental-features = [
+    #     "nix-command"
+    #     "flakes"
+    #   ];
+    #   warn-dirty = false;
+    # };
+  };
 
   system.primaryUser = username;
 
@@ -28,21 +39,21 @@
     text = ''
       if [ -f /etc/shells ] && [ ! -L /etc/shells ]; then
         echo "Backing up /etc/shells to /etc/shells.before-nix-darwin"
-        sudo mv /etc/shells /etc/shells.before-nix-darwin
+        mv /etc/shells /etc/shells.before-nix-darwin
       fi
       if [ -f /etc/bashrc ] && [ ! -L /etc/bashrc ]; then
         echo "Backing up /etc/bashrc to /etc/bashrc.before-nix-darwin"
-        sudo mv /etc/bashrc /etc/bashrc.before-nix-darwin
+        mv /etc/bashrc /etc/bashrc.before-nix-darwin
       fi
       if [ -f /etc/zshrc ] && [ ! -L /etc/zshrc ]; then
         echo "Backing up /etc/zshrc to /etc/zshrc.before-nix-darwin"
-        sudo mv /etc/zshrc /etc/zshrc.before-nix-darwin
+        mv /etc/zshrc /etc/zshrc.before-nix-darwin
       fi
 
       # Force update user shell to nix-managed fish
       if [ "$(dscl . -read /Users/${username} UserShell | awk '{print $2}')" != "/run/current-system/sw/bin/fish" ]; then
         echo "Updating user shell to /run/current-system/sw/bin/fish"
-        sudo dscl . -create /Users/${username} UserShell /run/current-system/sw/bin/fish
+        dscl . -create /Users/${username} UserShell /run/current-system/sw/bin/fish
       fi
     '';
   };
