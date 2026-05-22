@@ -286,6 +286,8 @@ pub fn main(init: std.process.Init) !void {
                 err("Config name required for deploy");
                 return;
             }
+            try ensureConfig(io, target_dir, environ_map);
+            try ensureJujutsu(io, target_dir, environ_map);
             try deploy(io, arena, target_dir, result.positionals[0], result.positionals[1..], environ_map);
         },
         .@"gg-mac" => {

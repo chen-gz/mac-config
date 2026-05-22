@@ -1,0 +1,39 @@
+name: Release Bootstrap Binary
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Bootstrap Binary
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Zig
+        uses: mlugg/setup-zig@v1
+        with:
+          version: 0.13.0
+
+      - name: Build
+        run: zig build -Doptimize=ReleaseSafe
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bootstrap-macos
+          path: zig-out/bin/bootstrap
+
+      - name: Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: zig-out/bin/bootstrap
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
