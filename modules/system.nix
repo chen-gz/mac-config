@@ -69,6 +69,7 @@
     dock.orientation = lib.mkDefault "bottom";
     dock.show-recents = false;
     dock.persistent-apps = [
+      "/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app"
       # "/System/Applications/Launchpad.app"
       "/System/Applications/Mail.app"
       "/Applications/Google Chrome.app"

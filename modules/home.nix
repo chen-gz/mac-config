@@ -6,6 +6,7 @@
     ./git.nix
     ./gpg.nix
     ./helix.nix
+    ./jujutsu.nix
     ./tmux.nix
     ./tools.nix
     ./packages.nix
