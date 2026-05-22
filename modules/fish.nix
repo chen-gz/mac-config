@@ -16,8 +16,8 @@
       gc = "gemini --yolo";
       G = "gemini";
       vi = "hx";
-      vim = "hx";
       lg = "lazygit";
+      lj = "lazyjj";
       nixconf = "cd ~/.config/nix-darwin";
 
       dr = "devbox run";

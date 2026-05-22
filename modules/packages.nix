@@ -21,5 +21,6 @@
     gemini-cli
     sequoia-sq
     antigravity
+    lazyjj
   ];
 }
