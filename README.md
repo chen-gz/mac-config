@@ -14,4 +14,18 @@ zig build run -- gg-mac
 # For connie-mac
 zig build run -- connie-mac
 ```
-# test
+## Features
+
+- **Nix-Darwin & Home Manager**: Unified system and user-level configuration.
+- **Agentic Workflow**: Integrated with `gemini-cli` and `antigravity` using custom global rules.
+- **Jujutsu (jj)**: Modern version control with automatic snapshots and TUI support via `lazyjj`.
+- **Fish Shell**: Optimized shell with productive aliases (`lg` for lazygit, `lj` for lazyjj).
+- **Editor**: Helix (`hx`) as the primary editor.
+
+## Agent Rules
+
+This project enforces a structured agentic workflow defined in `~/.gemini/GEMINI.md`:
+1. Always use `jj` for version control.
+2. Automatic `jj log` snapshots after any file modification.
+3. Logical task summaries via `jj describe` upon completion.
+
