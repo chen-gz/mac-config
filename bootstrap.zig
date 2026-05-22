@@ -119,6 +119,50 @@ fn ensureConfig(io: Io, target_dir: []const u8, environ_map: *process.Environ.Ma
     }
 }
 
+fn ensureJujutsu(io: Io, target_dir: []const u8, environ_map: *process.Environ.Map) !void {
+    // Check if jj is installed
+    {
+        var child = process.spawn(io, .{
+            .argv = &.{ "which", "jj" },
+            .stdout = .ignore,
+            .stderr = .ignore,
+        }) catch |e| return e;
+        const term = try child.wait(io);
+        if (term != .exited or term.exited != 0) return;
+    }
+
+    // Check if it is already a jj repo
+    {
+        var jj_path_buf: [posix.PATH_MAX]u8 = undefined;
+        const jj_path = try std.fmt.bufPrint(&jj_path_buf, "{s}/.jj", .{target_dir});
+        
+        var child = process.spawn(io, .{
+            .argv = &.{ "ls", "-d", jj_path },
+            .stdout = .ignore,
+            .stderr = .ignore,
+        }) catch |e| return e;
+        const term = try child.wait(io);
+        if (term == .exited and term.exited == 0) return;
+    }
+
+    // Check if it is a git repo
+    {
+        var git_path_buf: [posix.PATH_MAX]u8 = undefined;
+        const git_path = try std.fmt.bufPrint(&git_path_buf, "{s}/.git", .{target_dir});
+        
+        var child = process.spawn(io, .{
+            .argv = &.{ "ls", "-d", git_path },
+            .stdout = .ignore,
+            .stderr = .ignore,
+        }) catch |e| return e;
+        const term = try child.wait(io);
+        if (term != .exited or term.exited != 0) return;
+    }
+
+    log("Initializing Jujutsu (jj) repository...");
+    try run(io, &.{ "jj", "git", "init", "--git-repo", "." }, target_dir, environ_map);
+}
+
 fn deploy(io: Io, allocator: std.mem.Allocator, target_dir: []const u8, flake_name: []const u8, extra_args: []const []const u8, environ_map: *process.Environ.Map) !void {
     log("Deploying configuration...");
     
@@ -247,12 +291,14 @@ pub fn main(init: std.process.Init) !void {
         .@"gg-mac" => {
             try installNix(io, environ_map);
             try ensureConfig(io, target_dir, environ_map);
+            try ensureJujutsu(io, target_dir, environ_map);
             try deploy(io, arena, target_dir, "gg-mac", result.positionals, environ_map);
             success("Setup complete! Please restart your shell.");
         },
         .@"connie-mac" => {
             try installNix(io, environ_map);
             try ensureConfig(io, target_dir, environ_map);
+            try ensureJujutsu(io, target_dir, environ_map);
             try deploy(io, arena, target_dir, "connie-mac", result.positionals, environ_map);
             success("Setup complete! Please restart your shell.");
         },
