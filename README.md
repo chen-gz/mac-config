@@ -14,3 +14,4 @@ zig build run -- gg-mac
 # For connie-mac
 zig build run -- connie-mac
 ```
+# test
