@@ -33,6 +33,7 @@
       # "tailscale"
       "telegram"
       "bitwarden"
+      "antigravity-cli"
     ];
     masApps = {
     };
