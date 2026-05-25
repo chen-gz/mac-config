@@ -13,8 +13,8 @@
       ls = "eza --icons --git";
       # lst = "eza --icons --git --tree";
       cat = "bat";
-      gc = "gemini --yolo";
-      G = "gemini";
+      G = "agy";
+      gemini = "agy";
       vi = "hx";
       lg = "lazygit";
       lj = "lazyjj";

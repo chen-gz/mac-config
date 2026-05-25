@@ -25,7 +25,7 @@
   home.file.".gemini/GEMINI.md".text = ''
     # Global Instructions
 
-    - For both `gemini-cli` and `antigravity`, always run `jj log` immediately after modifying any files to save the current work and maintain visibility of the version control state.
+    - For both `gemini` and `antigravity`, always run `jj log` immediately after modifying any files to save the current work and maintain visibility of the version control state.
     - Always use `jj` (Jujutsu) for version control operations.
     - Prefer `jj git clone <url>` over `git clone <url>` for initial setup.
     - Upon completing a logical task or a significant phase, always use `jj describe -m "..."` to provide a clear, structured summary of the changes made, ensuring the history is readable and meaningful.
