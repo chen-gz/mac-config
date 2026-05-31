@@ -10,6 +10,7 @@
       ui = {
         default-command = "log";
         pager = "delta";
+        diff-formatter = ":git";
       };
       core = {
         # Using Sequoia chameleon GPG
