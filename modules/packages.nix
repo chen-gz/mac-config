@@ -3,7 +3,7 @@
   home.packages = with pkgs; [
     libfido2 # 提供 FIDO2 支持的库
     just
-    devbox
+    devenv
     just-lsp
     pay-respects
     ripgrep

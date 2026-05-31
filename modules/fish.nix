@@ -20,8 +20,8 @@
       lj = "lazyjj";
       nixconf = "cd ~/.config/nix-darwin";
 
-      dr = "devbox run";
-      ds = "devbox shell";
+      dr = "devenv tasks run";
+      ds = "devenv shell";
       top = "btop";
       jq = "jql";
       df = "duf";
