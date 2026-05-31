@@ -224,7 +224,8 @@ const Verb = union(enum) {
     deploy: struct {},
     help: struct {},
     // Allow bootstrap directly via config names as subcommands
-    @"gg-mac": struct {},
+    @"gg-mac-mini": struct {},
+    @"gg-mac-air": struct {},
     @"connie-mac": struct {},
 };
 
@@ -241,7 +242,8 @@ fn printHelp() void {
         \\  help            Show this help
         \\
         \\Configs (as subcommands):
-        \\  gg-mac          Full bootstrap for guangzong-mac
+        \\  gg-mac-mini     Full bootstrap for guangzong-mac-mini
+        \\  gg-mac-air      Full bootstrap for guangzong-mac-air
         \\  connie-mac      Full bootstrap for connie-mac
         \\
     , .{});
@@ -290,11 +292,18 @@ pub fn main(init: std.process.Init) !void {
             try ensureJujutsu(io, target_dir, environ_map);
             try deploy(io, arena, target_dir, result.positionals[0], result.positionals[1..], environ_map);
         },
-        .@"gg-mac" => {
+        .@"gg-mac-mini" => {
             try installNix(io, environ_map);
             try ensureConfig(io, target_dir, environ_map);
             try ensureJujutsu(io, target_dir, environ_map);
-            try deploy(io, arena, target_dir, "gg-mac", result.positionals, environ_map);
+            try deploy(io, arena, target_dir, "gg-mac-mini", result.positionals, environ_map);
+            success("Setup complete! Please restart your shell.");
+        },
+        .@"gg-mac-air" => {
+            try installNix(io, environ_map);
+            try ensureConfig(io, target_dir, environ_map);
+            try ensureJujutsu(io, target_dir, environ_map);
+            try deploy(io, arena, target_dir, "gg-mac-air", result.positionals, environ_map);
             success("Setup complete! Please restart your shell.");
         },
         .@"connie-mac" => {

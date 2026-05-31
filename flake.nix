@@ -36,11 +36,29 @@
       formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
 
       darwinConfigurations = {
-        "gg-mac" = nix-darwin.lib.darwinSystem {
+        "gg-mac-mini" = nix-darwin.lib.darwinSystem {
           system = "aarch64-darwin";
           specialArgs = {
             inherit inputs;
             username = "guangzong";
+            hostname = "gg-mac-mini";
+            lib = nixpkgs.lib.extend (l: _: {
+              hm = home-manager.lib.hm;
+            });
+          };
+          modules = [
+            ./modules/darwin.nix
+            ./modules/media.nix
+            ./guangzong.nix
+          ];
+        };
+
+        "gg-mac-air" = nix-darwin.lib.darwinSystem {
+          system = "aarch64-darwin";
+          specialArgs = {
+            inherit inputs;
+            username = "guangzong";
+            hostname = "gg-mac-air";
             lib = nixpkgs.lib.extend (l: _: {
               hm = home-manager.lib.hm;
             });
@@ -56,6 +74,7 @@
           specialArgs = {
             inherit inputs;
             username = "connie";
+            hostname = "connie-mac";
             lib = nixpkgs.lib.extend (l: _: {
               hm = home-manager.lib.hm;
             });

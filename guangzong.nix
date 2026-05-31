@@ -2,6 +2,7 @@
   pkgs,
   lib,
   config,
+  hostname,
   ...
 }:
 {
@@ -25,8 +26,8 @@
     programs.fish.shellAliases = {
       blog = "cd ~/Documents/chen-gz.github.io";
       cf = "cd ~/Documents/cf_template && hx main.cpp";
-      gg_update = "~/.config/nix-darwin/zig-out/bin/bootstrap update && ~/.config/nix-darwin/zig-out/bin/bootstrap deploy gg-mac";
-      gg_deploy = "~/.config/nix-darwin/zig-out/bin/bootstrap deploy gg-mac";
+      gg_update = "~/.config/nix-darwin/zig-out/bin/bootstrap update && ~/.config/nix-darwin/zig-out/bin/bootstrap deploy ${hostname}";
+      gg_deploy = "~/.config/nix-darwin/zig-out/bin/bootstrap deploy ${hostname}";
       gg_clean = "~/.config/nix-darwin/zig-out/bin/bootstrap clean";
     };
 
