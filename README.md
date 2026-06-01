@@ -39,3 +39,13 @@ This project enforces a structured agentic workflow defined in `~/.gemini/GEMINI
 2. Automatic `jj log` snapshots after any file modification.
 3. Logical task summaries via `jj describe` upon completion.
 
+## Keybindings & Aliases (快捷键与别名)
+
+For a complete and detailed list of preset shortcuts, see [keyboard.md](keyboard.md). Below is a quick summary of the core presets:
+
+- **Tmux Navigation**: Prefix key is mapped to `Ctrl + a`. Direct pane switching using `Ctrl + h/j/k/l` (no prefix required).
+- **Helix Editor**: Press `jj` or `jk` in insert mode to return to normal mode; `q` in normal mode quits.
+- **Fish Shell**: Highly productive aliases like `vi` (`hx`), `lg` (`lazygit`), `lj` (`lazyjj`), and a smart directory navigator `y` (`yazi`).
+- **Fish & FZF Helpers**: Use `Alt + c` to search/cd into subdirectories, `Alt + l` to list directory contents, and `Alt + d` to delete the next word or list history.
+- **Antigravity CLI**: Preset keybindings for AI coding workspace management, including `Ctrl + k` (approve subagent) and `Ctrl + o` (toggle trajectory panel).
+
