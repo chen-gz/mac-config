@@ -8,10 +8,18 @@
       "sonarr"
       "sabnzbd"
       "prowlarr"
-      "bazarr"
     ];
     brews = [
-      "caddy"
+      {
+        name = "caddy";
+        start_service = true;
+        restart_service = "changed";
+      }
+      {
+        name = "bazarr";
+        start_service = true;
+        restart_service = "changed";
+      }
     ];
   };
 
