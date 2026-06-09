@@ -33,4 +33,48 @@
       fi
     '';
   };
+
+  # 配置 launchd 用户代理，实现开机自启（登录时启动）
+  launchd.user.agents = {
+    radarr = {
+      serviceConfig = {
+        ProgramArguments = [ "/Applications/Radarr.app/Contents/MacOS/Radarr" "-nobrowser" ];
+        KeepAlive = true;
+        RunAtLoad = true;
+        ProcessType = "Background";
+        StandardOutPath = "/tmp/radarr.out.log";
+        StandardErrorPath = "/tmp/radarr.err.log";
+      };
+    };
+    sonarr = {
+      serviceConfig = {
+        ProgramArguments = [ "/Applications/Sonarr.app/Contents/MacOS/Sonarr" "-nobrowser" ];
+        KeepAlive = true;
+        RunAtLoad = true;
+        ProcessType = "Background";
+        StandardOutPath = "/tmp/sonarr.out.log";
+        StandardErrorPath = "/tmp/sonarr.err.log";
+      };
+    };
+    prowlarr = {
+      serviceConfig = {
+        ProgramArguments = [ "/Applications/Prowlarr.app/Contents/MacOS/Prowlarr" "-nobrowser" ];
+        KeepAlive = true;
+        RunAtLoad = true;
+        ProcessType = "Background";
+        StandardOutPath = "/tmp/prowlarr.out.log";
+        StandardErrorPath = "/tmp/prowlarr.err.log";
+      };
+    };
+    sabnzbd = {
+      serviceConfig = {
+        ProgramArguments = [ "/Applications/SABnzbd.app/Contents/MacOS/SABnzbd" "--browser" "0" ];
+        KeepAlive = true;
+        RunAtLoad = true;
+        ProcessType = "Background";
+        StandardOutPath = "/tmp/sabnzbd.out.log";
+        StandardErrorPath = "/tmp/sabnzbd.err.log";
+      };
+    };
+  };
 }

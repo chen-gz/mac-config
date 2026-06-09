@@ -31,6 +31,22 @@
       gpgrestart = "gpg-connect-agent reloadagent /bye && ssh-add -D";
       clean = "atuin search --exclude-exit=0 \"\" --delete";
       dcgen = "devenv eval devcontainer.settings | jq '\"devcontainer.settings\"' > .devcontainer.json";
+
+      # Media Stack Services Control
+      radarr-start = "launchctl bootstrap gui/(id -u) ~/Library/LaunchAgents/org.nixos.radarr.plist";
+      radarr-stop = "launchctl bootout gui/(id -u) ~/Library/LaunchAgents/org.nixos.radarr.plist";
+      sonarr-start = "launchctl bootstrap gui/(id -u) ~/Library/LaunchAgents/org.nixos.sonarr.plist";
+      sonarr-stop = "launchctl bootout gui/(id -u) ~/Library/LaunchAgents/org.nixos.sonarr.plist";
+      prowlarr-start = "launchctl bootstrap gui/(id -u) ~/Library/LaunchAgents/org.nixos.prowlarr.plist";
+      prowlarr-stop = "launchctl bootout gui/(id -u) ~/Library/LaunchAgents/org.nixos.prowlarr.plist";
+      sabnzbd-start = "launchctl bootstrap gui/(id -u) ~/Library/LaunchAgents/org.nixos.sabnzbd.plist";
+      sabnzbd-stop = "launchctl bootout gui/(id -u) ~/Library/LaunchAgents/org.nixos.sabnzbd.plist";
+
+      # Direct foreground running
+      radarr-run = "/Applications/Radarr.app/Contents/MacOS/Radarr -nobrowser";
+      sonarr-run = "/Applications/Sonarr.app/Contents/MacOS/Sonarr -nobrowser";
+      prowlarr-run = "/Applications/Prowlarr.app/Contents/MacOS/Prowlarr -nobrowser";
+      sabnzbd-run = "/Applications/SABnzbd.app/Contents/MacOS/SABnzbd --browser 0";
     };
 
     functions = {
