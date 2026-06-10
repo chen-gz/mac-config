@@ -30,7 +30,7 @@
       "monitorcontrol"
       "fluor"
       "jordanbaird-ice"
-      # "tailscale"
+      "tailscale"
       "telegram"
       "bitwarden"
       "antigravity-cli"
