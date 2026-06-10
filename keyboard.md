@@ -59,8 +59,8 @@
 | `gpgrestart` | `gpg-connect-agent reloadagent /bye && ssh-add -D` | 重启 gpg-agent 并重置 ssh 密钥 |
 | `clean` | `atuin search --exclude-exit=0 "" --delete` | 清理命令行历史记录 |
 | `dcgen` | `devenv eval devcontainer.settings \| jq '"devcontainer.settings"' > .devcontainer.json` | 导出并生成 devcontainer 配置文件 |
-| `gg_update` | `~/.config/nix-darwin/zig-out/bin/bootstrap update && ~/.config/nix-darwin/zig-out/bin/bootstrap deploy gg-mac` | 更新并部署当前 Mac 配置 |
-| `gg_deploy` | `~/.config/nix-darwin/zig-out/bin/bootstrap deploy gg-mac` | 部署当前 Mac 配置 |
+| `gg_update` | `~/.config/nix-darwin/zig-out/bin/bootstrap update && ~/.config/nix-darwin/zig-out/bin/bootstrap deploy <hostname>` | 更新并部署当前 Mac 配置 |
+| `gg_deploy` | `~/.config/nix-darwin/zig-out/bin/bootstrap deploy <hostname>` | 部署当前 Mac 配置 |
 | `gg_clean` | `~/.config/nix-darwin/zig-out/bin/bootstrap clean` | 清理配置编译残留 |
 
 ---
