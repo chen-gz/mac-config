@@ -6,6 +6,7 @@
     casks = [
       "radarr"
       "sonarr"
+      "jellyfin"
       "sabnzbd"
       "prowlarr"
     ];
@@ -38,7 +39,10 @@
   launchd.user.agents = {
     radarr = {
       serviceConfig = {
-        ProgramArguments = [ "/Applications/Radarr.app/Contents/MacOS/Radarr" "-nobrowser" ];
+        ProgramArguments = [
+          "/Applications/Radarr.app/Contents/MacOS/Radarr"
+          "-nobrowser"
+        ];
         KeepAlive = true;
         RunAtLoad = true;
         ProcessType = "Background";
@@ -48,7 +52,10 @@
     };
     sonarr = {
       serviceConfig = {
-        ProgramArguments = [ "/Applications/Sonarr.app/Contents/MacOS/Sonarr" "-nobrowser" ];
+        ProgramArguments = [
+          "/Applications/Sonarr.app/Contents/MacOS/Sonarr"
+          "-nobrowser"
+        ];
         KeepAlive = true;
         RunAtLoad = true;
         ProcessType = "Background";
@@ -58,7 +65,10 @@
     };
     prowlarr = {
       serviceConfig = {
-        ProgramArguments = [ "/Applications/Prowlarr.app/Contents/MacOS/Prowlarr" "-nobrowser" ];
+        ProgramArguments = [
+          "/Applications/Prowlarr.app/Contents/MacOS/Prowlarr"
+          "-nobrowser"
+        ];
         KeepAlive = true;
         RunAtLoad = true;
         ProcessType = "Background";
@@ -68,7 +78,11 @@
     };
     sabnzbd = {
       serviceConfig = {
-        ProgramArguments = [ "/Applications/SABnzbd.app/Contents/MacOS/SABnzbd" "--browser" "0" ];
+        ProgramArguments = [
+          "/Applications/SABnzbd.app/Contents/MacOS/SABnzbd"
+          "--browser"
+          "0"
+        ];
         KeepAlive = true;
         RunAtLoad = true;
         ProcessType = "Background";
