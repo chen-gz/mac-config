@@ -16,11 +16,14 @@
         start_service = true;
         restart_service = "changed";
       }
+      "cloudflared"
     ];
   };
 
   # 安装 Nix 版本的 caddy
-  environment.systemPackages = [ pkgs.caddy ];
+  environment.systemPackages = [
+    pkgs.caddy
+  ];
 
   # 声明式管理 Caddyfile
   environment.etc."caddy/Caddyfile".text = ''
@@ -59,6 +62,20 @@
       RunAtLoad = true;
       StandardOutPath = "/var/log/caddy.out.log";
       StandardErrorPath = "/var/log/caddy.err.log";
+    };
+  };
+
+  # 使用 launchd 管理 cloudflared 系统级服务
+  # Note: The Cloudflare tunnel token must be manually written to /etc/cloudflare-token
+  # (e.g., echo "TOKEN" | sudo tee /etc/cloudflare-token)
+  launchd.daemons.cloudflared = {
+    command = "/bin/sh -c 'exec /opt/homebrew/bin/cloudflared tunnel --no-autoupdate run --token \"$(cat /etc/cloudflare-token 2>/dev/null)\"'";
+    serviceConfig = {
+      Label = "com.cloudflare.cloudflared";
+      KeepAlive = true;
+      RunAtLoad = true;
+      StandardOutPath = "/var/log/cloudflared.out.log";
+      StandardErrorPath = "/var/log/cloudflared.err.log";
     };
   };
 
