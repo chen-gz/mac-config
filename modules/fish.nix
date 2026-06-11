@@ -77,16 +77,10 @@
       else if test -d /usr/local/bin
           eval (/usr/local/bin/brew shellenv)
       end
-
       set -x GPG_TTY (tty)
       if test -n "$SSH_CONNECTION"
-          # We are on the remote host (connie@10.0.0.107) via SSH
+          # We are on the remote host via SSH: use the forwarded fixed socket path
           set -x SSH_AUTH_SOCK ~/.gnupg/S.gpg-agent.ssh.forward
-          # Ensure the parent directory exists (though it should)
-          # and kill local agent if it exists to allow forward to work
-          # if status is-interactive
-              # gpgconf --kill gpg-agent >/dev/null 2>&1
-          # end
       else
           # Local Mac
           set -x SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)
