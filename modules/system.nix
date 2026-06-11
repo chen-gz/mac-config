@@ -61,6 +61,9 @@
   users.users."${username}" = {
     home = "/Users/${username}";
     shell = pkgs.fish;
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILhfVr5P2p/Iezng+OVxbk78va1UQ4jO0loybQWZnC6P openpgp:0x1E62D0BD"
+    ];
   };
   # users.users."${username}".home = "/Users/${username}";
 
@@ -82,9 +85,15 @@
   };
 
   # SSH Server configuration
-  services.openssh.extraConfig = ''
-    StreamLocalBindUnlink yes
-  '';
+  services.openssh = {
+    enable = true;
+    extraConfig = ''
+      PasswordAuthentication no
+      ChallengeResponseAuthentication no
+      KbdInteractiveAuthentication no
+      StreamLocalBindUnlink yes
+    '';
+  };
 
 
 
