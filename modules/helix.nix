@@ -3,7 +3,7 @@
   programs.helix = {
     enable = true;
     settings = {
-      theme = "catppuccin_frappe_transparent";
+      theme = "catppuccin_mocha";
       editor = {
         text-width = 120;
         soft-wrap = {
@@ -72,10 +72,10 @@
       };
     };
     themes = {
-      catppuccin_frappe_transparent = {
-        "inherits" = "catppuccin_frappe";
-        "ui.background" = { };
-      };
+      # catppuccin_frappe_transparent = {
+      #   "inherits" = "catppuccin_frappe";
+      #   "ui.background" = { };
+      # };
     };
   };
 }
