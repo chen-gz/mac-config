@@ -21,5 +21,6 @@
     sequoia-sq
     antigravity
     lazyjj
+    mdcat
   ];
 }

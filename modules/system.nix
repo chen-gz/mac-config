@@ -68,7 +68,7 @@
   # users.users."${username}".home = "/Users/${username}";
 
   system.defaults = {
-    dock.autohide = false;
+    dock.autohide = true;
     dock.orientation = lib.mkDefault "bottom";
     dock.show-recents = false;
     dock.persistent-apps = [
