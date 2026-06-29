@@ -9,6 +9,7 @@
 
     brews = [
       "mas"
+      "kcov"
     ]; # Mac App Store CLI
     taps = [
     ];
@@ -18,7 +19,6 @@
       "jellyfin-media-player"
       "raycast"
       "iina"
-      "kcov"
       "google-drive"
       "wechat"
       "ollama-app"
