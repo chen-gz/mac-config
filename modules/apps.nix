@@ -18,6 +18,7 @@
       "jellyfin-media-player"
       "raycast"
       "iina"
+      "kcov"
       "google-drive"
       "wechat"
       "ollama-app"

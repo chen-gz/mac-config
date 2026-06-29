@@ -3,7 +3,6 @@
   home.packages = with pkgs; [
     libfido2 # 提供 FIDO2 支持的库
     just
-    kcov
     devenv
     just-lsp
     pay-respects
