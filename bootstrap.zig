@@ -191,7 +191,7 @@ fn deploy(io: Io, allocator: std.mem.Allocator, target_dir: []const u8, flake_na
     var args_list = std.ArrayListUnmanaged([]const u8){ .items = &.{}, .capacity = 0 };
     try args_list.appendSlice(allocator, &.{ "sudo", "-H", "NIX_CONFIG=experimental-features = nix-command flakes", "NIXPKGS_ALLOW_UNFREE=1", "bash", "-c" });
     
-    const cmd = try std.fmt.allocPrint(allocator, "ulimit -n 4096 2>/dev/null || true; nix run github:LnL7/nix-darwin -- switch --flake '{s}'", .{flake_path});
+    const cmd = try std.fmt.allocPrint(allocator, "ulimit -n 4096 2>/dev/null || true; [ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ] && . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh; nix run github:LnL7/nix-darwin -- switch --flake '{s}'", .{flake_path});
     defer allocator.free(cmd);
     
     // Append extra args to the command string
