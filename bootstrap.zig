@@ -226,7 +226,6 @@ const Verb = union(enum) {
     // Allow bootstrap directly via config names as subcommands
     @"gg-mac-mini": struct {},
     @"gg-mac-air": struct {},
-    @"connie-mac": struct {},
 };
 
 fn printHelp() void {
@@ -244,7 +243,6 @@ fn printHelp() void {
         \\Configs (as subcommands):
         \\  gg-mac-mini     Full bootstrap for guangzong-mac-mini
         \\  gg-mac-air      Full bootstrap for guangzong-mac-air
-        \\  connie-mac      Full bootstrap for connie-mac
         \\
     , .{});
 }
@@ -306,12 +304,6 @@ pub fn main(init: std.process.Init) !void {
             try deploy(io, arena, target_dir, "gg-mac-air", result.positionals, environ_map);
             success("Setup complete! Please restart your shell.");
         },
-        .@"connie-mac" => {
-            try installNix(io, environ_map);
-            try ensureConfig(io, target_dir, environ_map);
-            try ensureJujutsu(io, target_dir, environ_map);
-            try deploy(io, arena, target_dir, "connie-mac", result.positionals, environ_map);
-            success("Setup complete! Please restart your shell.");
-        },
+
     }
 }

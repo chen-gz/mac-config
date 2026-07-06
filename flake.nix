@@ -68,22 +68,6 @@
             ./guangzong.nix
           ];
         };
-
-        "connie-mac" = nix-darwin.lib.darwinSystem {
-          system = "aarch64-darwin";
-          specialArgs = {
-            inherit inputs;
-            username = "connie";
-            hostname = "connie-mac";
-            lib = nixpkgs.lib.extend (l: _: {
-              hm = home-manager.lib.hm;
-            });
-          };
-          modules = [
-            ./modules/darwin.nix
-            ./connie.nix
-          ];
-        };
       };
     };
 }
