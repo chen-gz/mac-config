@@ -3,9 +3,14 @@
 - This project uses **Jujutsu (jj)** as the version control system. 
 - Use `jj` for all version control operations.
 - Prefer `jj git clone <url>` over `git clone <url>` for initial setup.
-- Always create a new version tag (e.g., `v1.1`, `v1.2`) whenever `bootstrap.zig` is modified.
-- When creating a new version tag, check the previous version tags first.
-- For major/big updates, the user will explicitly specify the version number.
+- **版本与 Tag 规范 (Versioning & Tagging Rules)**:
+  - 只有在修改 `bootstrap.zig` 且测试通过后，才生成新的版本 Tag（仅修改 Nix 配置文件本身不需要生成 Tag）。
+  - **控制 Tag 增长频率**：在单次开发任务或同一会话中多次修改 `bootstrap.zig` 时，应当在最终交付、通过测试后仅生成**一个**合并后的新 Tag，避免对每一个中间 commit 频繁打 Tag。
+  - **遵循语义化版本 (SemVer) 规范**：使用 `vMAJOR.MINOR.PATCH` 格式（如 `v1.3.1`）：
+    - **MAJOR (主版本)**：重大重构或破坏性变更，需由用户明确指定。
+    - **MINOR (次版本)**：对 `bootstrap.zig` 添加了新功能或新增支持设备（例如从 `v1.3` 升级到 `v1.4`）。
+    - **PATCH (修订版)**：对 `bootstrap.zig` 的 Bug 修复、健壮性优化或微调（应升级为 `v1.3.1`，避免跳版本）。
+  - 在生成新 Tag 前，务必先通过 `git tag -l` 或 `jj tag list` 检查已有版本以正确递增。
 
 ## Project Structure
 
