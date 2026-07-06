@@ -6,10 +6,16 @@ My macOS configuration managed by Nix-Darwin.
 
 ### One-command Setup (Recommended)
 
-Run the following command to bootstrap your environment automatically. This will install Nix, clone this repository, and deploy the configuration:
+Run the following command to bootstrap your environment automatically. This will install Nix, clone this repository, and deploy the configuration.
 
+For **Mac Mini** (`gg-mac-mini`):
 ```bash
 curl -L -O https://github.com/chen-gz/mac-config/releases/latest/download/bootstrap && chmod +x bootstrap && ./bootstrap gg-mac-mini
+```
+
+For **MacBook Air** (`gg-mac-air`):
+```bash
+curl -L -O https://github.com/chen-gz/mac-config/releases/latest/download/bootstrap && chmod +x bootstrap && ./bootstrap gg-mac-air
 ```
 
 ### Manual Installation
@@ -23,8 +29,6 @@ cd ~/.config/nix-darwin
 zig build run -- gg-mac-mini
 # For guangzong-mac-air
 zig build run -- gg-mac-air
-# For connie-mac
-zig build run -- connie-mac
 ```
 ## Features
 
