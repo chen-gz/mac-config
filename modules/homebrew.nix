@@ -18,7 +18,6 @@
       "google-chrome"
       "jellyfin-media-player"
       "raycast"
-      "iina"
       "google-drive"
       "wechat"
       "ollama-app"

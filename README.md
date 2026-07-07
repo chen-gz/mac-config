@@ -55,3 +55,16 @@ For a complete and detailed list of preset shortcuts, see [keyboard.md](keyboard
 - **Fish & FZF Helpers**: Use `Alt + c` to search/cd into subdirectories, `Alt + l` to list directory contents, and `Alt + d` to delete the next word or list history.
 - **Antigravity CLI**: Preset keybindings for AI coding workspace management, including `Ctrl + k` (approve subagent) and `Ctrl + o` (toggle trajectory panel).
 
+## Repository Structure & Package Management
+
+To keep the system clean and modular, packages are split between Homebrew and Nix based on their usage:
+
+- `modules/homebrew.nix`: All Homebrew configuration, taps, casks (GUI applications like Chrome, Ghostty, Raycast), and Mac App Store (mas) apps.
+- `modules/nix-packages.nix`: Declared list of user-level Nix CLI tools (like `ripgrep`, `fd`, `btop`, `yazi`).
+- `modules/system.nix`: System-level packages and core CLI tools (e.g. `fish`, `git`).
+- `modules/media.nix`: Specific packages, daemons (like `caddy`), and configurations for the media stack (Mac Mini only).
+
+### Package Selection Guideline
+1. **Use Nix** (`modules/nix-packages.nix` or specific config files): For CLI tools, languages, and development tooling.
+2. **Use Homebrew** (`modules/homebrew.nix`): For macOS GUI applications, casks, or utilities requiring macOS integration not fully supported by Nix.
+

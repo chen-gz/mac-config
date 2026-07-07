@@ -9,7 +9,7 @@
     ./jujutsu.nix
     ./tmux.nix
     ./tools.nix
-    ./packages.nix
+    ./nix-packages.nix
   ];
 
   home.stateVersion = "25.11";
