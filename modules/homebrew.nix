@@ -8,7 +8,6 @@
     onActivation.upgrade = true;
 
     brews = [
-      "mas"
       "kcov"
     ]; # Mac App Store CLI
     taps = [
