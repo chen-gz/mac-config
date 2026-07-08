@@ -14,7 +14,6 @@
     jql
     duf
     dust
-    nerd-fonts.jetbrains-mono
     zig
     zls
     openssh # 确保使用的是最新的 openssh

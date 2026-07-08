@@ -12,9 +12,11 @@
         pager = "delta";
         diff-formatter = ":git";
       };
-      core = {
-        # Using Sequoia chameleon GPG
-        signing-key = "20AE4BA8FF696FB5E21AE9D0636538D58AF1006D";
+      signing = {
+        sign-all = true;
+        backend = "gpg";
+        key = "20AE4BA8FF696FB5E21AE9D0636538D58AF1006D";
+        backends.gpg.program = "${pkgs.sequoia-chameleon-gnupg}/bin/gpg";
       };
     };
   };
