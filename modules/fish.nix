@@ -20,7 +20,7 @@
       lj = "lazyjj";
       nixconf = "cd ~/.config/nix-darwin";
 
-      push = "jj bookmark set main -r @ && jj git push";
+      push = "if test (jj log -r @ --no-graph -T empty) = true; jj bookmark set main -r @-; else; jj bookmark set main -r @; end; and jj git push";
       dr = "devenv tasks run";
       ds = "devenv shell";
       top = "btop";
