@@ -30,7 +30,6 @@
       "telegram"
       "bitwarden"
       "antigravity-cli"
-      "lm-studio"
     ];
     masApps = {
     };
