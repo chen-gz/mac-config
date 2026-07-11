@@ -19,7 +19,6 @@
       "raycast"
       "google-drive"
       "wechat"
-      "ollama-app"
       "ghostty"
       "zed"
       "db-browser-for-sqlite"

@@ -89,7 +89,6 @@
 
       pay-respects setup --shell fish | source
 
-      set -gx PATH $PATH $HOME/.lmstudio/bin
       source ~/.orbstack/shell/init2.fish 2>/dev/null || :
     '';
   };
