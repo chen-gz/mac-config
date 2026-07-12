@@ -39,6 +39,14 @@
 
         # Set ultimate trust (Sequoia Chameleon 会尽量兼容这些操作)
         echo "$GPG_KEY_ID:6:" | $DRY_RUN_CMD ${pkgs.sequoia-chameleon-gnupg}/bin/gpg --import-ownertrust
+
+        # 同时也导入原生 gpg 密钥库以建立 YubiKey 等智能卡的硬件密钥存根 (Smartcard/YubiKey stubs)
+        $DRY_RUN_CMD ${pkgs.gnupg}/bin/gpg --list-keys $GPG_KEY_ID >/dev/null 2>&1 || 
+          $DRY_RUN_CMD ${pkgs.gnupg}/bin/gpg --keyserver hkps://keys.openpgp.org --recv-keys $GPG_KEY_ID
+        echo "$GPG_KEY_ID:6:" | $DRY_RUN_CMD ${pkgs.gnupg}/bin/gpg --import-ownertrust
+        
+        # 触发 card-status 以让 gpg-agent 建立私钥存根
+        $DRY_RUN_CMD ${pkgs.gnupg}/bin/gpg --card-status >/dev/null 2>&1 || true
       '';
     };
   };

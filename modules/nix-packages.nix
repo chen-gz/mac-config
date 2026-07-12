@@ -6,6 +6,7 @@
     devenv
     just-lsp
     pay-respects
+    nix-index
     ripgrep
     fd
     btop
