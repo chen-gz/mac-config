@@ -11,6 +11,9 @@
     - **MINOR (次版本)**：对 `bootstrap.zig` 添加了新功能或新增支持设备（例如从 `v1.3` 升级到 `v1.4`）。
     - **PATCH (修订版)**：对 `bootstrap.zig` 的 Bug 修复、健壮性优化或微调（应升级为 `v1.3.1`，避免跳版本）。
   - 在生成新 Tag 前，务必先通过 `git tag -l` 或 `jj tag list` 检查已有版本以正确递增。
+- **Voice-to-Text Input Tolerance**: The user dictates requests using voice-to-text, which can introduce typos, grammatical errors, homophones, or mispronounced/poorly transcribed words. The AI must be highly tolerant of these transcription errors, look past surface-level mistakes, and make a best-effort attempt to understand the user's true underlying intent. If the input is completely garbled, ambiguous, or lacks critical context such that it is confusing or impossible to determine the intended action, the AI should ask the user for clarification instead of guessing or making assumptions.
+
+
 
 ## Project Structure
 
