@@ -3,14 +3,14 @@
 - This project uses **Jujutsu (jj)** as the version control system. 
 - Use `jj` for all version control operations.
 - Prefer `jj git clone <url>` over `git clone <url>` for initial setup.
-- **版本与 Tag 规范 (Versioning & Tagging Rules)**:
-  - 只有在修改 `bootstrap.zig` 且测试通过后，才生成新的版本 Tag（仅修改 Nix 配置文件本身不需要生成 Tag）。
-  - **控制 Tag 增长频率**：在单次开发任务或同一会话中多次修改 `bootstrap.zig` 时，应当在最终交付、通过测试后仅生成**一个**合并后的新 Tag，避免对每一个中间 commit 频繁打 Tag。
-  - **遵循语义化版本 (SemVer) 规范**：使用 `vMAJOR.MINOR.PATCH` 格式（如 `v1.3.1`）：
-    - **MAJOR (主版本)**：重大重构或破坏性变更，需由用户明确指定。
-    - **MINOR (次版本)**：对 `bootstrap.zig` 添加了新功能或新增支持设备（例如从 `v1.3` 升级到 `v1.4`）。
-    - **PATCH (修订版)**：对 `bootstrap.zig` 的 Bug 修复、健壮性优化或微调（应升级为 `v1.3.1`，避免跳版本）。
-  - 在生成新 Tag 前，务必先通过 `git tag -l` 或 `jj tag list` 检查已有版本以正确递增。
+- **Versioning & Tagging Rules**:
+  - Only generate a new version tag after modifying `bootstrap.zig` and ensuring tests pass (modifying Nix configuration files alone does not require a new tag).
+  - **Control Tag Frequency**: When modifying `bootstrap.zig` multiple times in a single development session or task, only a single, consolidated new tag should be generated after the final version passes tests, rather than tagging every intermediate commit.
+  - **Follow Semantic Versioning (SemVer)**: Use the `vMAJOR.MINOR.PATCH` format (e.g., `v1.3.1`):
+    - **MAJOR**: Significant rewrite or breaking changes, which must be explicitly specified by the user.
+    - **MINOR**: New features or support for new devices added to `bootstrap.zig` (e.g., upgrading from `v1.3` to `v1.4`).
+    - **PATCH**: Bug fixes, robustness improvements, or minor adjustments to `bootstrap.zig` (e.g., upgrading to `v1.3.1` instead of skipping versions).
+  - Before generating a new tag, always check existing tags using `git tag -l` or `jj tag list` to increment the version correctly.
 - **Voice-to-Text Input Tolerance**: The user dictates requests using voice-to-text, which can introduce typos, grammatical errors, homophones, or mispronounced/poorly transcribed words. The AI must be highly tolerant of these transcription errors, look past surface-level mistakes, and make a best-effort attempt to understand the user's true underlying intent. If the input is completely garbled, ambiguous, or lacks critical context such that it is confusing or impossible to determine the intended action, the AI should ask the user for clarification instead of guessing or making assumptions.
 
 
