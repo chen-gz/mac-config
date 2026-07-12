@@ -41,13 +41,4 @@
     enable = true;
     enableFishIntegration = true;
   };
-
-  programs.tealdeer = {
-    enable = true;
-    settings = {
-      updates = {
-        auto_update = true;
-      };
-    };
-  };
 }

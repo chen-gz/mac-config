@@ -29,27 +29,27 @@
   environment.etc."caddy/Caddyfile".text = ''
     # Secure local reverse proxy with separate site blocks on port 80
     http://ra {
-    	reverse_proxy guangzongs-mac-mini:7878
+    	reverse_proxy 127.0.0.1:7878
     }
 
     http://so {
-    	reverse_proxy guangzongs-mac-mini:8989
+    	reverse_proxy 127.0.0.1:8989
     }
 
     http://pr {
-    	reverse_proxy guangzongs-mac-mini:9696
+    	reverse_proxy 127.0.0.1:9696
     }
 
     http://sab {
-    	reverse_proxy guangzongs-mac-mini:8080
+    	reverse_proxy 127.0.0.1:8080
     }
 
     http://ba {
-    	reverse_proxy guangzongs-mac-mini:6767
+    	reverse_proxy 127.0.0.1:6767
     }
 
     http://jf {
-    	reverse_proxy guangzongs-mac-mini:8096
+    	reverse_proxy 127.0.0.1:8096
     }
   '';
 
@@ -79,7 +79,7 @@
     };
   };
 
-  # 仅在此电脑上自动配置 /etc/hosts 映射
+  # 仅在此电脑上自动配置 /etc/hosts 映射，并修复媒体应用权限/签名
   system.activationScripts.postActivation = {
     enable = true;
     text = ''
@@ -87,6 +87,23 @@
         echo "Adding local media stack host mappings to /etc/hosts"
         echo "127.0.0.1 ra so pr sab ba jf" >> /etc/hosts
       fi
+
+      echo "Fixing quarantine and codesign for media applications..."
+      for app in Radarr Sonarr Prowlarr SABnzbd Jellyfin; do
+        app_path="/Applications/''${app}.app"
+        if [ -d "$app_path" ]; then
+          # Remove quarantine flag
+          xattr -r -d com.apple.quarantine "$app_path" 2>/dev/null || true
+          
+          # For unsigned applications, apply ad-hoc signatures
+          if [ "''${app}" = "Radarr" ] || [ "''${app}" = "Sonarr" ] || [ "''${app}" = "Prowlarr" ]; then
+            if ! codesign -v "$app_path" 2>/dev/null; then
+              echo "Applying ad-hoc signature to ''${app}..."
+              codesign --force --deep --sign - "$app_path" 2>/dev/null || true
+            fi
+          fi
+        fi
+      done
     '';
   };
 

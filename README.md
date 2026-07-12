@@ -30,6 +30,17 @@ zig build run -- gg-mac-mini
 # For guangzong-mac-air
 zig build run -- gg-mac-air
 ```
+
+### Media Stack & Cloudflare Tunnel Setup (Mac Mini only)
+
+To configure the Cloudflare Tunnel for the media stack (e.g. Jellyfin):
+
+1. Retrieve your Cloudflare Tunnel token from the [Cloudflare Zero Trust Dashboard](https://one.dash.cloudflare.com/) (under **Networks** ➡️ **Tunnels**).
+2. Save the token on your Mac by running:
+   ```bash
+   echo "YOUR_COPIED_TOKEN_HERE" | sudo tee /etc/cloudflare-token
+   ```
+
 ## Features
 
 - **Nix-Darwin & Home Manager**: Unified system and user-level configuration.

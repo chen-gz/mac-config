@@ -30,6 +30,7 @@
       "telegram"
       "bitwarden"
       "antigravity-cli"
+      "obs"
     ];
     masApps = {
     };

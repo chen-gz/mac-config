@@ -13,6 +13,18 @@
     };
   };
 
+  home.packages = [
+    # GnuPG agent tools (gpg-agent, gpg-connect-agent, etc.) to support sequoia-chameleon-gnupg
+    (pkgs.runCommand "gnupg-agent-tools" { } ''
+      mkdir -p $out/bin
+      for f in gpg-agent gpg-connect-agent gpg-preset-passphrase gpg-card dirmngr; do
+        if [ -e "${pkgs.gnupg}/bin/$f" ]; then
+          ln -s "${pkgs.gnupg}/bin/$f" $out/bin/$f
+        fi
+      done
+    '')
+  ];
+
   home.file = {
     ".gnupg/gpg-agent.conf".text = ''
       enable-ssh-support
