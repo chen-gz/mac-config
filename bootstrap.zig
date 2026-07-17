@@ -183,7 +183,7 @@ fn deploy(io: Io, allocator: std.mem.Allocator, target_dir: []const u8, flake_na
         }
     }
 
-    const flake_path = try std.fmt.allocPrint(allocator, "{s}#{s}", .{ target_dir, flake_name });
+    const flake_path = try std.fmt.allocPrint(allocator, "path:{s}#{s}", .{ target_dir, flake_name });
     defer allocator.free(flake_path);
 
     log("Building and switching configuration...");
