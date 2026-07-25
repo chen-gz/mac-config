@@ -6,7 +6,18 @@ const posix = std.posix;
 const Io = std.Io;
 
 const REPO_URL = "https://github.com/chen-gz/mac-config";
+const SSH_REPO_URL = "git@github.com:chen-gz/mac-config.git";
 const DEFAULT_TARGET_DIR = ".config/nix-darwin";
+
+fn ensureGitSshRemote(io: Io, target_dir: []const u8, environ_map: *process.Environ.Map) void {
+    var child = process.spawn(io, .{
+        .argv = &.{ "git", "-C", target_dir, "remote", "set-url", "origin", SSH_REPO_URL },
+        .stdout = .ignore,
+        .stderr = .ignore,
+        .environ_map = environ_map,
+    }) catch return;
+    _ = child.wait(io) catch {};
+}
 
 const Color = struct {
     const blue = "\x1b[0;34m";
@@ -117,6 +128,7 @@ fn ensureConfig(io: Io, target_dir: []const u8, environ_map: *process.Environ.Ma
         log("Cloning configuration...");
         try run(io, &.{ "git", "clone", REPO_URL, target_dir }, null, environ_map);
     }
+    ensureGitSshRemote(io, target_dir, environ_map);
 }
 
 fn ensureJujutsu(io: Io, target_dir: []const u8, environ_map: *process.Environ.Map) !void {
@@ -271,7 +283,10 @@ pub fn main(init: std.process.Init) !void {
     };
 
     switch (verb) {
-        .update => try run(io, &.{ "nix", "flake", "update" }, target_dir, environ_map),
+        .update => {
+            ensureGitSshRemote(io, target_dir, environ_map);
+            try run(io, &.{ "nix", "flake", "update" }, target_dir, environ_map);
+        },
         .check => try run(io, &.{ "nix", "flake", "check" }, target_dir, environ_map),
         .format => try run(io, &.{ "nix", "fmt" }, target_dir, environ_map),
         .clean => {

@@ -31,6 +31,10 @@
 
     # Sequoia/GPG activation
     home.activation = {
+      ensureGitSshRemote = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        $DRY_RUN_CMD ${pkgs.git}/bin/git -C "$HOME/.config/nix-darwin" remote set-url origin git@github.com:chen-gz/mac-config.git 2>/dev/null || true
+      '';
+
       importGpgKeys = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         GPG_KEY_ID="20AE4BA8FF696FB5E21AE9D0636538D58AF1006D"
         # 使用 Sequoia 的 chameleon 接口替代原生 gpg
