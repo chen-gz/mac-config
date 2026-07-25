@@ -39,7 +39,9 @@ fn err(msg: []const u8) void {
 }
 
 fn run(io: Io, cmd_args: []const []const u8, cwd: ?[]const u8, environ_map: *process.Environ.Map) !void {
-    try environ_map.put("NIX_CONFIG", "experimental-features = nix-command flakes");
+    if (environ_map.get("NIX_CONFIG") == null) {
+        try environ_map.put("NIX_CONFIG", "experimental-features = nix-command flakes");
+    }
     try environ_map.put("NIXPKGS_ALLOW_UNFREE", "1");
 
     var child = try process.spawn(io, .{
@@ -57,6 +59,55 @@ fn run(io: Io, cmd_args: []const []const u8, cwd: ?[]const u8, environ_map: *pro
         else => return error.CommandFailed,
     }
 }
+
+fn getGithubToken(io: Io, allocator: std.mem.Allocator, target_dir: []const u8) ?[]const u8 {
+    const candidates = [_][]const u8{
+        "keys/github-token.gpg",
+        "keys/github-token.asc",
+        "keys/github_token.gpg",
+        "keys/github_token.asc",
+    };
+
+    var token_path: ?[]const u8 = null;
+    for (candidates) |rel_path| {
+        const full_path = std.fs.path.join(allocator, &.{ target_dir, rel_path }) catch continue;
+        defer allocator.free(full_path);
+        if (std.Io.Dir.accessAbsolute(io, full_path, .{})) |_| {
+            token_path = allocator.dupe(u8, full_path) catch return null;
+            break;
+        } else |_| {}
+    }
+
+    const path = token_path orelse return null;
+    defer allocator.free(path);
+
+    var child = process.spawn(io, .{
+        .argv = &.{ "gpg", "--quiet", "-d", path },
+        .stdout = .pipe,
+        .stderr = .ignore,
+    }) catch return null;
+
+    var stream_buf: [1024]u8 = undefined;
+    var reader = child.stdout.?.reader(io, &stream_buf);
+    var buf: [1024]u8 = undefined;
+    const n = reader.interface.readSliceShort(&buf) catch return null;
+    _ = child.wait(io) catch return null;
+
+    const trimmed = std.mem.trim(u8, buf[0..n], &.{ ' ', '\t', '\r', '\n' });
+    if (trimmed.len == 0) return null;
+    return allocator.dupe(u8, trimmed) catch null;
+}
+
+fn ensureGithubTokenEnv(io: Io, allocator: std.mem.Allocator, target_dir: []const u8, environ_map: *process.Environ.Map) void {
+    if (getGithubToken(io, allocator, target_dir)) |token| {
+        log("Decrypted GitHub API token successfully.");
+        environ_map.put("GITHUB_TOKEN", token) catch {};
+        environ_map.put("HOMEBREW_GITHUB_API_TOKEN", token) catch {};
+        const nix_config = std.fmt.allocPrint(allocator, "experimental-features = nix-command flakes\naccess-tokens = github.com={s}", .{token}) catch return;
+        environ_map.put("NIX_CONFIG", nix_config) catch {};
+    }
+}
+
 
 fn getTargetDir(io: Io, allocator: std.mem.Allocator, environ_map: *process.Environ.Map) ![]const u8 {
     // 1. Check if we are running from a directory with flake.nix
@@ -201,9 +252,32 @@ fn deploy(io: Io, allocator: std.mem.Allocator, target_dir: []const u8, flake_na
     log("Building and switching configuration...");
     // We use a bash wrapper to ensure ulimit and environment variables are passed through sudo
     var args_list = std.ArrayListUnmanaged([]const u8){ .items = &.{}, .capacity = 0 };
-    try args_list.appendSlice(allocator, &.{ "sudo", "-H", "NIX_CONFIG=experimental-features = nix-command flakes", "NIXPKGS_ALLOW_UNFREE=1", "bash", "-c" });
     
-    const cmd = try std.fmt.allocPrint(allocator, "ulimit -n 4096 2>/dev/null || true; [ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ] && . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh; nix run github:LnL7/nix-darwin -- switch --flake '{s}'", .{flake_path});
+    const github_token = environ_map.get("GITHUB_TOKEN");
+    const nix_config_arg = if (github_token) |t|
+        try std.fmt.allocPrint(allocator, "NIX_CONFIG=experimental-features = nix-command flakes\naccess-tokens = github.com={s}", .{t})
+    else
+        try allocator.dupe(u8, "NIX_CONFIG=experimental-features = nix-command flakes");
+    defer allocator.free(nix_config_arg);
+
+    try args_list.appendSlice(allocator, &.{ "sudo", "-H", nix_config_arg, "NIXPKGS_ALLOW_UNFREE=1" });
+
+    if (github_token) |t| {
+        const gt_arg = try std.fmt.allocPrint(allocator, "GITHUB_TOKEN={s}", .{t});
+        const hbt_arg = try std.fmt.allocPrint(allocator, "HOMEBREW_GITHUB_API_TOKEN={s}", .{t});
+        try args_list.append(allocator, gt_arg);
+        try args_list.append(allocator, hbt_arg);
+    }
+
+    try args_list.appendSlice(allocator, &.{ "bash", "-c" });
+
+    const export_tokens = if (github_token) |t|
+        try std.fmt.allocPrint(allocator, "export GITHUB_TOKEN='{s}'; export HOMEBREW_GITHUB_API_TOKEN='{s}'; ", .{ t, t })
+    else
+        try allocator.dupe(u8, "");
+    defer allocator.free(export_tokens);
+    
+    const cmd = try std.fmt.allocPrint(allocator, "{s}ulimit -n 4096 2>/dev/null || true; [ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ] && . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh; nix run github:LnL7/nix-darwin -- switch --flake '{s}'", .{ export_tokens, flake_path });
     defer allocator.free(cmd);
     
     // Append extra args to the command string
@@ -276,6 +350,8 @@ pub fn main(init: std.process.Init) !void {
     }
 
     const target_dir = try getTargetDir(io, arena, environ_map);
+    ensureGithubTokenEnv(io, arena, target_dir, environ_map);
+
 
     const verb = result.verb orelse {
         printHelp();
