@@ -61,6 +61,11 @@
           formatter.command = "${pkgs.nixfmt}/bin/nixfmt";
           language-servers = [ "nixd" ];
         }
+        {
+          name = "lean";
+          auto-format = true;
+          language-servers = [ "lean" ];
+        }
       ];
       language-server = {
         just-lsp = {
@@ -68,6 +73,10 @@
         };
         nixd = {
           command = "${pkgs.nixd}/bin/nixd";
+        };
+        lean = {
+          command = "lake";
+          args = [ "serve" ];
         };
       };
     };

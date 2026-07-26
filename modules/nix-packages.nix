@@ -21,5 +21,6 @@
     sequoia-sq
     lazyjj
     mdcat
+    elan
   ];
 }

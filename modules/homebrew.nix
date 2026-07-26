@@ -31,6 +31,7 @@
       "bitwarden"
       "antigravity-cli"
       "obs"
+      "signal"
     ];
     masApps = {
     };

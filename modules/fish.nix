@@ -65,6 +65,7 @@
       set -gx DIRENV_LOG_FORMAT ""
       fish_add_path ~/.local/bin
       fish_add_path ~/.cargo/bin
+      fish_add_path ~/.elan/bin
       # 确保 Nix 系统路径在 PATH 中 (防止 Unknown command 报错)
       if test -d /run/current-system/sw/bin
           fish_add_path --prepend --global /run/current-system/sw/bin
