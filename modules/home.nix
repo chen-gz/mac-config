@@ -10,6 +10,7 @@
     ./tmux.nix
     ./tools.nix
     ./nix-packages.nix
+    ./vscode.nix
   ];
 
   home.stateVersion = "25.11";
