@@ -17,6 +17,7 @@
       "jellyfin-media-player"
       "raycast"
       "google-drive"
+      "google-gemini"
       "wechat"
       "ghostty"
       "zed"

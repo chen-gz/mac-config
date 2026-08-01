@@ -51,6 +51,20 @@
         
         # 触发 card-status 以让 gpg-agent 建立私钥存根
         $DRY_RUN_CMD ${pkgs.gnupg}/bin/gpg --card-status >/dev/null 2>&1 || true
+
+        # 导入本地解密的 GPG 子密钥 (keys/gpg_subkeys.gpg)
+        SUBKEYS_FILE="$HOME/.config/nix-darwin/keys/gpg_subkeys.gpg"
+        if [ -f "$SUBKEYS_FILE" ]; then
+          # 解密并提取私钥
+          DECRYPTED_KEYS=$(${pkgs.gnupg}/bin/gpg --quiet -d "$SUBKEYS_FILE" 2>/dev/null || true)
+          if [ -n "$DECRYPTED_KEYS" ]; then
+            # 清理 GnuPG 中的 smartcard (shadowed) 存根以避免强制请求 YubiKey
+            rm -f "$HOME/.gnupg/private-keys-v1.d/"*.key 2>/dev/null || true
+            echo "$DECRYPTED_KEYS" | $DRY_RUN_CMD ${pkgs.sequoia-sq}/bin/sq key import 2>/dev/null || true
+            echo "$DECRYPTED_KEYS" | $DRY_RUN_CMD ${pkgs.gnupg}/bin/gpg --import 2>/dev/null || true
+            $DRY_RUN_CMD ${pkgs.gnupg}/bin/gpg-connect-agent reloadagent /bye >/dev/null 2>&1 || true
+          fi
+        fi
       '';
     };
   };
