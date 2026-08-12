@@ -13,7 +13,6 @@
     taps = [
     ];
     casks = [
-      # "steam"
       "google-chrome"
       "jellyfin-media-player"
       "raycast"

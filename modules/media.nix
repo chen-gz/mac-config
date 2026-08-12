@@ -4,6 +4,7 @@
   # 仅在需要此配置的电脑上安装媒体软件
   homebrew = {
     casks = [
+      "steam"
       "radarr"
       "sonarr"
       "jellyfin"
