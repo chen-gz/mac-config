@@ -7,6 +7,7 @@
       "steam"
       "radarr"
       "sonarr"
+      "lidarr"
       "jellyfin"
       "sabnzbd"
       "prowlarr"
@@ -35,6 +36,10 @@
 
     http://so {
     	reverse_proxy 127.0.0.1:8989
+    }
+
+    http://li {
+    	reverse_proxy 127.0.0.1:8686
     }
 
     http://pr {
@@ -84,20 +89,21 @@
   system.activationScripts.postActivation = {
     enable = true;
     text = ''
-      if ! grep -q "127.0.0.1 ra so pr sab ba jf" /etc/hosts; then
+      if ! grep -q "127.0.0.1 ra so pr sab ba jf li" /etc/hosts; then
         echo "Adding local media stack host mappings to /etc/hosts"
-        echo "127.0.0.1 ra so pr sab ba jf" >> /etc/hosts
+        sed -i "" '/127.0.0.1 ra so pr sab ba jf/d' /etc/hosts 2>/dev/null || true
+        echo "127.0.0.1 ra so pr sab ba jf li" >> /etc/hosts
       fi
 
       echo "Fixing quarantine and codesign for media applications..."
-      for app in Radarr Sonarr Prowlarr SABnzbd Jellyfin; do
+      for app in Radarr Sonarr Prowlarr SABnzbd Jellyfin Lidarr; do
         app_path="/Applications/''${app}.app"
         if [ -d "$app_path" ]; then
           # Remove quarantine flag
           xattr -r -d com.apple.quarantine "$app_path" 2>/dev/null || true
           
           # For unsigned applications, apply ad-hoc signatures
-          if [ "''${app}" = "Radarr" ] || [ "''${app}" = "Sonarr" ] || [ "''${app}" = "Prowlarr" ]; then
+          if [ "''${app}" = "Radarr" ] || [ "''${app}" = "Sonarr" ] || [ "''${app}" = "Prowlarr" ] || [ "''${app}" = "Lidarr" ]; then
             if ! codesign -v "$app_path" 2>/dev/null; then
               echo "Applying ad-hoc signature to ''${app}..."
               codesign --force --deep --sign - "$app_path" 2>/dev/null || true
@@ -134,6 +140,19 @@
         ProcessType = "Background";
         StandardOutPath = "/tmp/sonarr.out.log";
         StandardErrorPath = "/tmp/sonarr.err.log";
+      };
+    };
+    lidarr = {
+      serviceConfig = {
+        ProgramArguments = [
+          "/Applications/Lidarr.app/Contents/MacOS/Lidarr"
+          "-nobrowser"
+        ];
+        KeepAlive = true;
+        RunAtLoad = true;
+        ProcessType = "Background";
+        StandardOutPath = "/tmp/lidarr.out.log";
+        StandardErrorPath = "/tmp/lidarr.err.log";
       };
     };
     prowlarr = {

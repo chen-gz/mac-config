@@ -36,6 +36,8 @@
       radarr-stop = "launchctl bootout gui/(id -u) ~/Library/LaunchAgents/org.nixos.radarr.plist";
       sonarr-start = "launchctl bootstrap gui/(id -u) ~/Library/LaunchAgents/org.nixos.sonarr.plist";
       sonarr-stop = "launchctl bootout gui/(id -u) ~/Library/LaunchAgents/org.nixos.sonarr.plist";
+      lidarr-start = "launchctl bootstrap gui/(id -u) ~/Library/LaunchAgents/org.nixos.lidarr.plist";
+      lidarr-stop = "launchctl bootout gui/(id -u) ~/Library/LaunchAgents/org.nixos.lidarr.plist";
       prowlarr-start = "launchctl bootstrap gui/(id -u) ~/Library/LaunchAgents/org.nixos.prowlarr.plist";
       prowlarr-stop = "launchctl bootout gui/(id -u) ~/Library/LaunchAgents/org.nixos.prowlarr.plist";
       sabnzbd-start = "launchctl bootstrap gui/(id -u) ~/Library/LaunchAgents/org.nixos.sabnzbd.plist";
@@ -44,6 +46,7 @@
       # Direct foreground running
       radarr-run = "/Applications/Radarr.app/Contents/MacOS/Radarr -nobrowser";
       sonarr-run = "/Applications/Sonarr.app/Contents/MacOS/Sonarr -nobrowser";
+      lidarr-run = "/Applications/Lidarr.app/Contents/MacOS/Lidarr -nobrowser";
       prowlarr-run = "/Applications/Prowlarr.app/Contents/MacOS/Prowlarr -nobrowser";
       sabnzbd-run = "/Applications/SABnzbd.app/Contents/MacOS/SABnzbd --browser 0";
     };

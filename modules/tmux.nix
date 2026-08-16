@@ -1,7 +1,12 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 {
   programs.tmux = {
     enable = true;
+    package = pkgs.tmux.overrideAttrs (old: {
+      configureFlags =
+        (old.configureFlags or [ ])
+        ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [ "--disable-jemalloc" ];
+    });
     mouse = true;
     prefix = "C-a";
     extraConfig = ''

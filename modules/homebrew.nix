@@ -33,7 +33,6 @@
       "obs"
       "signal"
       "visual-studio-code"
-      "firefox"
     ];
     masApps = {
     };

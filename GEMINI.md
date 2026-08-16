@@ -28,7 +28,7 @@ This repository configures macOS using Nix-Darwin and Home Manager. Below is the
   - **`darwin.nix`**: Core Nix-Darwin system configuration, Homebrew integrations, and default Nix shell setups.
   - **`system.nix`**: macOS system defaults, Dock configurations, Finder, login options, and user preferences.
   - **`homebrew.nix`**: Homebrew configuration, taps, casks, and Mac App Store apps.
-  - **`media.nix`**: Machine-specific media stack configuration (Radarr, Sonarr, Prowlarr, SABnzbd, Bazarr, Caddy, and local hosts redirection).
+  - **`media.nix`**: Machine-specific media stack configuration (Radarr, Sonarr, Lidarr, Prowlarr, SABnzbd, Bazarr, Caddy, and local hosts redirection).
   - **`nix-packages.nix`**: User-specific Nix package listings.
   - **`git.nix`**: Git, Delta diff viewer, and Lazygit configurations.
   - **`jujutsu.nix`**: Jujutsu (`jj`) configurations, custom GPG signing options, and Delta formatting settings.
