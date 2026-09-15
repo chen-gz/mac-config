@@ -111,6 +111,12 @@
           fi
         fi
       done
+
+      # 禁止外部媒体硬盘 (/Volumes/extdisk) 的 Spotlight 索引，避免机械硬盘频繁被系统唤醒
+      if [ -d "/Volumes/extdisk" ]; then
+        touch /Volumes/extdisk/.metadata_never_index 2>/dev/null || true
+        /usr/bin/mdutil -i off /Volumes/extdisk 2>/dev/null || true
+      fi
     '';
   };
 
