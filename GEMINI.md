@@ -12,6 +12,10 @@
     - **PATCH**: Bug fixes, robustness improvements, or minor adjustments to `bootstrap.zig` (e.g., upgrading to `v1.3.1` instead of skipping versions).
   - Before generating a new tag, always check existing tags using `git tag -l` or `jj tag list` to increment the version correctly.
 - **Voice-to-Text Input Tolerance**: The user dictates requests using voice-to-text, which can introduce typos, grammatical errors, homophones, or mispronounced/poorly transcribed words. The AI must be highly tolerant of these transcription errors, look past surface-level mistakes, and make a best-effort attempt to understand the user's true underlying intent. If the input is completely garbled, ambiguous, or lacks critical context such that it is confusing or impossible to determine the intended action, the AI should ask the user for clarification instead of guessing or making assumptions.
+- **External Storage & Media Stack Power Management**:
+  - The external storage enclosure (`/Volumes/extdisk`, WD Red Pro 7200 RPM enterprise drives in RAID 0) is configured for deep standby/sleep when idle to conserve energy and reduce wear from frequent start/stop cycles.
+  - **Spotlight Indexing**: Always ensure Spotlight indexing is disabled on `/Volumes/extdisk` (via `.metadata_never_index` and `mdutil -i off /Volumes/extdisk`) in `modules/media.nix` activation scripts to prevent background OS wakeups.
+  - **Media Stack Real-time Monitoring**: Do not enable real-time directory monitoring (`EnableRealtimeMonitor = false` in Jellyfin/arr stack) on `/Volumes/extdisk` libraries, as persistent file watchers and metadata sweeps prevent the mechanical drives from sleeping.
 
 
 
