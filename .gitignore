@@ -11,3 +11,4 @@ zig-out/
 zig-pkg/
 .antigravitycli/
 *.log
+logs/

@@ -18,6 +18,11 @@
         start_service = true;
         restart_service = "changed";
       }
+      {
+        name = "forgejo";
+        start_service = true;
+        restart_service = "changed";
+      }
       "cloudflared"
     ];
   };
@@ -57,6 +62,10 @@
     http://jf {
     	reverse_proxy 127.0.0.1:8096
     }
+
+    http://git {
+    	reverse_proxy 127.0.0.1:3000
+    }
   '';
 
   # 使用 launchd 管理 caddy 系统级服务
@@ -89,10 +98,52 @@
   system.activationScripts.postActivation = {
     enable = true;
     text = ''
-      if ! grep -q "127.0.0.1 ra so pr sab ba jf li" /etc/hosts; then
-        echo "Adding local media stack host mappings to /etc/hosts"
+      if ! grep -q "127.0.0.1 ra so pr sab ba jf li git" /etc/hosts; then
+        echo "Adding local media and git stack host mappings to /etc/hosts"
         sed -i "" '/127.0.0.1 ra so pr sab ba jf/d' /etc/hosts 2>/dev/null || true
-        echo "127.0.0.1 ra so pr sab ba jf li" >> /etc/hosts
+        echo "127.0.0.1 ra so pr sab ba jf li git" >> /etc/hosts
+      fi
+
+      # 确保 Forgejo 配置目录就绪并提供初始配置模版
+      mkdir -p /opt/homebrew/var/forgejo/custom/conf
+      chown -R guangzong /opt/homebrew/var/forgejo 2>/dev/null || true
+      if [ ! -f /opt/homebrew/var/forgejo/custom/conf/app.ini ]; then
+        echo "Initializing Forgejo configuration template..."
+        cat << 'EOF' > /opt/homebrew/var/forgejo/custom/conf/app.ini
+APP_NAME = Forgejo: Git Backup & Mirror
+RUN_USER = guangzong
+RUN_MODE = prod
+WORK_PATH = /opt/homebrew/var/forgejo
+
+[repository]
+ROOT = /opt/homebrew/var/forgejo/data/forgejo-repositories
+
+[database]
+DB_TYPE = sqlite3
+PATH = /opt/homebrew/var/forgejo/data/forgejo.db
+
+[server]
+APP_DATA_PATH = /opt/homebrew/var/forgejo/data
+DOMAIN = git
+SSH_DOMAIN = localhost
+HTTP_PORT = 3000
+ROOT_URL = http://git/
+DISABLE_SSH = false
+START_SSH_SERVER = true
+SSH_PORT = 2222
+SSH_LISTEN_PORT = 2222
+BUILTIN_SSH_SERVER_KEY_TYPE = ed25519
+LFS_START_SERVER = true
+
+[mirror]
+ENABLED = true
+DEFAULT_INTERVAL = 8h
+MIN_INTERVAL = 10m
+
+[security]
+INSTALL_LOCK = false
+EOF
+        chown guangzong /opt/homebrew/var/forgejo/custom/conf/app.ini 2>/dev/null || true
       fi
 
       echo "Fixing quarantine and codesign for media applications..."
