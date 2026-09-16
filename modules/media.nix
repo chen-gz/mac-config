@@ -21,50 +21,7 @@
     ];
   };
 
-  # 安装 Nix 版本的 caddy
-  environment.systemPackages = [
-    pkgs.caddy
-  ];
 
-  # 声明式管理 Caddyfile
-  environment.etc."caddy/Caddyfile".text = ''
-    # Secure local reverse proxy with separate site blocks on port 80
-    http://ra {
-    	reverse_proxy 127.0.0.1:7878
-    }
-
-    http://so {
-    	reverse_proxy 127.0.0.1:8989
-    }
-
-    http://pr {
-    	reverse_proxy 127.0.0.1:9696
-    }
-
-    http://sab {
-    	reverse_proxy 127.0.0.1:8080
-    }
-
-    http://ba {
-    	reverse_proxy 127.0.0.1:6767
-    }
-
-    http://jf {
-    	reverse_proxy 127.0.0.1:8096
-    }
-  '';
-
-  # 使用 launchd 管理 caddy 系统级服务
-  launchd.daemons.caddy = {
-    command = "${pkgs.caddy}/bin/caddy run --config /etc/caddy/Caddyfile";
-    serviceConfig = {
-      Label = "org.nixos.caddy";
-      KeepAlive = true;
-      RunAtLoad = true;
-      StandardOutPath = "/var/log/caddy.out.log";
-      StandardErrorPath = "/var/log/caddy.err.log";
-    };
-  };
 
   # 使用 launchd 管理 cloudflared 系统级服务
   # Token 由 keys/cloudflare-token.gpg 加密备份，通过 --token-file 从 /etc/cloudflare-token 读取，避免在命令行参数中暴露敏感凭据
@@ -101,11 +58,10 @@
         chmod 600 /etc/cloudflare-token
       fi
 
-      if ! grep -q "127.0.0.1 ra so pr sab ba jf" /etc/hosts; then
-        echo "Adding local media stack host mappings to /etc/hosts"
-        sed -i "" '/127.0.0.1 ra so pr sab ba jf/d' /etc/hosts 2>/dev/null || true
-        echo "127.0.0.1 ra so pr sab ba jf" >> /etc/hosts
-      fi
+      # 清理旧的本地 Caddy hosts 映射与残留系统服务
+      sed -i "" '/127.0.0.1 ra so pr sab ba jf/d' /etc/hosts 2>/dev/null || true
+      launchctl bootout system/org.nixos.caddy 2>/dev/null || true
+      rm -f /Library/LaunchDaemons/org.nixos.caddy.plist 2>/dev/null || true
 
       echo "Fixing quarantine and codesign for media applications..."
             for app in Radarr Sonarr Prowlarr SABnzbd Jellyfin; do

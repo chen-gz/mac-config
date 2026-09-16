@@ -73,7 +73,7 @@ To keep the system clean and modular, packages are split between Homebrew and Ni
 - `modules/homebrew.nix`: All Homebrew configuration, taps, casks (GUI applications like Chrome, Ghostty, Raycast), and Mac App Store (mas) apps.
 - `modules/nix-packages.nix`: Declared list of user-level Nix CLI tools (like `ripgrep`, `fd`, `btop`, `yazi`).
 - `modules/system.nix`: System-level packages and core CLI tools (e.g. `fish`, `git`).
-- `modules/media.nix`: Specific packages, daemons (like `caddy`), and configurations for the media stack (Mac Mini only).
+- `modules/media.nix`: Specific packages, daemons (like `cloudflared`), and configurations for the media stack (Mac Mini only).
 
 ### Package Selection Guideline
 1. **Use Nix** (`modules/nix-packages.nix` or specific config files): For CLI tools, languages, and development tooling.
