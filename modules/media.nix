@@ -67,8 +67,7 @@
   };
 
   # 使用 launchd 管理 cloudflared 系统级服务
-  # Note: The Cloudflare tunnel token must be manually written to /etc/cloudflare-token
-  # (e.g., echo "TOKEN" | sudo tee /etc/cloudflare-token)
+  # Token 由 keys/cloudflare-token.gpg 加密备份，postActivation 会自动解密并确保 /etc/cloudflare-token 存在
   launchd.daemons.cloudflared = {
     command = "/bin/sh -c 'exec /opt/homebrew/bin/cloudflared tunnel --no-autoupdate run --token \"$(cat /etc/cloudflare-token 2>/dev/null)\"'";
     serviceConfig = {
@@ -84,6 +83,16 @@
   system.activationScripts.postActivation = {
     enable = true;
     text = ''
+      # 自动从加密 keys/ 恢复 /etc/cloudflare-token
+      if [ ! -f /etc/cloudflare-token ] && [ -f /Users/guangzong/.config/nix-darwin/keys/cloudflare-token.gpg ]; then
+        token=$(sudo -u guangzong ${pkgs.gnupg}/bin/gpg --quiet -d /Users/guangzong/.config/nix-darwin/keys/cloudflare-token.gpg 2>/dev/null || true)
+        if [ -n "$token" ]; then
+          echo "Restoring /etc/cloudflare-token from keys/cloudflare-token.gpg..."
+          echo "$token" > /etc/cloudflare-token
+          chmod 600 /etc/cloudflare-token
+        fi
+      fi
+
       if ! grep -q "127.0.0.1 ra so pr sab ba jf" /etc/hosts; then
         echo "Adding local media stack host mappings to /etc/hosts"
         sed -i "" '/127.0.0.1 ra so pr sab ba jf/d' /etc/hosts 2>/dev/null || true
@@ -111,6 +120,32 @@
             if [ -d "/Volumes/extdisk" ]; then
               touch /Volumes/extdisk/.metadata_never_index 2>/dev/null || true
               /usr/bin/mdutil -i off /Volumes/extdisk 2>/dev/null || true
+            fi
+
+            # 自动配置媒体服务备份目录软链接至 Google Drive（重装系统一键自愈）
+            GDRIVE_BACKUP="/Users/guangzong/Google Drive/My Drive/MediaStack-Backups"
+            if [ -d "/Users/guangzong/Google Drive/My Drive" ]; then
+              mkdir -p "$GDRIVE_BACKUP"/{radarr,sonarr,prowlarr,bazarr,sabnzbd,jellyfin}
+              chown -R guangzong "$GDRIVE_BACKUP" 2>/dev/null || true
+
+              link_backup() {
+                src="$1"
+                target="$2"
+                mkdir -p "$(dirname "$src")"
+                if [ -d "$src" ] && [ ! -L "$src" ]; then
+                  cp -R "$src/"* "$target/" 2>/dev/null || true
+                  rm -rf "$src"
+                fi
+                if [ ! -L "$src" ]; then
+                  ln -s "$target" "$src"
+                  chown -h guangzong "$src" 2>/dev/null || true
+                fi
+              }
+
+              link_backup "/Users/guangzong/Library/Application Support/Radarr/Backups" "$GDRIVE_BACKUP/radarr"
+              link_backup "/Users/guangzong/.config/Sonarr/Backups" "$GDRIVE_BACKUP/sonarr"
+              link_backup "/Users/guangzong/Library/Application Support/Prowlarr/Backups" "$GDRIVE_BACKUP/prowlarr"
+              link_backup "/opt/homebrew/var/bazarr/backup" "$GDRIVE_BACKUP/bazarr"
             fi
     '';
   };
@@ -168,6 +203,24 @@
         ProcessType = "Background";
         StandardOutPath = "/tmp/sabnzbd.out.log";
         StandardErrorPath = "/tmp/sabnzbd.err.log";
+      };
+    };
+    media-backup = {
+      serviceConfig = {
+        ProgramArguments = [
+          "/bin/bash"
+          "/Users/guangzong/.config/nix-darwin/scripts/backup-media.sh"
+        ];
+        StartCalendarInterval = [
+          {
+            Hour = 3;
+            Minute = 0;
+            Weekday = 0; # 每周日凌晨 3:00 自动触发备份
+          }
+        ];
+        ProcessType = "Background";
+        StandardOutPath = "/tmp/media-backup.out.log";
+        StandardErrorPath = "/tmp/media-backup.err.log";
       };
     };
   };

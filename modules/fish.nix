@@ -46,6 +46,10 @@
       sonarr-run = "/Applications/Sonarr.app/Contents/MacOS/Sonarr -nobrowser";
       prowlarr-run = "/Applications/Prowlarr.app/Contents/MacOS/Prowlarr -nobrowser";
       sabnzbd-run = "/Applications/SABnzbd.app/Contents/MacOS/SABnzbd --browser 0";
+
+      # Media Stack Database & Config Backup & Restore
+      media-backup = "~/.config/nix-darwin/scripts/backup-media.sh";
+      media-restore = "~/.config/nix-darwin/scripts/restore-media.sh";
     };
 
     functions = {
