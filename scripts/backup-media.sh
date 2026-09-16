@@ -6,7 +6,7 @@ set -euo pipefail
 # Exports and syncs core SQLite databases and configs to Google Drive
 # ==============================================================================
 
-GDRIVE_ROOT="/Users/guangzong/Google Drive/My Drive/MediaStack-Backups"
+GDRIVE_ROOT="${HOME}/Google Drive/My Drive/MediaStack-Backups"
 
 if [ ! -d "$GDRIVE_ROOT" ]; then
     echo "Warning: Google Drive backup directory not found at '$GDRIVE_ROOT'."

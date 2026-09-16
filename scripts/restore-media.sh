@@ -6,7 +6,7 @@ set -euo pipefail
 # Automatically restores databases and configs from Google Drive backups
 # ==============================================================================
 
-GDRIVE_ROOT="/Users/guangzong/Google Drive/My Drive/MediaStack-Backups"
+GDRIVE_ROOT="${HOME}/Google Drive/My Drive/MediaStack-Backups"
 UID_VAL=$(id -u)
 
 if [ ! -d "$GDRIVE_ROOT" ]; then

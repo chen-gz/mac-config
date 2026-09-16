@@ -9,7 +9,7 @@
 
     brews = [
       "kcov"
-    ]; # Mac App Store CLI
+    ];
     taps = [
     ];
     casks = [

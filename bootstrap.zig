@@ -159,6 +159,9 @@ fn installNix(io: Io, environ_map: *process.Environ.Map) !void {
             .exited => |code| if (code != 0) {
                 log("Nix not found. Installing...");
                 try run(io, &.{ "curl", "-L", "https://install.determinate.systems/nix", "-o", "install-nix.sh" }, null, environ_map);
+                defer {
+                    _ = run(io, &.{ "rm", "-f", "install-nix.sh" }, null, environ_map) catch {};
+                }
                 try run(io, &.{ "sh", "install-nix.sh", "install" }, null, environ_map);
             },
             else => {},
