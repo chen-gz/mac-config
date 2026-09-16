@@ -42,9 +42,11 @@
             inherit inputs;
             username = "guangzong";
             hostname = "gg-mac-mini";
-            lib = nixpkgs.lib.extend (l: _: {
-              hm = home-manager.lib.hm;
-            });
+            lib = nixpkgs.lib.extend (
+              l: _: {
+                hm = home-manager.lib.hm;
+              }
+            );
           };
           modules = [
             ./modules/darwin.nix
@@ -59,9 +61,11 @@
             inherit inputs;
             username = "guangzong";
             hostname = "gg-mac-air";
-            lib = nixpkgs.lib.extend (l: _: {
-              hm = home-manager.lib.hm;
-            });
+            lib = nixpkgs.lib.extend (
+              l: _: {
+                hm = home-manager.lib.hm;
+              }
+            );
           };
           modules = [
             ./modules/darwin.nix

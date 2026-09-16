@@ -48,7 +48,7 @@
         $DRY_RUN_CMD ${pkgs.gnupg}/bin/gpg --list-keys $GPG_KEY_ID >/dev/null 2>&1 || 
           $DRY_RUN_CMD ${pkgs.gnupg}/bin/gpg --keyserver hkps://keys.openpgp.org --recv-keys $GPG_KEY_ID
         echo "$GPG_KEY_ID:6:" | $DRY_RUN_CMD ${pkgs.gnupg}/bin/gpg --import-ownertrust
-        
+
         # 触发 card-status 以让 gpg-agent 建立私钥存根
         $DRY_RUN_CMD ${pkgs.gnupg}/bin/gpg --card-status >/dev/null 2>&1 || true
 
