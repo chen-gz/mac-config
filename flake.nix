@@ -33,7 +33,7 @@
     in
     {
       # 配置格式化工具
-      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt);
+      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-tree);
 
       darwinConfigurations = {
         "gg-mac-mini" = nix-darwin.lib.darwinSystem {
