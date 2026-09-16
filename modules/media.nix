@@ -67,13 +67,16 @@
   };
 
   # 使用 launchd 管理 cloudflared 系统级服务
-  # Token 由 keys/cloudflare-token.gpg 加密备份，postActivation 会自动解密并确保 /etc/cloudflare-token 存在
+  # Token 由 keys/cloudflare-token.gpg 加密备份，通过 --token-file 从 /etc/cloudflare-token 读取，避免在命令行参数中暴露敏感凭据
   launchd.daemons.cloudflared = {
-    command = "/bin/sh -c 'exec /opt/homebrew/bin/cloudflared tunnel --no-autoupdate run --token \"$(cat /etc/cloudflare-token 2>/dev/null)\"'";
+    command = "/opt/homebrew/bin/cloudflared tunnel --no-autoupdate run --token-file /etc/cloudflare-token";
     serviceConfig = {
       Label = "com.cloudflare.cloudflared";
       KeepAlive = true;
       RunAtLoad = true;
+      EnvironmentVariables = {
+        TUNNEL_TOKEN_FILE = "/etc/cloudflare-token";
+      };
       StandardOutPath = "/var/log/cloudflared.out.log";
       StandardErrorPath = "/var/log/cloudflared.err.log";
     };
@@ -91,6 +94,11 @@
           echo "$token" > /etc/cloudflare-token
           chmod 600 /etc/cloudflare-token
         fi
+      fi
+
+      # 确保 /etc/cloudflare-token 仅 root 具备读写权限 (0600)
+      if [ -f /etc/cloudflare-token ]; then
+        chmod 600 /etc/cloudflare-token
       fi
 
       if ! grep -q "127.0.0.1 ra so pr sab ba jf" /etc/hosts; then
