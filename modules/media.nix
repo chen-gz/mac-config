@@ -16,11 +16,6 @@
       "prowlarr"
     ];
     brews = [
-      {
-        name = "bazarr";
-        start_service = true;
-        restart_service = "changed";
-      }
       "cloudflared"
     ];
   };
@@ -91,7 +86,7 @@
             # 自动配置媒体服务备份目录软链接至 Google Drive（重装系统一键自愈）
             GDRIVE_BACKUP="/Users/${username}/Google Drive/My Drive/MediaStack-Backups"
             if [ -d "/Users/${username}/Google Drive/My Drive" ]; then
-              mkdir -p "$GDRIVE_BACKUP"/{radarr,sonarr,prowlarr,bazarr,sabnzbd,jellyfin}
+              mkdir -p "$GDRIVE_BACKUP"/{radarr,sonarr,prowlarr,sabnzbd,jellyfin}
               chown -R ${username} "$GDRIVE_BACKUP" 2>/dev/null || true
 
               link_backup() {
@@ -111,7 +106,6 @@
               link_backup "/Users/${username}/Library/Application Support/Radarr/Backups" "$GDRIVE_BACKUP/radarr"
               link_backup "/Users/${username}/.config/Sonarr/Backups" "$GDRIVE_BACKUP/sonarr"
               link_backup "/Users/${username}/Library/Application Support/Prowlarr/Backups" "$GDRIVE_BACKUP/prowlarr"
-              link_backup "/opt/homebrew/var/bazarr/backup" "$GDRIVE_BACKUP/bazarr"
             fi
     '';
   };

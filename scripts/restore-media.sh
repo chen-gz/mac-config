@@ -20,7 +20,7 @@ echo " Starting Media Stack One-Click Database & Config Restore..."
 echo "=================================================================="
 
 # --- 1. Radarr ---
-echo "===> [1/6] Restoring Radarr..."
+echo "===> [1/5] Restoring Radarr..."
 launchctl bootout "gui/$UID_VAL/org.nixos.radarr" 2>/dev/null || true
 sleep 1
 LATEST_RADARR=$(find "$GDRIVE_ROOT/radarr" -name "*.zip" -type f | sort | tail -n 1)
@@ -35,7 +35,7 @@ fi
 launchctl bootstrap "gui/$UID_VAL" "$HOME/Library/LaunchAgents/org.nixos.radarr.plist" 2>/dev/null || true
 
 # --- 2. Sonarr ---
-echo "===> [2/6] Restoring Sonarr..."
+echo "===> [2/5] Restoring Sonarr..."
 launchctl bootout "gui/$UID_VAL/org.nixos.sonarr" 2>/dev/null || true
 sleep 1
 LATEST_SONARR=$(find "$GDRIVE_ROOT/sonarr" -name "*.zip" -type f | sort | tail -n 1)
@@ -50,7 +50,7 @@ fi
 launchctl bootstrap "gui/$UID_VAL" "$HOME/Library/LaunchAgents/org.nixos.sonarr.plist" 2>/dev/null || true
 
 # --- 3. Prowlarr ---
-echo "===> [3/6] Restoring Prowlarr..."
+echo "===> [3/5] Restoring Prowlarr..."
 launchctl bootout "gui/$UID_VAL/org.nixos.prowlarr" 2>/dev/null || true
 sleep 1
 LATEST_PROWLARR=$(find "$GDRIVE_ROOT/prowlarr" -name "*.zip" -type f | sort | tail -n 1)
@@ -64,23 +64,8 @@ else
 fi
 launchctl bootstrap "gui/$UID_VAL" "$HOME/Library/LaunchAgents/org.nixos.prowlarr.plist" 2>/dev/null || true
 
-# --- 4. Bazarr ---
-echo "===> [4/6] Restoring Bazarr..."
-brew services stop bazarr 2>/dev/null || true
-sleep 1
-LATEST_BAZARR=$(find "$GDRIVE_ROOT/bazarr" -name "*.zip" -type f | sort | tail -n 1)
-if [ -n "$LATEST_BAZARR" ] && [ -f "$LATEST_BAZARR" ]; then
-    echo "     Found latest backup: $(basename "$LATEST_BAZARR")"
-    mkdir -p "/opt/homebrew/var/bazarr"
-    unzip -q -o "$LATEST_BAZARR" "bazarr.db" "config/config.yaml" -d "/opt/homebrew/var/bazarr/" 2>/dev/null || true
-    echo "     Bazarr database restored successfully."
-else
-    echo "     No Bazarr backup zip found, skipping."
-fi
-brew services start bazarr 2>/dev/null || true
-
-# --- 5. SABnzbd ---
-echo "===> [5/6] Restoring SABnzbd..."
+# --- 4. SABnzbd ---
+echo "===> [4/5] Restoring SABnzbd..."
 launchctl bootout "gui/$UID_VAL/org.nixos.sabnzbd" 2>/dev/null || true
 sleep 1
 if [ -f "$GDRIVE_ROOT/sabnzbd/sabnzbd.ini" ]; then
@@ -90,8 +75,8 @@ if [ -f "$GDRIVE_ROOT/sabnzbd/sabnzbd.ini" ]; then
 fi
 launchctl bootstrap "gui/$UID_VAL" "$HOME/Library/LaunchAgents/org.nixos.sabnzbd.plist" 2>/dev/null || true
 
-# --- 6. Jellyfin ---
-echo "===> [6/6] Restoring Jellyfin..."
+# --- 5. Jellyfin ---
+echo "===> [5/5] Restoring Jellyfin..."
 killall -TERM jellyfin 2>/dev/null || true
 sleep 1
 if [ -f "$GDRIVE_ROOT/jellyfin/jellyfin.db" ]; then

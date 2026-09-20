@@ -32,11 +32,13 @@ This repository configures macOS using Nix-Darwin and Home Manager. Below is the
   - **`darwin.nix`**: Core Nix-Darwin system configuration, Homebrew integrations, and default Nix shell setups.
   - **`system.nix`**: macOS system defaults, Dock configurations, Finder, login options, and user preferences.
   - **`homebrew.nix`**: Homebrew configuration, taps, casks, and Mac App Store apps.
-  - **`media.nix`**: Machine-specific media stack configuration (Radarr, Sonarr, Prowlarr, SABnzbd, Bazarr, and Cloudflare tunnel).
+  - **`media.nix`**: Machine-specific media stack configuration (Radarr, Sonarr, Prowlarr, SABnzbd, and Cloudflare tunnel).
   - **`nix-packages.nix`**: User-specific Nix package listings.
   - **`git.nix`**: Git, Delta diff viewer, and Lazygit configurations.
   - **`jujutsu.nix`**: Jujutsu (`jj`) configurations, custom GPG signing options, and Delta formatting settings.
   - **`fish.nix` / `tmux.nix`**: Shell alias, function, and window multiplexer setups.
   - **`helix.nix` / `ghostty.nix`**: Helix editor config and Ghostty terminal settings.
   - **`gpg.nix` / `tools.nix`**: CLI utility tools (zoxide, fzf, starship, eza, ripgrep, jq, bottom, bat, etc.) and GPG agent setup.
+- **`docs/`**: Maintenance guidelines and architecture documentation:
+  - **`storage-maintenance.md`**: Storage power management, media stack tuning, backup operations, and SMART inspection rules.
 

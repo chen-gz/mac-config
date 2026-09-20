@@ -83,6 +83,8 @@
     NSGlobalDomain.ApplePressAndHoldEnabled = false;
   };
 
+  power.sleep.harddisk = 30;
+
   # SSH Server configuration
   services.openssh = {
     enable = true;
