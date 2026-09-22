@@ -51,7 +51,7 @@ To configure the Cloudflare Tunnel for the media stack (e.g. Jellyfin):
 
 ## Agent Rules
 
-This project enforces a structured agentic workflow defined in `~/.gemini/GEMINI.md`:
+This project enforces a structured agentic workflow defined in `~/.gemini/AGENTS.md`:
 1. Always use `jj` for version control.
 2. Automatic `jj log` snapshots after any file modification.
 3. Logical task summaries via `jj describe` upon completion.

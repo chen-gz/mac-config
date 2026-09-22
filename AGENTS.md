@@ -40,5 +40,6 @@ This repository configures macOS using Nix-Darwin and Home Manager. Below is the
   - **`helix.nix` / `ghostty.nix`**: Helix editor config and Ghostty terminal settings.
   - **`gpg.nix` / `tools.nix`**: CLI utility tools (zoxide, fzf, starship, eza, ripgrep, jq, bottom, bat, etc.) and GPG agent setup.
 - **`docs/`**: Maintenance guidelines and architecture documentation:
+  - **`server-maintenance.md`**: Master host reconfiguration, storage power management, and media stack disaster recovery guide.
   - **`storage-maintenance.md`**: Storage power management, media stack tuning, backup operations, and SMART inspection rules.
 

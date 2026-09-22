@@ -83,6 +83,23 @@
               /usr/bin/mdutil -i off /Volumes/extdisk 2>/dev/null || true
             fi
 
+            # 外部媒体硬盘 (/Volumes/extdisk) nobrowse 挂载固化，阻断 Finder 与 CacheDelete (deleted) 唤醒
+            EXTDISK_UUID="3DF1A047-9D24-3B78-82CB-420E76C3C671"
+            if [ -f /etc/fstab ]; then
+              sed -i "" 's|/Volumes/extdisk|none|g' /etc/fstab 2>/dev/null || true
+              if ! grep -q "$EXTDISK_UUID" /etc/fstab; then
+                echo "Adding nobrowse mount entry for extdisk to /etc/fstab..."
+                echo "UUID=$EXTDISK_UUID none hfs rw,auto,nobrowse 0 0" >> /etc/fstab
+              fi
+            else
+              echo "UUID=$EXTDISK_UUID none hfs rw,auto,nobrowse 0 0" > /etc/fstab
+            fi
+            /usr/sbin/diskutil mount "$EXTDISK_UUID" 2>/dev/null || true
+            if [ -d "/Volumes/extdisk" ]; then
+              mount -u -o nobrowse /Volumes/extdisk 2>/dev/null || true
+              chflags hidden /Volumes/extdisk 2>/dev/null || true
+            fi
+
             # 自动配置媒体服务备份目录软链接至 Google Drive（重装系统一键自愈）
             GDRIVE_BACKUP="/Users/${username}/Google Drive/My Drive/MediaStack-Backups"
             if [ -d "/Users/${username}/Google Drive/My Drive" ]; then

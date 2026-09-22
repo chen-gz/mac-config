@@ -45,6 +45,21 @@
   # 输出: Indexing and searching disabled.
   ```
 
+### 2.3. /etc/fstab nobrowse 挂载策略（彻底阻断 Finder 与 CacheDelete 唤醒）
+* **配置位置**：[`modules/media.nix`](../modules/media.nix) 系统激活脚本中永久固化，亦可参考完整重建指南 [`docs/server-maintenance.md`](server-maintenance.md)。
+* **策略原理**：
+  macOS 的 `deleted` 守护进程（CacheDelete）会在前台使用 Finder 或弹窗时自动探测已挂载磁盘的可清理空间。将该卷在 `/etc/fstab` 中标记为 `nobrowse` 后，Finder 视其为后台专用卷，彻底终止针对该卷的一切缓存与容量轮询；同时 `/Volumes/extdisk` 底层文件系统正常读写，Jellyfin、Radarr、Sonarr 等完全无感知。
+* **规则配置**：
+  ```bash
+  echo "UUID=3DF1A047-9D24-3B78-82CB-420E76C3C671 none hfs rw,auto,nobrowse 0 0" | sudo tee -a /etc/fstab
+  sudo mount -u -o nobrowse /Volumes/extdisk
+  ```
+* **验证效果**：
+  ```bash
+  mount | grep extdisk
+  # 输出应包含: (..., nobrowse, ...)
+  ```
+
 ---
 
 ## 3. 应用层服务（Media Stack）配置规范
@@ -72,17 +87,30 @@
   在 **Settings -> Media Management** 中必须保持如下配置：
   * **Rescan Series / Movie Folder after Analysis**: 设为 **`Never`**（分析视频流信息后不重新扫盘）。
   * **Change File Date**: 设为 **`None`**（不修改磁盘文件属性）。
-* **刷新任务周期（SQLite 数据库维护）**：
-  默认每日执行一次全库文件检查（`RefreshMovieCommand` 为 1440 分钟，`RefreshSeriesCommand` 为 720 分钟）。如需进一步收敛为 7 天执行一次（10080 分钟）：
-  ```bash
-  # Radarr 改为 7 天刷新一次
-  sqlite3 "$HOME/Library/Application Support/Radarr/radarr.db" \
-    "UPDATE ScheduledTasks SET Interval = 10080 WHERE TypeName = 'NzbDrone.Core.Movies.Commands.RefreshMovieCommand';"
+* **刷新与健康检查任务周期（SQLite 数据库维护）**：
+  * **健康检查与根目录空间巡检 (CheckHealthCommand)**：
+    默认每 6 小时（360 分钟）向 `/Volumes/extdisk` 根目录发起空间检测，会唤醒休眠中的机械硬盘。**已统一收敛为 7 天（10080 分钟）一次**：
+    ```bash
+    sqlite3 "$HOME/Library/Application Support/Radarr/radarr.db" \
+      "UPDATE ScheduledTasks SET Interval = 10080 WHERE TypeName = 'NzbDrone.Core.HealthCheck.CheckHealthCommand';"
 
-  # Sonarr 改为 7 天刷新一次
-  sqlite3 "$HOME/.config/Sonarr/sonarr.db" \
-    "UPDATE ScheduledTasks SET Interval = 10080 WHERE TypeName = 'NzbDrone.Core.Tv.Commands.RefreshSeriesCommand';"
-  ```
+    sqlite3 "$HOME/.config/Sonarr/sonarr.db" \
+      "UPDATE ScheduledTasks SET Interval = 10080 WHERE TypeName = 'NzbDrone.Core.HealthCheck.CheckHealthCommand';"
+
+    launchctl kickstart -k gui/$(id -u)/org.nixos.radarr
+    launchctl kickstart -k gui/$(id -u)/org.nixos.sonarr
+    ```
+  * **全库文件刷新 (RefreshMovie / RefreshSeries)**：
+    默认每日执行一次（`RefreshMovieCommand` 为 1440 分钟，`RefreshSeriesCommand` 为 720 分钟）。如需进一步收敛为 7 天执行一次（10080 分钟）：
+    ```bash
+    # Radarr 改为 7 天刷新一次
+    sqlite3 "$HOME/Library/Application Support/Radarr/radarr.db" \
+      "UPDATE ScheduledTasks SET Interval = 10080 WHERE TypeName = 'NzbDrone.Core.Movies.Commands.RefreshMovieCommand';"
+
+    # Sonarr 改为 7 天刷新一次
+    sqlite3 "$HOME/.config/Sonarr/sonarr.db" \
+      "UPDATE ScheduledTasks SET Interval = 10080 WHERE TypeName = 'NzbDrone.Core.Tv.Commands.RefreshSeriesCommand';"
+    ```
 
 ### 3.3. Bazarr（字幕同步管理）
 * **状态**：**已彻底移除**。
@@ -116,7 +144,8 @@
 ### 5.1. 关键指标基准表
 系统历史基准文件归档于 `logs/` 目录：
 * 初始基准：[`logs/smartctl_report_20260915_1624.log`](../logs/smartctl_report_20260915_1624.log)
-* 调优后新基准：[`logs/smartctl_report_20260920_1211.log`](../logs/smartctl_report_20260920_1211.log)
+* 调优后基准：[`logs/smartctl_report_20260920_1211.log`](../logs/smartctl_report_20260920_1211.log)
+* 持续巡检归档：[`logs/smartctl_report_20260922_1006.log`](../logs/smartctl_report_20260922_1006.log)
 
 日常巡检重点关注以下 SMART 属性：
 

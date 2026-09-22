@@ -80,10 +80,16 @@
       "/System/Applications/Photos.app"
     ];
     finder.AppleShowAllExtensions = true;
+    finder.ShowExternalHardDrivesOnDesktop = false;
     NSGlobalDomain.ApplePressAndHoldEnabled = false;
   };
 
   power.sleep.harddisk = 30;
+
+  # 延长 sudo 凭据超时时间为 60 分钟，避免系统构建或更新时间过长导致重复要求输入密码
+  security.sudo.extraConfig = ''
+    Defaults timestamp_timeout=60
+  '';
 
   # SSH Server configuration
   services.openssh = {
