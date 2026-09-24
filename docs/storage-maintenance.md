@@ -146,6 +146,7 @@
 * 初始基准：[`logs/smartctl_report_20260915_1624.log`](../logs/smartctl_report_20260915_1624.log)
 * 调优后基准：[`logs/smartctl_report_20260920_1211.log`](../logs/smartctl_report_20260920_1211.log)
 * 持续巡检归档：[`logs/smartctl_report_20260922_1006.log`](../logs/smartctl_report_20260922_1006.log)
+* 最新巡检归档：[`logs/smartctl_report_20260924_1306.log`](../logs/smartctl_report_20260924_1306.log)
 
 日常巡检重点关注以下 SMART 属性：
 

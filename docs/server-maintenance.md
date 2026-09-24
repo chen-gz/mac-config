@@ -178,6 +178,7 @@ media-restore
 * 初始基准 (2026-09-15)：[`logs/smartctl_report_20260915_1624.log`](../logs/smartctl_report_20260915_1624.log)
 * 调优基准 (2026-09-20)：[`logs/smartctl_report_20260920_1211.log`](../logs/smartctl_report_20260920_1211.log)
 * 持续巡检 (2026-09-22)：[`logs/smartctl_report_20260922_1006.log`](../logs/smartctl_report_20260922_1006.log)
+* 最新巡检 (2026-09-24)：[`logs/smartctl_report_20260924_1306.log`](../logs/smartctl_report_20260924_1306.log)
 
 ### 5.3. 常用运维排查一条龙指令
 
