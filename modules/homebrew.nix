@@ -15,7 +15,6 @@
     casks = [
       "google-chrome"
       "jellyfin-media-player"
-      "raycast"
       "google-drive"
       "wechat"
       "ghostty"

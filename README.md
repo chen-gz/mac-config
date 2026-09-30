@@ -70,7 +70,7 @@ For a complete and detailed list of preset shortcuts, see [keyboard.md](keyboard
 
 To keep the system clean and modular, packages are split between Homebrew and Nix based on their usage:
 
-- `modules/homebrew.nix`: All Homebrew configuration, taps, casks (GUI applications like Chrome, Ghostty, Raycast), and Mac App Store (mas) apps.
+- `modules/homebrew.nix`: All Homebrew configuration, taps, casks (GUI applications like Chrome, Ghostty), and Mac App Store (mas) apps.
 - `modules/nix-packages.nix`: Declared list of user-level Nix CLI tools (like `ripgrep`, `fd`, `btop`, `yazi`).
 - `modules/system.nix`: System-level packages and core CLI tools (e.g. `fish`, `git`).
 - `modules/media.nix`: Specific packages, daemons (like `cloudflared`), and configurations for the media stack (Mac Mini only).
