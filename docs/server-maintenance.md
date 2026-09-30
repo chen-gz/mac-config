@@ -157,7 +157,7 @@ media-restore
 
 ### 4.3. GitHub 代码全量自动化镜像备份（GitHub Mirror Backup）
 * **备份目标**：`/Volumes/extdisk/Backups/github/`
-* **定时载体**：launchd 用户代理 `org.nixos.github-backup`（每周日凌晨 03:30 自动执行，紧随媒体维护窗口，避免硬盘产生二次起停循环）。
+* **定时载体**：launchd 用户代理 `org.nixos.github-backup`（每周日凌晨 03:05 自动执行，紧随媒体维护窗口，避免硬盘产生二次起停循环）。
 * **核心脚本**：[`scripts/backup-github.sh`](../scripts/backup-github.sh)
 * **备份范围**：
   * GitHub 账号（`chen-gz`）下所有公开与私有仓库（Git Mirror 裸库镜像，全量保留全部分支、Tag、提交历史）。

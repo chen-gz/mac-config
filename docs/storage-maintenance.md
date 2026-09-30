@@ -138,7 +138,7 @@
 * **一键恢复**：执行 `media-restore`（通过 [`scripts/restore-media.sh`](../scripts/restore-media.sh) 将 Google Drive 中的最新备份解压恢复到对应系统路径）
 
 ### 4.3. GitHub 代码全量自动化镜像备份（外部存储阵列容灾）
-* **执行时间**：每周日凌晨 03:30。
+* **执行时间**：每周日凌晨 03:05。
 * **能耗协同**：紧随 03:00 媒体库与数据库维护窗口集中写入，在机械硬盘 30 分钟休眠窗口期内完成，**彻底杜绝额外的磁头启停循环（Spindown/Spinup Cycling）**。
 * **服务载体**：launchd 用户代理 `org.nixos.github-backup`。
 * **备份脚本**：[`scripts/backup-github.sh`](../scripts/backup-github.sh)
@@ -174,7 +174,8 @@ git clone /Volumes/extdisk/Backups/github/gists/<gist-id>.git <local-dir>
 * 初始基准：[`logs/smartctl_report_20260915_1624.log`](../logs/smartctl_report_20260915_1624.log)
 * 调优后基准：[`logs/smartctl_report_20260920_1211.log`](../logs/smartctl_report_20260920_1211.log)
 * 持续巡检归档：[`logs/smartctl_report_20260922_1006.log`](../logs/smartctl_report_20260922_1006.log)
-* 最新巡检归档：[`logs/smartctl_report_20260924_1306.log`](../logs/smartctl_report_20260924_1306.log)
+* 周期巡检归档：[`logs/smartctl_report_20260924_1306.log`](../logs/smartctl_report_20260924_1306.log)
+* 最新巡检归档：[`logs/smartctl_report_20260930_1300.log`](../logs/smartctl_report_20260930_1300.log)
 
 日常巡检重点关注以下 SMART 属性：
 

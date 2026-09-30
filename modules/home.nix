@@ -30,5 +30,6 @@
     - Always use `jj` (Jujutsu) for version control operations.
     - Prefer `jj git clone <url>` over `git clone <url>` for initial setup.
     - Upon completing a logical task or a significant phase, always use `jj describe -m "..."` to provide a clear, structured summary of the changes made, ensuring the history is readable and meaningful.
+    - 不需要保留向后的兼容性。
   '';
 }

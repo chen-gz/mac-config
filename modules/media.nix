@@ -214,8 +214,8 @@
         StartCalendarInterval = [
           {
             Hour = 3;
-            Minute = 30;
-            Weekday = 0; # 每周日凌晨 3:30 自动触发备份（衔接媒体栈维护窗口）
+            Minute = 5;
+            Weekday = 0; # 每周日凌晨 3:05 自动触发备份（紧随 3:00 媒体备份，同一活跃周期）
           }
         ];
         ProcessType = "Background";

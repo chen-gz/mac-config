@@ -3,6 +3,7 @@
 - This project uses **Jujutsu (jj)** as the version control system. 
 - Use `jj` for all version control operations.
 - Prefer `jj git clone <url>` over `git clone <url>` for initial setup.
+- **不需要保留向后的兼容性**。
 - **Versioning & Tagging Rules**:
   - Only generate a new version tag after modifying `bootstrap.zig` and ensuring tests pass (modifying Nix configuration files alone does not require a new tag).
   - **Control Tag Frequency**: When modifying `bootstrap.zig` multiple times in a single development session or task, only a single, consolidated new tag should be generated after the final version passes tests, rather than tagging every intermediate commit.
