@@ -50,6 +50,9 @@
       # Media Stack Database & Config Backup & Restore
       media-backup = "~/.config/nix-darwin/scripts/backup-media.sh";
       media-restore = "~/.config/nix-darwin/scripts/restore-media.sh";
+
+      # GitHub Mirror Backup
+      github-backup = "~/.config/nix-darwin/scripts/backup-github.sh";
     };
 
     functions = {

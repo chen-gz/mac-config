@@ -98,6 +98,11 @@
             if [ -d "/Volumes/extdisk" ]; then
               mount -u -o nobrowse /Volumes/extdisk 2>/dev/null || true
               chflags hidden /Volumes/extdisk 2>/dev/null || true
+
+              # 外部媒体硬盘 GitHub 备份目录初始化与权限分配
+              mkdir -p /Volumes/extdisk/Backups/github
+              chown -R ${username}:staff /Volumes/extdisk/Backups
+              chmod -R 775 /Volumes/extdisk/Backups
             fi
 
             # 自动配置媒体服务备份目录软链接至 Google Drive（重装系统一键自愈）
@@ -198,6 +203,24 @@
         ProcessType = "Background";
         StandardOutPath = "/tmp/media-backup.out.log";
         StandardErrorPath = "/tmp/media-backup.err.log";
+      };
+    };
+    github-backup = {
+      serviceConfig = {
+        ProgramArguments = [
+          "/bin/bash"
+          "/Users/${username}/.config/nix-darwin/scripts/backup-github.sh"
+        ];
+        StartCalendarInterval = [
+          {
+            Hour = 3;
+            Minute = 30;
+            Weekday = 0; # 每周日凌晨 3:30 自动触发备份（衔接媒体栈维护窗口）
+          }
+        ];
+        ProcessType = "Background";
+        StandardOutPath = "/tmp/github-backup.out.log";
+        StandardErrorPath = "/tmp/github-backup.err.log";
       };
     };
   };

@@ -137,6 +137,34 @@
 * **立即备份**：执行 `media-backup`
 * **一键恢复**：执行 `media-restore`（通过 [`scripts/restore-media.sh`](../scripts/restore-media.sh) 将 Google Drive 中的最新备份解压恢复到对应系统路径）
 
+### 4.3. GitHub 代码全量自动化镜像备份（外部存储阵列容灾）
+* **执行时间**：每周日凌晨 03:30。
+* **能耗协同**：紧随 03:00 媒体库与数据库维护窗口集中写入，在机械硬盘 30 分钟休眠窗口期内完成，**彻底杜绝额外的磁头启停循环（Spindown/Spinup Cycling）**。
+* **服务载体**：launchd 用户代理 `org.nixos.github-backup`。
+* **备份脚本**：[`scripts/backup-github.sh`](../scripts/backup-github.sh)
+* **备份目标**：`/Volumes/extdisk/Backups/github/`
+* **备份内容**：
+  * GitHub 账号（`chen-gz`）下所有公开与私有代码仓库（Git Mirror 镜像裸库，包含所有分支、Tag、提交树）。
+  * 账号下全部 Gists 代码片段。
+* **安全与权限保障**：
+  * 通过 GPG 动态解密 `keys/github-token.gpg`，认证头通过 HTTP Basic Auth 动态注入内存，磁盘 `.git/config` 零明文令牌暴露。
+  * `modules/media.nix` 激活脚本（`postActivation`）中自动固化 `/Volumes/extdisk/Backups/github` 目录属主为 `guangzong:staff` (775)。
+
+### 4.4. GitHub 备份与恢复指令速查
+```bash
+# 1. 随时手动触发增量同步
+github-backup
+
+# 2. 查看最新备份状态及统计报告
+cat /Volumes/extdisk/Backups/github/latest_backup.json
+
+# 3. 灾难恢复：从本地镜像裸库克隆恢复仓库
+git clone /Volumes/extdisk/Backups/github/repos/<repo-name>.git <local-dir>
+
+# 4. 灾难恢复：从本地镜像克隆恢复 Gist
+git clone /Volumes/extdisk/Backups/github/gists/<gist-id>.git <local-dir>
+```
+
 ---
 
 ## 5. SMART 健康监控与日常巡检

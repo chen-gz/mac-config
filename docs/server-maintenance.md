@@ -155,6 +155,32 @@ media-backup
 media-restore
 ```
 
+### 4.3. GitHub 代码全量自动化镜像备份（GitHub Mirror Backup）
+* **备份目标**：`/Volumes/extdisk/Backups/github/`
+* **定时载体**：launchd 用户代理 `org.nixos.github-backup`（每周日凌晨 03:30 自动执行，紧随媒体维护窗口，避免硬盘产生二次起停循环）。
+* **核心脚本**：[`scripts/backup-github.sh`](../scripts/backup-github.sh)
+* **备份范围**：
+  * GitHub 账号（`chen-gz`）下所有公开与私有仓库（Git Mirror 裸库镜像，全量保留全部分支、Tag、提交历史）。
+  * 账号下全部 Gists 代码片段。
+* **安全与权限**：
+  * 通过 GPG 动态解密 `keys/github-token.gpg`，认证凭据在内存中通过 HTTP Basic 认证头传递，彻底杜绝本地 `.git/config` 泄漏明文 Token。
+  * 自动在系统激活时（`postActivation`）保障 `/Volumes/extdisk/Backups/github` 的正确用户所有权（`guangzong:staff`）。
+
+### 4.4. GitHub 备份运维与恢复速查
+```bash
+# 1. 手动立即触发全量增量镜像备份
+github-backup
+
+# 2. 查看最新一次备份的元数据报告
+cat /Volumes/extdisk/Backups/github/latest_backup.json
+
+# 3. 从镜像裸库恢复/克隆完整代码仓库
+git clone /Volumes/extdisk/Backups/github/repos/<repo-name>.git <local-destination>
+
+# 4. 从镜像恢复 Gist
+git clone /Volumes/extdisk/Backups/github/gists/<gist-id>.git <local-destination>
+```
+
 ---
 
 ## 5. SMART 健康监控与日常巡检标准
