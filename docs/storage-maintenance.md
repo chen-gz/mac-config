@@ -125,44 +125,49 @@
 * **服务载体**：launchd 用户代理 `org.nixos.media-backup`。
 * **备份脚本**：[`scripts/backup-media.sh`](../scripts/backup-media.sh)
 * **备份目标**：`${HOME}/Google Drive/My Drive/MediaStack-Backups/`
-* **收敛流程（5 步）**：
-  1. `[1/5]` 通过 API 触发 Radarr 核心配置备份。
-  2. `[2/5]` 通过 API 触发 Sonarr 核心配置备份。
-  3. `[3/5]` 通过 API 触发 Prowlarr 核心配置备份。
-  4. `[4/5]` 备份 SABnzbd 配置文件 `sabnzbd.ini`。
-  5. `[5/5]` 执行 Jellyfin 在线热备（`jellyfin.db` SQLite 在线备份 + `config/` 目录同步）。
+* **归档格式**：`mediastack-backup-<timestamp>.tar.gz` 及 `mediastack-backup-latest.tar.gz`
+* **收敛流程（5 步 + 打包）**：
+  1. `[1/5]` 通过 API 触发 Radarr 核心配置备份并提取最新 zip。
+  2. `[2/5]` 通过 API 触发 Sonarr 核心配置备份并提取最新 zip。
+  3. `[3/5]` 通过 API 触发 Prowlarr 核心配置备份并提取最新 zip。
+  4. `[4/5]` 提取 SABnzbd 配置文件 `sabnzbd.ini`。
+  5. `[5/5]` 执行 Jellyfin 在线热备（`jellyfin.db` SQLite 在线备份 + `config/` 目录）。
+  6. `[打包]` 统一压缩为单一 `.tar.gz` 并同步至 Google Drive，自动轮转保留最近 30 份历史归档。
 
 ### 4.2. 手动运维指令
 在终端中可直接使用 Fish Shell 内置别名：
-* **立即备份**：执行 `media-backup`
-* **一键恢复**：执行 `media-restore`（通过 [`scripts/restore-media.sh`](../scripts/restore-media.sh) 将 Google Drive 中的最新备份解压恢复到对应系统路径）
+* **立即备份媒体栈**：执行 `media-backup`（生成单一 `.tar.gz` 压缩归档至 Google Drive）
+* **一键恢复媒体栈**：执行 `media-restore`（通过 [`scripts/restore-media.sh`](../scripts/restore-media.sh) 自动解压最新的 `mediastack-backup-latest.tar.gz` 还原配置与数据库）
+* **一键全量备份**：执行 `backup-all`（顺序执行 `backup-media` 与 `backup-github`，一次性完成媒体与代码容灾）
 
-### 4.3. GitHub 代码全量自动化镜像备份（外部存储阵列容灾）
+### 4.3. GitHub 代码全量自动化镜像备份（云端压缩归档容灾）
 * **执行时间**：每周日凌晨 03:05。
-* **能耗协同**：紧随 03:00 媒体库与数据库维护窗口集中写入，在机械硬盘 30 分钟休眠窗口期内完成，**彻底杜绝额外的磁头启停循环（Spindown/Spinup Cycling）**。
+* **存储位置**：`~/Google Drive/My Drive/GitHub-Backups/`
+* **归档格式**：`github-backup-<timestamp>.tar.gz` 及 `github-backup-latest.tar.gz`
 * **服务载体**：launchd 用户代理 `org.nixos.github-backup`。
 * **备份脚本**：[`scripts/backup-github.sh`](../scripts/backup-github.sh)
-* **备份目标**：`/Volumes/extdisk/Backups/github/`
-* **备份内容**：
-  * GitHub 账号（`chen-gz`）下所有公开与私有代码仓库（Git Mirror 镜像裸库，包含所有分支、Tag、提交树）。
-  * 账号下全部 Gists 代码片段。
-* **安全与权限保障**：
+* **能耗与存储优化**：
+  * 本地增量克隆位于 `~/.local/share/github-backup/`，打包为单一 `.tar.gz` 压缩包上传至 Google Drive。
+  * **彻底解除对 `/Volumes/extdisk` 外部机械硬盘的读写依赖**，代码备份不再涉及外部机械盘运转，最大限度保证外部阵列处于 Standby 深度休眠。
+  * 单文件归档有效避免海量 Git 松散对象文件（Loose Objects）引发 Google Drive 客户端同步性能瓶颈。
+* **安全保障**：
   * 通过 GPG 动态解密 `keys/github-token.gpg`，认证头通过 HTTP Basic Auth 动态注入内存，磁盘 `.git/config` 零明文令牌暴露。
-  * 由备份脚本（`scripts/backup-github.sh`）按需创建与管理备份目录，避免系统部署（`deploy`）遍历外部磁盘产生不必要的机械唤醒与 TCC 权限拦截。
 
 ### 4.4. GitHub 备份与恢复指令速查
 ```bash
-# 1. 随时手动触发增量同步
+# 1. 随时手动触发增量同步与打包
 github-backup
 
 # 2. 查看最新备份状态及统计报告
-cat /Volumes/extdisk/Backups/github/latest_backup.json
+cat "$HOME/Google Drive/My Drive/GitHub-Backups/latest_backup.json"
 
-# 3. 灾难恢复：从本地镜像裸库克隆恢复仓库
-git clone /Volumes/extdisk/Backups/github/repos/<repo-name>.git <local-dir>
+# 3. 灾难恢复：解压指定代码仓库并克隆恢复
+tar -xzf "$HOME/Google Drive/My Drive/GitHub-Backups/github-backup-latest.tar.gz" -C /tmp/ repos/<repo-name>.git
+git clone /tmp/repos/<repo-name>.git <local-dir>
 
-# 4. 灾难恢复：从本地镜像克隆恢复 Gist
-git clone /Volumes/extdisk/Backups/github/gists/<gist-id>.git <local-dir>
+# 4. 灾难恢复：解压恢复指定 Gist
+tar -xzf "$HOME/Google Drive/My Drive/GitHub-Backups/github-backup-latest.tar.gz" -C /tmp/ gists/<gist-id>.git
+git clone /tmp/gists/<gist-id>.git <local-dir>
 ```
 
 ---

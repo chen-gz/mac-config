@@ -53,6 +53,9 @@
 
       # GitHub Mirror Backup
       github-backup = "~/.config/nix-darwin/scripts/backup-github.sh";
+
+      # Unified Full Backup (Media Stack + GitHub)
+      backup-all = "~/.config/nix-darwin/scripts/backup-all.sh";
     };
 
     functions = {

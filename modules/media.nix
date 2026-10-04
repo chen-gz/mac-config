@@ -102,29 +102,30 @@
               chflags hidden /Volumes/extdisk 2>/dev/null || true
             fi
 
-            # 自动配置媒体服务备份目录软链接至 Google Drive（重装系统一键自愈）
+            # 自动配置媒体服务与 GitHub 备份归档目录至 Google Drive（重装系统一键自愈）
             GDRIVE_BACKUP="/Users/${username}/Google Drive/My Drive/MediaStack-Backups"
+            GDRIVE_GH_BACKUP="/Users/${username}/Google Drive/My Drive/GitHub-Backups"
             if [ -d "/Users/${username}/Google Drive/My Drive" ]; then
-              mkdir -p "$GDRIVE_BACKUP"/{radarr,sonarr,prowlarr,sabnzbd,jellyfin}
+              mkdir -p "$GDRIVE_BACKUP"
+              mkdir -p "$GDRIVE_GH_BACKUP"
               chown -R ${username} "$GDRIVE_BACKUP" 2>/dev/null || true
+              chown -R ${username} "$GDRIVE_GH_BACKUP" 2>/dev/null || true
 
-              link_backup() {
-                src="$1"
-                target="$2"
-                mkdir -p "$(dirname "$src")"
-                if [ -d "$src" ] && [ ! -L "$src" ]; then
-                  cp -R "$src/"* "$target/" 2>/dev/null || true
-                  rm -rf "$src"
+              # 解除 Radarr/Sonarr/Prowlarr 历史软链接，改由 backup-media 统一打包上传
+              for app in Radarr Prowlarr; do
+                p="/Users/${username}/Library/Application Support/$app/Backups"
+                if [ -L "$p" ]; then
+                  rm -f "$p"
+                  mkdir -p "$p"
+                  chown ${username} "$p" 2>/dev/null || true
                 fi
-                if [ ! -L "$src" ]; then
-                  ln -s "$target" "$src"
-                  chown -h ${username} "$src" 2>/dev/null || true
-                fi
-              }
-
-              link_backup "/Users/${username}/Library/Application Support/Radarr/Backups" "$GDRIVE_BACKUP/radarr"
-              link_backup "/Users/${username}/.config/Sonarr/Backups" "$GDRIVE_BACKUP/sonarr"
-              link_backup "/Users/${username}/Library/Application Support/Prowlarr/Backups" "$GDRIVE_BACKUP/prowlarr"
+              done
+              p="/Users/${username}/.config/Sonarr/Backups"
+              if [ -L "$p" ]; then
+                rm -f "$p"
+                mkdir -p "$p"
+                chown ${username} "$p" 2>/dev/null || true
+              fi
             fi
     '';
   };

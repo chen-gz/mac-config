@@ -3,16 +3,32 @@ set -euo pipefail
 
 # ==============================================================================
 # Media Stack One-Click Restoration Script
-# Automatically restores databases and configs from Google Drive backups
+# Automatically restores databases and configs from Google Drive tar.gz archives
 # ==============================================================================
+
+export PATH="/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:${HOME}/.nix-profile/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:${PATH:-}"
 
 GDRIVE_ROOT="${HOME}/Google Drive/My Drive/MediaStack-Backups"
 UID_VAL=$(id -u)
 
 if [ ! -d "$GDRIVE_ROOT" ]; then
-    echo "Error: Google Drive backup directory not found at '$GDRIVE_ROOT'."
-    echo "Please ensure Google Drive is mounted and synced before restoring."
+    echo "Error: Google Drive backup directory not found at '$GDRIVE_ROOT'." >&2
+    echo "Please ensure Google Drive is mounted and synced before restoring." >&2
     exit 1
+fi
+
+LATEST_ARCHIVE="${GDRIVE_ROOT}/mediastack-backup-latest.tar.gz"
+SOURCE_DIR="$GDRIVE_ROOT"
+
+if [ -f "$LATEST_ARCHIVE" ]; then
+    echo "Found compressed backup archive: $(basename "$LATEST_ARCHIVE")"
+    EXTRACT_DIR=$(mktemp -d "/tmp/mediastack-restore.XXXXXX")
+    trap 'rm -rf "$EXTRACT_DIR"' EXIT
+    echo "Extracting archive to staging directory..."
+    tar -xzf "$LATEST_ARCHIVE" -C "$EXTRACT_DIR"
+    SOURCE_DIR="$EXTRACT_DIR"
+else
+    echo "Notice: Archive not found, checking legacy folder structure in $GDRIVE_ROOT..."
 fi
 
 echo "=================================================================="
@@ -23,7 +39,7 @@ echo "=================================================================="
 echo "===> [1/5] Restoring Radarr..."
 launchctl bootout "gui/$UID_VAL/org.nixos.radarr" 2>/dev/null || true
 sleep 1
-LATEST_RADARR=$(find "$GDRIVE_ROOT/radarr" -name "*.zip" -type f | sort | tail -n 1)
+LATEST_RADARR=$(find "$SOURCE_DIR/radarr" -name "*.zip" -type f 2>/dev/null | sort | tail -n 1 || true)
 if [ -n "$LATEST_RADARR" ] && [ -f "$LATEST_RADARR" ]; then
     echo "     Found latest backup: $(basename "$LATEST_RADARR")"
     mkdir -p "$HOME/Library/Application Support/Radarr"
@@ -38,7 +54,7 @@ launchctl bootstrap "gui/$UID_VAL" "$HOME/Library/LaunchAgents/org.nixos.radarr.
 echo "===> [2/5] Restoring Sonarr..."
 launchctl bootout "gui/$UID_VAL/org.nixos.sonarr" 2>/dev/null || true
 sleep 1
-LATEST_SONARR=$(find "$GDRIVE_ROOT/sonarr" -name "*.zip" -type f | sort | tail -n 1)
+LATEST_SONARR=$(find "$SOURCE_DIR/sonarr" -name "*.zip" -type f 2>/dev/null | sort | tail -n 1 || true)
 if [ -n "$LATEST_SONARR" ] && [ -f "$LATEST_SONARR" ]; then
     echo "     Found latest backup: $(basename "$LATEST_SONARR")"
     mkdir -p "$HOME/.config/Sonarr"
@@ -53,7 +69,7 @@ launchctl bootstrap "gui/$UID_VAL" "$HOME/Library/LaunchAgents/org.nixos.sonarr.
 echo "===> [3/5] Restoring Prowlarr..."
 launchctl bootout "gui/$UID_VAL/org.nixos.prowlarr" 2>/dev/null || true
 sleep 1
-LATEST_PROWLARR=$(find "$GDRIVE_ROOT/prowlarr" -name "*.zip" -type f | sort | tail -n 1)
+LATEST_PROWLARR=$(find "$SOURCE_DIR/prowlarr" -name "*.zip" -type f 2>/dev/null | sort | tail -n 1 || true)
 if [ -n "$LATEST_PROWLARR" ] && [ -f "$LATEST_PROWLARR" ]; then
     echo "     Found latest backup: $(basename "$LATEST_PROWLARR")"
     mkdir -p "$HOME/Library/Application Support/Prowlarr"
@@ -68,9 +84,9 @@ launchctl bootstrap "gui/$UID_VAL" "$HOME/Library/LaunchAgents/org.nixos.prowlar
 echo "===> [4/5] Restoring SABnzbd..."
 launchctl bootout "gui/$UID_VAL/org.nixos.sabnzbd" 2>/dev/null || true
 sleep 1
-if [ -f "$GDRIVE_ROOT/sabnzbd/sabnzbd.ini" ]; then
+if [ -f "$SOURCE_DIR/sabnzbd/sabnzbd.ini" ]; then
     mkdir -p "$HOME/Library/Application Support/SABnzbd"
-    cp "$GDRIVE_ROOT/sabnzbd/sabnzbd.ini" "$HOME/Library/Application Support/SABnzbd/sabnzbd.ini"
+    cp "$SOURCE_DIR/sabnzbd/sabnzbd.ini" "$HOME/Library/Application Support/SABnzbd/sabnzbd.ini"
     echo "     SABnzbd sabnzbd.ini restored successfully."
 fi
 launchctl bootstrap "gui/$UID_VAL" "$HOME/Library/LaunchAgents/org.nixos.sabnzbd.plist" 2>/dev/null || true
@@ -79,12 +95,12 @@ launchctl bootstrap "gui/$UID_VAL" "$HOME/Library/LaunchAgents/org.nixos.sabnzbd
 echo "===> [5/5] Restoring Jellyfin..."
 killall -TERM jellyfin 2>/dev/null || true
 sleep 1
-if [ -f "$GDRIVE_ROOT/jellyfin/jellyfin.db" ]; then
+if [ -f "$SOURCE_DIR/jellyfin/jellyfin.db" ]; then
     mkdir -p "$HOME/Library/Application Support/jellyfin/data"
-    cp "$GDRIVE_ROOT/jellyfin/jellyfin.db" "$HOME/Library/Application Support/jellyfin/data/jellyfin.db"
-    if [ -d "$GDRIVE_ROOT/jellyfin/config" ]; then
+    cp "$SOURCE_DIR/jellyfin/jellyfin.db" "$HOME/Library/Application Support/jellyfin/data/jellyfin.db"
+    if [ -d "$SOURCE_DIR/jellyfin/config" ]; then
         mkdir -p "$HOME/Library/Application Support/jellyfin/config"
-        cp -R "$GDRIVE_ROOT/jellyfin/config/"* "$HOME/Library/Application Support/jellyfin/config/" 2>/dev/null || true
+        cp -R "$SOURCE_DIR/jellyfin/config/"* "$HOME/Library/Application Support/jellyfin/config/" 2>/dev/null || true
     fi
     echo "     Jellyfin database and configs restored successfully."
 fi

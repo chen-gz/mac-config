@@ -140,45 +140,54 @@
 
 ### 4.1. 备份体系架构
 * **备份目标**：`${HOME}/Google Drive/My Drive/MediaStack-Backups/`
+* **归档格式**：`mediastack-backup-<timestamp>.tar.gz` 及 `mediastack-backup-latest.tar.gz`（不再以散乱目录存放）
 * **定时载体**：launchd 用户代理 `org.nixos.media-backup`（每周日凌晨 03:00 自动执行）。
 * **核心备份脚本**：[`scripts/backup-media.sh`](../scripts/backup-media.sh)
   * 通过 API 触发 Radarr、Sonarr、Prowlarr 在线配置导出；
-  * 归档 SABnzbd 配置；
-  * 执行 Jellyfin SQLite 在线安全热备（`.backup`）。
+  * 包含 SABnzbd `sabnzbd.ini` 配置与 Jellyfin SQLite 在线安全热备（`jellyfin.db` + `config/`）；
+  * 自动打包为单一压缩包同步至 Google Drive，并自动保留最近 30 份历史归档。
 
 ### 4.2. 运维指令速查
 ```bash
-# 1. 立即手动执行一次全量热备
+# 1. 立即手动执行一次媒体栈全量热备
 media-backup
 
-# 2. 系统重装后的一键恢复配置
+# 2. 系统重装后的一键恢复媒体配置
 media-restore
+
+# 3. 一键顺序执行全系统备份（媒体栈 + GitHub 代码镜像）
+backup-all
 ```
 
 ### 4.3. GitHub 代码全量自动化镜像备份（GitHub Mirror Backup）
-* **备份目标**：`/Volumes/extdisk/Backups/github/`
-* **定时载体**：launchd 用户代理 `org.nixos.github-backup`（每周日凌晨 03:05 自动执行，紧随媒体维护窗口，避免硬盘产生二次起停循环）。
+* **备份目标**：`~/Google Drive/My Drive/GitHub-Backups/`
+* **归档格式**：打包压缩包 `github-backup-<timestamp>.tar.gz` 与 `github-backup-latest.tar.gz`
+* **本地缓存**：`~/.local/share/github-backup/`（用于高速增量拉取 Git Mirror，打包后同步至 Google Drive）
+* **定时载体**：launchd 用户代理 `org.nixos.github-backup`（每周日凌晨 03:05 自动执行）。
 * **核心脚本**：[`scripts/backup-github.sh`](../scripts/backup-github.sh)
 * **备份范围**：
   * GitHub 账号（`chen-gz`）下所有公开与私有仓库（Git Mirror 裸库镜像，全量保留全部分支、Tag、提交历史）。
   * 账号下全部 Gists 代码片段。
-* **安全与权限**：
+* **安全与容灾策略**：
   * 通过 GPG 动态解密 `keys/github-token.gpg`，认证凭据在内存中通过 HTTP Basic 认证头传递，彻底杜绝本地 `.git/config` 泄漏明文 Token。
-  * 由备份脚本（`scripts/backup-github.sh`）按需创建与管理备份目录，避免系统部署（`deploy`）遍历外部磁盘产生不必要的机械唤醒与 TCC 权限拦截。
+  * 归档为单个压缩包上传至 Google Drive，避免数十万小文件引发云盘同步死锁，同时彻底解除对外部机械硬盘阵列的依赖与唤醒。
+  * 自动保留最近 30 份历史归档版本，节约云盘容量。
 
 ### 4.4. GitHub 备份运维与恢复速查
 ```bash
-# 1. 手动立即触发全量增量镜像备份
+# 1. 手动立即触发全量增量镜像与云端归档备份
 github-backup
 
 # 2. 查看最新一次备份的元数据报告
-cat /Volumes/extdisk/Backups/github/latest_backup.json
+cat "$HOME/Google Drive/My Drive/GitHub-Backups/latest_backup.json"
 
-# 3. 从镜像裸库恢复/克隆完整代码仓库
-git clone /Volumes/extdisk/Backups/github/repos/<repo-name>.git <local-destination>
+# 3. 灾难恢复：解压指定代码仓库并克隆恢复
+tar -xzf "$HOME/Google Drive/My Drive/GitHub-Backups/github-backup-latest.tar.gz" -C /tmp/ repos/<repo-name>.git
+git clone /tmp/repos/<repo-name>.git <local-destination>
 
-# 4. 从镜像恢复 Gist
-git clone /Volumes/extdisk/Backups/github/gists/<gist-id>.git <local-destination>
+# 4. 灾难恢复：解压恢复指定 Gist
+tar -xzf "$HOME/Google Drive/My Drive/GitHub-Backups/github-backup-latest.tar.gz" -C /tmp/ gists/<gist-id>.git
+git clone /tmp/gists/<gist-id>.git <local-destination>
 ```
 
 ---
