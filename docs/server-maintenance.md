@@ -164,7 +164,7 @@ media-restore
   * 账号下全部 Gists 代码片段。
 * **安全与权限**：
   * 通过 GPG 动态解密 `keys/github-token.gpg`，认证凭据在内存中通过 HTTP Basic 认证头传递，彻底杜绝本地 `.git/config` 泄漏明文 Token。
-  * 自动在系统激活时（`postActivation`）保障 `/Volumes/extdisk/Backups/github` 的正确用户所有权（`guangzong:staff`）。
+  * 由备份脚本（`scripts/backup-github.sh`）按需创建与管理备份目录，避免系统部署（`deploy`）遍历外部磁盘产生不必要的机械唤醒与 TCC 权限拦截。
 
 ### 4.4. GitHub 备份运维与恢复速查
 ```bash

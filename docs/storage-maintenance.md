@@ -148,7 +148,7 @@
   * 账号下全部 Gists 代码片段。
 * **安全与权限保障**：
   * 通过 GPG 动态解密 `keys/github-token.gpg`，认证头通过 HTTP Basic Auth 动态注入内存，磁盘 `.git/config` 零明文令牌暴露。
-  * `modules/media.nix` 激活脚本（`postActivation`）中自动固化 `/Volumes/extdisk/Backups/github` 目录属主为 `guangzong:staff` (775)。
+  * 由备份脚本（`scripts/backup-github.sh`）按需创建与管理备份目录，避免系统部署（`deploy`）遍历外部磁盘产生不必要的机械唤醒与 TCC 权限拦截。
 
 ### 4.4. GitHub 备份与恢复指令速查
 ```bash

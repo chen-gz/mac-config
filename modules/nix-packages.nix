@@ -23,5 +23,6 @@
     lazyjj
     mdcat
     elan
+    python3Packages.huggingface-hub
   ];
 }

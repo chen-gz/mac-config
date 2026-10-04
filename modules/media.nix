@@ -78,9 +78,11 @@
             done
 
             # 禁止外部媒体硬盘 (/Volumes/extdisk) 的 Spotlight 索引，避免机械硬盘频繁被系统唤醒
-            if [ -d "/Volumes/extdisk" ]; then
-              touch /Volumes/extdisk/.metadata_never_index 2>/dev/null || true
-              /usr/bin/mdutil -i off /Volumes/extdisk 2>/dev/null || true
+            if /sbin/mount | grep -q '/Volumes/extdisk'; then
+              if [ ! -f "/Volumes/extdisk/.metadata_never_index" ]; then
+                touch /Volumes/extdisk/.metadata_never_index 2>/dev/null || true
+              fi
+              /usr/bin/mdutil -i off /Volumes/extdisk >/dev/null 2>&1 || true
             fi
 
             # 外部媒体硬盘 (/Volumes/extdisk) nobrowse 挂载固化，阻断 Finder 与 CacheDelete (deleted) 唤醒
@@ -94,15 +96,10 @@
             else
               echo "UUID=$EXTDISK_UUID none hfs rw,auto,nobrowse 0 0" > /etc/fstab
             fi
-            /usr/sbin/diskutil mount "$EXTDISK_UUID" 2>/dev/null || true
-            if [ -d "/Volumes/extdisk" ]; then
+
+            if /sbin/mount | grep '/Volumes/extdisk' | grep -qv 'nobrowse'; then
               mount -u -o nobrowse /Volumes/extdisk 2>/dev/null || true
               chflags hidden /Volumes/extdisk 2>/dev/null || true
-
-              # 外部媒体硬盘 GitHub 备份目录初始化与权限分配
-              mkdir -p /Volumes/extdisk/Backups/github
-              chown -R ${username}:staff /Volumes/extdisk/Backups
-              chmod -R 775 /Volumes/extdisk/Backups
             fi
 
             # 自动配置媒体服务备份目录软链接至 Google Drive（重装系统一键自愈）
