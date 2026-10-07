@@ -32,6 +32,7 @@
       "obs"
       "signal"
       "visual-studio-code"
+      "linear"
     ];
     masApps = {
     };
