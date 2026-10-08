@@ -34,15 +34,27 @@
 ### 2.2. 彻底禁用 Spotlight 索引与扫描
 * **配置位置**：[`modules/media.nix`](../modules/media.nix) 系统激活脚本中永久固化：
   ```bash
-  if [ -d "/Volumes/extdisk" ]; then
-    touch /Volumes/extdisk/.metadata_never_index 2>/dev/null || true
-    /usr/bin/mdutil -i off /Volumes/extdisk 2>/dev/null || true
+  SPOTLIGHT_DISABLED_FLAG="/var/db/.extdisk_spotlight_disabled"
+  if [ ! -f "$SPOTLIGHT_DISABLED_FLAG" ]; then
+    if grep -q "$EXTDISK_UUID" /etc/fstab 2>/dev/null && /sbin/mount | grep -q '/Volumes/extdisk.*nobrowse'; then
+      touch "$SPOTLIGHT_DISABLED_FLAG" 2>/dev/null || true
+    elif /sbin/mount | grep -q '/Volumes/extdisk'; then
+      if [ ! -f "/Volumes/extdisk/.metadata_never_index" ]; then
+        touch /Volumes/extdisk/.metadata_never_index 2>/dev/null || true
+      fi
+      /usr/bin/mdutil -i off /Volumes/extdisk >/dev/null 2>&1 || true
+      touch "$SPOTLIGHT_DISABLED_FLAG" 2>/dev/null || true
+    fi
   fi
   ```
+* **防唤醒设计**：
+  * 首次初始化时创建 `.metadata_never_index` 并执行 `mdutil -i off` 彻底关闭 Spotlight 索引。
+  * 随后在系统本地写入 `/var/db/.extdisk_spotlight_disabled` 标记文件。
+  * 后续每次执行 `gg_update` 部署时，直接命中标记文件判断并快速跳过，绝不向 `/Volumes/extdisk` 发起文件系统探测（`stat`）或 `mdutil` 指令，防止唤醒已休眠的机械硬盘阵列。
 * **效果验证**：
   ```bash
   mdutil -s /Volumes/extdisk
-  # 输出: Indexing and searching disabled.
+  # 输出: Indexing and searching disabled. (nobrowse 挂载时可能提示 could not resolve path，均为正常屏蔽状态)
   ```
 
 ### 2.3. /etc/fstab nobrowse 挂载策略（彻底阻断 Finder 与 CacheDelete 唤醒）

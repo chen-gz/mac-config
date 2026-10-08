@@ -77,16 +77,25 @@
               fi
             done
 
+            # 外部媒体硬盘 (/Volumes/extdisk) 配置固化
+            EXTDISK_UUID="3DF1A047-9D24-3B78-82CB-420E76C3C671"
+            SPOTLIGHT_DISABLED_FLAG="/var/db/.extdisk_spotlight_disabled"
+
             # 禁止外部媒体硬盘 (/Volumes/extdisk) 的 Spotlight 索引，避免机械硬盘频繁被系统唤醒
-            if /sbin/mount | grep -q '/Volumes/extdisk'; then
-              if [ ! -f "/Volumes/extdisk/.metadata_never_index" ]; then
-                touch /Volumes/extdisk/.metadata_never_index 2>/dev/null || true
+            # 通过本地标记文件固化配置状态，避免每次 gg_update 部署时重复 stat 探测与 mdutil 唤醒已休眠的机械硬盘
+            if [ ! -f "$SPOTLIGHT_DISABLED_FLAG" ]; then
+              if grep -q "$EXTDISK_UUID" /etc/fstab 2>/dev/null && /sbin/mount | grep -q '/Volumes/extdisk.*nobrowse'; then
+                touch "$SPOTLIGHT_DISABLED_FLAG" 2>/dev/null || true
+              elif /sbin/mount | grep -q '/Volumes/extdisk'; then
+                if [ ! -f "/Volumes/extdisk/.metadata_never_index" ]; then
+                  touch /Volumes/extdisk/.metadata_never_index 2>/dev/null || true
+                fi
+                /usr/bin/mdutil -i off /Volumes/extdisk >/dev/null 2>&1 || true
+                touch "$SPOTLIGHT_DISABLED_FLAG" 2>/dev/null || true
               fi
-              /usr/bin/mdutil -i off /Volumes/extdisk >/dev/null 2>&1 || true
             fi
 
             # 外部媒体硬盘 (/Volumes/extdisk) nobrowse 挂载固化，阻断 Finder 与 CacheDelete (deleted) 唤醒
-            EXTDISK_UUID="3DF1A047-9D24-3B78-82CB-420E76C3C671"
             if [ -f /etc/fstab ]; then
               sed -i "" 's|/Volumes/extdisk|none|g' /etc/fstab 2>/dev/null || true
               if ! grep -q "$EXTDISK_UUID" /etc/fstab; then
