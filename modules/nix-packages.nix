@@ -5,6 +5,7 @@
     just
     devenv
     just-lsp
+    nil # Nix 语言服务器 (LSP)
     pay-respects
     nix-index
     ripgrep
