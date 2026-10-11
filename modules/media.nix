@@ -14,6 +14,7 @@
       "jellyfin"
       "sabnzbd"
       "prowlarr"
+      "transmission"
     ];
     brews = [
       "cloudflared"
@@ -61,7 +62,7 @@
       rm -f /Library/LaunchDaemons/org.nixos.caddy.plist 2>/dev/null || true
 
       echo "Fixing quarantine and codesign for media applications..."
-            for app in Radarr Sonarr Prowlarr SABnzbd Jellyfin; do
+            for app in Radarr Sonarr Prowlarr SABnzbd Jellyfin Transmission; do
               app_path="/Applications/''${app}.app"
               if [ -d "$app_path" ]; then
                 # Remove quarantine flag
