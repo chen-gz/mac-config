@@ -14,6 +14,7 @@
     ];
     casks = [
       "google-chrome"
+      "duckduckgo"
       "jellyfin-media-player"
       "iina"
       "google-drive"
