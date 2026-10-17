@@ -192,7 +192,8 @@ git clone /tmp/gists/<gist-id>.git <local-dir>
 * 调优后基准：[`logs/smartctl_report_20260920_1211.log`](../logs/smartctl_report_20260920_1211.log)
 * 持续巡检归档：[`logs/smartctl_report_20260922_1006.log`](../logs/smartctl_report_20260922_1006.log)
 * 周期巡检归档：[`logs/smartctl_report_20260924_1306.log`](../logs/smartctl_report_20260924_1306.log)
-* 最新巡检归档：[`logs/smartctl_report_20260930_1300.log`](../logs/smartctl_report_20260930_1300.log)
+* 阶段巡检归档：[`logs/smartctl_report_20260930_1300.log`](../logs/smartctl_report_20260930_1300.log)
+* 最新巡检归档：[`logs/smartctl_report_20261017_1051.log`](../logs/smartctl_report_20261017_1051.log)
 
 日常巡检重点关注以下 SMART 属性：
 
