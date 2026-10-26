@@ -29,6 +29,7 @@
       "bitwarden"
       "antigravity"
       "antigravity-cli"
+      "codex"
       "obs"
       "signal"
       "visual-studio-code"
