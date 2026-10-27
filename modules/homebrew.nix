@@ -31,7 +31,7 @@
       "bitwarden"
       "antigravity"
       "antigravity-cli"
-      "codex"
+      "chatgpt"
       "obs"
       "signal"
       "visual-studio-code"
