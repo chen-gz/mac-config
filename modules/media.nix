@@ -15,6 +15,7 @@
       "sabnzbd"
       "prowlarr"
       "transmission"
+      "lm-studio"
     ];
     brews = [
       "cloudflared"
