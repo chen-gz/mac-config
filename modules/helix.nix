@@ -37,6 +37,10 @@
           select = "underline";
         };
         lsp.display-messages = true;
+        auto-save = {
+          focus-lost = true;
+          after-delay.enable = true;
+        };
       };
       keys.normal = {
         q = ":quit";
