@@ -19,7 +19,7 @@
 
     programs.git.settings.user = {
       name = "Guangzong Chen";
-      email = "guangzong@google.com";
+      email = "chen@ggeta.com.com";
       signingkey = "20AE4BA8FF696FB5E21AE9D0636538D58AF1006D";
     };
 

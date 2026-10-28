@@ -5,7 +5,7 @@
     settings = {
       user = {
         name = "Guangzong Chen";
-        email = "guangzong@google.com";
+        email = "chen@ggeta.com";
       };
       ui = {
         default-command = "log";
