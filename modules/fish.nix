@@ -96,7 +96,7 @@
           set -x SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)
       end
 
-      pay-respects setup --shell fish | source
+      pay-respects fish | source
 
       source ~/.orbstack/shell/init2.fish 2>/dev/null || :
     '';
